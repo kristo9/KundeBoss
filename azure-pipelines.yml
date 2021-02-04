@@ -57,7 +57,7 @@ steps:
 - task: AzureWebApp@1
   displayName: 'Deploy to App Service'
   inputs:
-    azureSubscription: '$(serviceConnection)'
+    github: '$(serviceConnection)'
     appName: '$(appServiceName)'
     appType: 'webApp'
     package: '$(System.ArtifactsDirectory)/$(Build.BuildId).zip'
