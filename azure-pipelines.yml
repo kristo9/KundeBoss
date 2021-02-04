@@ -13,7 +13,7 @@ pool:
 variables:
   directory: kundeboss
   stage: development
-  serviceConnection: kristo9
+  serviceConnection: serviceConnectionGitHub
   appServiceName: KundeBoss
  
 steps:
