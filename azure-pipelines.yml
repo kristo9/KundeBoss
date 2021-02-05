@@ -19,3 +19,16 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Kundeboss(de75b805-77ce-4d5a-98e6-84044ccc6d2d)'
+    appType: 'webApp'
+    WebAppName: 'KundeBoss'
+    deployToSlotOrASE: true
+    ResourceGroupName: 'appsvc_linux_centralus'
+    SlotName: 'production'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+  displayName: 'deploy'
