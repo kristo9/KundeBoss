@@ -12,7 +12,7 @@ function App() {
         </p>
         <a
           className="App-link"
-          href="https://timiansfuncapp.azurewebsites.net"
+          href="https://timiansfuncapp.azurewebsites.net/.auth/login/aad/callback"
           target="_blank"
           rel="noopener noreferrer"
         >
