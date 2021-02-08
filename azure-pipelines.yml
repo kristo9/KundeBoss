@@ -55,9 +55,28 @@ steps:
     pathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
  
 - task: AzureFunctionApp@1
-  displayName: 'Deploy to App Service'
   inputs:
-    azureSubscription: '$(serviceConnection)'
+    azureSubscription: 'Kundeboss'
+    appType: 'functionAppLinux'
     appName: '$(appServiceName)'
-    appType: 'functionApp'
     package: '$(System.ArtifactsDirectory)/$(Build.BuildId).zip'
+    deployToSlotOrASE: true
+    resourceGroupName: 'Kundeboss-rg'
+    slotName: 'staging'
+
+- task: AzureAppServiceManage@0
+  inputs:
+    azureSubscription: 'Kundeboss'
+    WebAppName: '$(appServiceName)'
+    ResourceGroupName: 'Kundeboss-rg'
+    SourceSlot: staging
+    SwapWithProduction: true 
+
+
+#- task: AzureWebApp@1
+#  displayName: 'Deploy to App Service'
+#  inputs:
+#    azureSubscription: '$(serviceConnection)'
+#    appName: '$(appServiceName)'
+#    appType: 'webApp'
+#    package: '$(System.ArtifactsDirectory)/$(Build.BuildId).zip'
