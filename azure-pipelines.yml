@@ -14,7 +14,7 @@ variables:
   directory: kundeboss
   stage: development
   serviceConnection: servCon
-  appServiceName: KundeBoss-rg
+  appServiceName: KundebossFunctionApp
  
 steps:
 - task: NodeTool@0
