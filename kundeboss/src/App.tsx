@@ -26,13 +26,22 @@ function App() {
     );
   };
 
+  const AccInfo = ({ data }: any) =>{
+    return(
+      <div>
+        <pre>
+          {JSON.stringify(data.idTokenClaims, null, 2)}
+        </pre>
+      </div>
+    )
+  }
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Funker det nå?
+          Seff d e jo fredag
         </p>
         <a
           className="App-link"
@@ -45,7 +54,7 @@ function App() {
         <AzureAuthenticationButton onAuthenticated={onAuthenticated} />
       {currentUser && (
         <div>
-          <PrettyPrintJson data={currentUser} />
+          <AccInfo data={currentUser}/>
         </div>
       )}
       </header>
