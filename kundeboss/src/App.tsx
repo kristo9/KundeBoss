@@ -41,7 +41,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Seff d e jo fredag
+          Seff d e jo fredag, 123
         </p>
         <a
           className="App-link"
