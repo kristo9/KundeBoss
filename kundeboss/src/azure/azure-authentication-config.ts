@@ -6,6 +6,7 @@ const AzureActiveDirectoryAppClientId: any =
 export const MSAL_CONFIG: Configuration = {
   auth: {
     clientId: AzureActiveDirectoryAppClientId,
+    authority: "https://login.microsoftonline.com/301091f0-e24f-43fa-bd87-59350cc3fbb6",
   },
   cache: {
     cacheLocation: "sessionStorage",

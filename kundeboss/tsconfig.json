@@ -1,4 +1,7 @@
 {
+  "options": { 
+  "useCommonEndpoint": false,
+  },
   "compilerOptions": {
     "target": "es5",
     "lib": [
