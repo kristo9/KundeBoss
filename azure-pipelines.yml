@@ -72,22 +72,6 @@ steps:
 #    SourceSlot: staging
 #    SwapWithProduction: true 
 
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'kundeboss-rg'
-    scriptType: 'ps'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az storage blob delete-batch --source "`$web" --account-name kundebossblobstorage --account-key 5i5Fii69OwwS0DjcJqgL/ntXKByy1Kp1QmIa0Ob41UbCCEicir1JG6+Kk8EKlXkTHXZWA6Mq6R4cGSFqtDj7gQ=='
-
-- task: AzureFileCopy@4
-  inputs:
-    SourcePath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-    azureSubscription: 'kundeboss-rg'
-    Destination: 'AzureBlob'
-    storage: 'kundebossblobstorage'
-    ContainerName: '$web'
-
-
 - task: AzureWebApp@1
   displayName: 'Deploy to App Service'
   inputs:
