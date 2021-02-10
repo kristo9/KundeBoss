@@ -15,5 +15,5 @@
             "name": "res"
         }
     ],
-    "scriptFile": "../dist/GetAllEmployee/index.js"
+    "scriptFile": "../dist/GetAllEmployees/index.js"
 }

@@ -1,14 +1,14 @@
 {
- "bindings": [
-  {
-   "name": "myTimer",
-   "type": "timerTrigger",
-   "direction": "in",
-   "schedule": "0 */5 7-16 * * *"
-  }
- ],
- "scriptFile": "../dist/TimerTrigger/index.js",
- "dependencies": {
-  "unifi-bot-service-shared": "file:../.shared/svc"
- }
+    "bindings": [
+        {
+            "name": "myTimer",
+            "type": "timerTrigger",
+            "direction": "in",
+            "schedule": "0 */5 * * * *"
+        }
+    ],
+    "scriptFile": "../dist/TimerTrigger/index.js",
+    "dependencies": {
+        "unifi-bot-service-shared": "file:../.shared/svc"
+    }
 }
