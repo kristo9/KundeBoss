@@ -31,9 +31,10 @@ module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
 
     try {
         // Connect to db
-        let client = await dbDep.client();
+        let client = await dbDep.clientRead();
         // QUery data from db
         let data = await client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray();
+
         let statusCode = 200;
         context.log("Employees found: " + data.length);
 

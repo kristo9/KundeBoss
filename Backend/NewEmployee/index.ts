@@ -44,7 +44,7 @@ module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
 
         try {
             // Connect to db
-            let client = await dbDep.client();
+            let client = await dbDep.clientWrite();
             // Insert into db
             const result = await client.db(dbDep.DBName).collection('ansatte').insertOne(query);
             // Response to client
