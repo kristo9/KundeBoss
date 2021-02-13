@@ -1,26 +1,13 @@
 import { Context, HttpRequest } from "@azure/functions"
 
-module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
-    const validator: any = require('../SharedFiles/inputValidation')
-
-    let nameVal = req.body.name;
-
-
-
-    if (!(req.body && nameVal && validator.name(nameVal))) {
-        context.res = {
-            status: 400,
-            body: {
-                error: "Wrong input"
-            }
-        }
-        return;
-    }
-
+module.exports = (context: Context, req: HttpRequest): any => {
+    const validator: any = require('../SharedFiles/inputValidation');
     const dbDep: any = require('../SharedFiles/dataBase');
 
+    let name = req.body.name;
+
     const query = {
-        id: nameVal
+        id: name
     }
 
     const projection = {
@@ -30,61 +17,53 @@ module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
         kontaktInfo: 1
     }
 
+    const getEmployeeData = () => {
+        dbDep.clientRead.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
+            if (error) {
+                context.log('Error running query');
+                context.res = { status: 500, body: 'Error running query' }
+                return context.done();
+            }
 
-    try {
-        // Connect to db
-        let client = await dbDep.clientRead();
+            context.log('Success!');
+            context.res = {
+                headers: { 'Content-Type': 'application/json' },
+                body: docs
+            };
+            context.done();
+        });
+    }
 
+    const connectAndQuery = (callback) => {
+        if (dbDep.clientRead == null) {
+            dbDep.MongoClient.connect(dbDep.uriRead, (error, _client) => {
+                if (error) {
 
+                    context.log('Failed to connect');
+                    context.res = { status: 500, body: 'Failed to connect' }
+                    return context.done();
+                }
+                dbDep.clientRead = _client;
+                context.log('Connected');
+                callback();
 
-
-
-        /*
-        // Get customer data security pseudo code
-        let val = await client.db(dbDep.DBName).collection("ansatte").find("navn på ansatt").toArray();
-
-        if (val.customers.has(nameVal) && (val.customers.accessLevel == "read" || val.customers.accessLevel == "write")) {
-            run code;
-        } else {
-            statusCode = 403;
-            data = "No access to costumer";
+            })
         }
-
-
-        */
-
-
-
-        // QUery data from db
-        let data = await client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray();
-
-        let statusCode = 200;
-        context.log("Employees found: " + data.length);
-
-        if (data.length != 1) {
-            statusCode = 400;
-
-            if (data.length < 1)
-                data = { error: "No employees found" };
-            else
-                data = { error: "More than one employee found" };
+        else {
+            callback();
         }
-        else
-            data = data[0];
+    }
 
-        //console.log(JSON.stringify(data.kontaktInfo.epost))
+    if (req.body && name && validator.name(name)) {
+        connectAndQuery(getEmployeeData);
+    } else {
         context.res = {
-            status: statusCode,
-            body: data
-        }
-
-    } catch {
-        context.log("Something went wrong");
-        context.res = {
-            status: 500,
+            status: 400,
             body: {
-                error: "Could not connect to database"
+                error: "Wrong input"
             }
         }
+        context.done();
+        return;
     }
 }

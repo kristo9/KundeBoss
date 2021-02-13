@@ -1,18 +1,70 @@
 import { Context, HttpRequest } from "@azure/functions"
 
-module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
+module.exports = (context: Context, req: HttpRequest): Promise<void> => {
+    const validator: any = require('../SharedFiles/inputValidation')
+    const dbDep: any = require('../SharedFiles/dataBase');
+
+    const query = {
+        id: req.body.name,
+        kontaktInfo:
+        {
+            mail: req.body.mail,
+            tlf: req.body.number
+        },
+        navn: req.body.name,
+        fdato: (req.body.date || "null"),       // Not required;
+        dato: Date()
+    }
+
+    const newEmployee = () => {
+        dbDep.clientWrite.db(dbDep.DBName).collection('ansatte').insertOne(query, (error, docs) => {
+            if (error) {
+                context.log('Error running query');
+                context.res = { status: 500, body: 'Error running query' }
+                return context.done();
+            }
+
+            context.log('Success!');
+            context.res = {
+                headers: { 'Content-Type': 'application/json' },
+                body: docs
+            };
+            context.done();
+        });
+    }
+
+    // Connect to db
+    const connectAndQuery = (callback) => {
+        if (dbDep.clientRead == null) {
+            dbDep.MongoClient.connect(dbDep.uriRead, (error, _client) => {
+                if (error) {
+
+                    context.log('Failed to connect');
+                    context.res = { status: 500, body: 'Failed to connect' }
+                    return context.done();
+                }
+                dbDep.clientRead = _client;
+                context.log('Connected');
+                callback();
+
+            })
+        }
+        else {
+            callback();
+        }
+    }
+
+    let errMsg = req.body;
+    let validArgs = true;
 
     if (!(req.body && req.body.name && req.body.mail && req.body.number)) {
         context.res = {
             status: 400,
             body: "name, mail or number not given"
         }
+        context.done();
         return;
     }
-
-    const validator: any = require('../SharedFiles/inputValidation')
-    let errMsg = req.body;
-    let validArgs = true;
 
     if (!validator.name(req.body.name)) {
         errMsg.name = 'false';
@@ -28,47 +80,13 @@ module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
         validArgs = false;
     } if (validArgs) {
 
-        const dbDep: any = require('../SharedFiles/dataBase');
+        connectAndQuery(newEmployee);
 
-        const query = {
-            id: req.body.name,
-            kontaktInfo:
-            {
-                mail: req.body.mail,
-                tlf: req.body.number
-            },
-            navn: req.body.name,
-            fdato: (req.body.date || "null"),       // Not required;
-            dato: Date()
-        }
-
-        try {
-            // Connect to db
-            let client = await dbDep.clientWrite();
-            // Insert into db
-            const result = await client.db(dbDep.DBName).collection('ansatte').insertOne(query);
-            // Response to client
-            context.res = {
-                status: 200,
-                body: {
-                    _id: result.insertedId
-                }
-            }
-
-        } catch {
-            context.log("Something went wrong");
-            context.res = {
-                status: 500,
-                body: {
-                    error: "Could not connect to database"
-                }
-            }
-        }
     } else {
         context.res = {
             status: 400,
             body: errMsg
         }
-        return;
+        context.done();
     }
 }

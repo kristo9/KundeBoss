@@ -7,26 +7,6 @@ module.exports.uriWrite = "mongodb://kundebossmongodb:GHLql0AhgKRnqQVp63pp88C96G
 module.exports.DBName = "KundeBossDB";
 
 //module.exports.clientRead = () => this.MongoClient(this.uriRead).connect(); //serverSelectionTimeoutMS: 10000, useUnifiedTopology: true, useNewUriParser: true 
-let clientGlobalRead = null;
-let clientGlobalWrite = null;
-
-module.exports.clientRead = () => {
-
-    if (clientGlobalRead == null) {
-        clientGlobalRead = this.MongoClient(this.uriRead).connect();
-        console.log("Created new read connection");
-    }
-
-    return clientGlobalRead;
-}; //serverSelectionTimeoutMS: 10000, useUnifiedTopology: true, useNewUriParser: true 
-
-module.exports.clientWrite = () => {
-
-    if (clientGlobalWrite == null) {
-        clientGlobalWrite = this.MongoClient(this.uriWrite).connect();
-        console.log("Created new write connection");
-    }
-
-    return clientGlobalWrite;
-};
+let clientRead = null;
+let clientWrite = null;
 
