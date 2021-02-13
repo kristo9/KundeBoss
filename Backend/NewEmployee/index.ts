@@ -55,8 +55,6 @@ module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
                 }
             }
 
-            await client.close();
-
         } catch {
             context.log("Something went wrong");
             context.res = {

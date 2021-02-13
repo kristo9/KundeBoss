@@ -5,6 +5,8 @@ module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
 
     let nameVal = req.body.name;
 
+
+
     if (!(req.body && nameVal && validator.name(nameVal))) {
         context.res = {
             status: 400,
@@ -32,6 +34,27 @@ module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
     try {
         // Connect to db
         let client = await dbDep.clientRead();
+
+
+
+
+
+        /*
+        // Get customer data security pseudo code
+        let val = await client.db(dbDep.DBName).collection("ansatte").find("navn på ansatt").toArray();
+
+        if (val.customers.has(nameVal) && (val.customers.accessLevel == "read" || val.customers.accessLevel == "write")) {
+            run code;
+        } else {
+            statusCode = 403;
+            data = "No access to costumer";
+        }
+
+
+        */
+
+
+
         // QUery data from db
         let data = await client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray();
 
@@ -54,8 +77,6 @@ module.exports = async (context: Context, req: HttpRequest): Promise<void> => {
             status: statusCode,
             body: data
         }
-
-        await client.close();
 
     } catch {
         context.log("Something went wrong");
