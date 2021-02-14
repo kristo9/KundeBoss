@@ -3,15 +3,20 @@ import { Context, HttpRequest } from "@azure/functions"
 module.exports = (context: Context, req: HttpRequest): any => {
     const dbDep: any = require('../SharedFiles/dataBase');
 
-    const query = {}
+    // Todo: Query to run on database
+    const query = {
 
+    }
+
+    // Todo: Projection,  Only for retrieving data
     const projection = {
-        _id: 1,
-        navn: 1
     }
 
     const inputValidation = () => {
-        if (true) {
+
+        //Todo: Checks to see if inputs are valid
+
+        if (/* If vaiid inputs are */ true) {
 
             connect();
 
@@ -19,7 +24,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
             context.res = {
                 status: 400,
                 body: {
-                    error: "Wrong input"
+                    // Todo:
+                    error: "Appropriate error message"
                 }
             }
             return context.done();
@@ -27,6 +33,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
 
     const connect = () => {
+        // Todo: replace clientRead with clientWrite
+
         if (dbDep.clientRead == null) {
             dbDep.MongoClient.connect(dbDep.uriRead, (error, _client) => {
                 if (error) {
@@ -46,9 +54,12 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
 
     const authorize = (client) => {
-        if (true) {
-            // if valid credentials
-            getAllEnployees(client)
+
+        // Todo: check if valid credentials
+
+        if (/* if valid credetials are */ true) {
+
+            functionQuery(client)
 
         } else {
             context.log('Unauthorized');
@@ -57,8 +68,12 @@ module.exports = (context: Context, req: HttpRequest): any => {
         }
     }
 
-    const getAllEnployees = (client) => {
-        client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
+    const functionQuery = (client) => {
+
+        /* Todo: add collection name
+        
+        if inserting : client.db(dbDep.DBName).collection("Collection Name").insertOne(query, (error, docs) => {*/
+        client.db(dbDep.DBName).collection("Collection Name").find(query).project(projection).toArray((error, docs) => {
             if (error) {
                 context.log('Error running query');
                 context.res = { status: 500, body: 'Error running query' }

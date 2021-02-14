@@ -17,8 +17,55 @@ module.exports = (context: Context, req: HttpRequest): any => {
         kontaktInfo: 1
     }
 
-    const getEmployeeData = () => {
-        dbDep.clientRead.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
+    const inputValidation = () => {
+        if (req.body && name && validator.name(name)) {
+
+            connect();
+
+        } else {
+            context.res = {
+                status: 400,
+                body: {
+                    error: "Wrong input"
+                }
+            }
+            return context.done();
+        }
+    }
+
+    const connect = () => {
+        if (dbDep.clientRead == null) {
+            dbDep.MongoClient.connect(dbDep.uriRead, (error, _client) => {
+                if (error) {
+
+                    context.log('Failed to connect');
+                    context.res = { status: 500, body: 'Failed to connect' }
+                    return context.done();
+                }
+                dbDep.clientRead = _client;
+                context.log('Connected');
+                authorize(dbDep.clientRead);
+            })
+        }
+        else {
+            authorize(dbDep.clientRead);
+        }
+    }
+
+    const authorize = (client) => {
+        if (true) {
+            // if valid credentials
+            getEmployeeData(client)
+
+        } else {
+            context.log('Unauthorized');
+            context.res = { status: 401, body: 'Unauthorized' }
+            return context.done();
+        }
+    }
+
+    const getEmployeeData = (client) => {
+        client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
             if (error) {
                 context.log('Error running query');
                 context.res = { status: 500, body: 'Error running query' }
@@ -34,36 +81,5 @@ module.exports = (context: Context, req: HttpRequest): any => {
         });
     }
 
-    const connectAndQuery = (callback) => {
-        if (dbDep.clientRead == null) {
-            dbDep.MongoClient.connect(dbDep.uriRead, (error, _client) => {
-                if (error) {
-
-                    context.log('Failed to connect');
-                    context.res = { status: 500, body: 'Failed to connect' }
-                    return context.done();
-                }
-                dbDep.clientRead = _client;
-                context.log('Connected');
-                callback();
-
-            })
-        }
-        else {
-            callback();
-        }
-    }
-
-    if (req.body && name && validator.name(name)) {
-        connectAndQuery(getEmployeeData);
-    } else {
-        context.res = {
-            status: 400,
-            body: {
-                error: "Wrong input"
-            }
-        }
-        context.done();
-        return;
-    }
+    inputValidation();
 }
