@@ -6,11 +6,11 @@ module.exports = (context: Context, req: HttpRequest): any => {
     // Todo: Query to run on database
     const query = {
 
-    }
+    };
 
     // Todo: Projection,  Only for retrieving data
     const projection = {
-    }
+    };
 
     const inputValidation = () => {
 
@@ -27,31 +27,31 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     // Todo:
                     error: "Appropriate error message"
                 }
-            }
+            };
             return context.done();
         }
-    }
+    };
 
     const connect = () => {
         // Todo: replace clientRead with clientWrite
 
-        if (dbDep.clientRead == null) {
-            dbDep.MongoClient.connect(dbDep.uriRead, (error, _client) => {
+        if (dbDep.clientRead == null || !dbDep.clientRead.isConnected()) {
+            dbDep.MongoClient.connect(dbDep.uriRead, dbDep.config, (error, _client) => {
                 if (error) {
 
                     context.log('Failed to connect');
-                    context.res = { status: 500, body: 'Failed to connect' }
+                    context.res = { status: 500, body: 'Failed to connect' };
                     return context.done();
                 }
                 dbDep.clientRead = _client;
                 context.log('Connected');
                 authorize(dbDep.clientRead);
-            })
+            });
         }
         else {
             authorize(dbDep.clientRead);
         }
-    }
+    };
 
     const authorize = (client) => {
 
@@ -59,14 +59,14 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
         if (/* if valid credetials are */ true) {
 
-            functionQuery(client)
+            functionQuery(client);
 
         } else {
             context.log('Unauthorized');
-            context.res = { status: 401, body: 'Unauthorized' }
+            context.res = { status: 401, body: 'Unauthorized' };
             return context.done();
         }
-    }
+    };
 
     const functionQuery = (client) => {
 
@@ -87,7 +87,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             };
             context.done();
         });
-    }
+    };
 
     inputValidation();
-}
+};

@@ -1,7 +1,7 @@
 import { Context, HttpRequest } from "@azure/functions"
 
 module.exports = (context: Context, req: HttpRequest): any => {
-    const validator: any = require('../SharedFiles/inputValidation')
+    const validator: any = require('../SharedFiles/inputValidation');
     const dbDep: any = require('../SharedFiles/dataBase');
 
     const query = {
@@ -14,7 +14,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
         navn: req.body.name,
         fdato: (req.body.date || "null"),       // Not required;
         dato: Date()
-    }
+    };
 
     const inputValidation = () => {
         let errMsg = req.body;
@@ -24,9 +24,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
             context.res = {
                 status: 400,
                 body: "name, mail or number not given"
-            }
+            };
             return context.done();
-        }
+        };
 
         if (!validator.name(req.body.name)) {
             errMsg.name = 'false';
@@ -42,7 +42,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             validInput = false;
         } if (validInput) {
 
-            connect()
+            connect();
 
         } else {
             context.res = {
@@ -51,45 +51,48 @@ module.exports = (context: Context, req: HttpRequest): any => {
             }
             return context.done();
         }
-    }
+    };
 
     // Connect to db
     const connect = () => {
-        if (dbDep.clientWrite == null) {
-            dbDep.MongoClient.connect(dbDep.uriWrite, (error, _client) => {
+        if (dbDep.clientWrite == null || !dbDep.clientWrite.isConnected()) {
+            dbDep.MongoClient.connect(dbDep.uriWrite, dbDep.config, (error, _client) => {
                 if (error) {
 
                     context.log('Failed to connect');
-                    context.res = { status: 500, body: 'Failed to connect' }
+                    context.res = { status: 500, body: 'Failed to connect' };
                     return context.done();
                 }
                 dbDep.clientWrite = _client;
                 context.log('Connected');
                 authorize(dbDep.clientWrite);
-            })
+            });
         }
         else {
             authorize(dbDep.clientWrite);
         }
-    }
+    };
 
     const authorize = (client) => {
+
+        // client.db(dbDep.DBName).collection("ansatte").find({ /* name of employee requesting access */ }).project({'employess}).toArray((error, docs) => {
+
         if (true) {
             // if valid credentials
-            newEmployee(client)
+            newEmployee(client);
 
         } else {
             context.log('Unauthorized');
             context.res = { status: 401, body: 'Unauthorized' }
             return context.done();
         }
-    }
+    };
 
     const newEmployee = (client) => {
         client.db(dbDep.DBName).collection('ansatte').insertOne(query, (error, docs) => {
             if (error) {
                 context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' }
+                context.res = { status: 500, body: 'Error running query' };
                 return context.done();
             }
 
@@ -100,7 +103,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             };
             context.done();
         });
-    }
+    };
 
     inputValidation();
-}
+};

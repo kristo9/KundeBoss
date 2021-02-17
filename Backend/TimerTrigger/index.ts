@@ -9,25 +9,25 @@ module.exports = (context: Context, myTimer: any) => {
     const connectWriteClient = () => {
 
         // if (dbDep.clientWrite == null) {
-        dbDep.MongoClient.connect(dbDep.uriWrite, (error, _client) => {
+        dbDep.MongoClient.connect(dbDep.uriWrite, dbDep.config, (error, _client) => {
 
             if (error) {
                 context.log('Failed to connect write client');
-                context.res = { status: 500, body: 'Failed to connect write client' }
+                context.res = { status: 500, body: 'Failed to connect write client' };
                 return context.done();
             }
             dbDep.clientWrite = _client;
             context.log('Connected write client');
             context.done();
-        })
+        });
         /*  } else {
               context.done();
           }*/
-    }
+    };
 
     const connectReadClient = () => {
         // if (dbDep.clientRead == null) {
-        dbDep.MongoClient.connect(dbDep.uriRead, (error, _client) => {
+        dbDep.MongoClient.connect(dbDep.uriRead, dbDep.config, (error, _client) => {
 
             if (error) {
                 context.log('Failed to connect read client');
@@ -37,11 +37,11 @@ module.exports = (context: Context, myTimer: any) => {
             dbDep.clientRead = _client;
             context.log('Connected read client');
             connectWriteClient();
-        })
+        });
         /* } else {
              connectWriteClient();
          }*/
-    }
+    };
 
     var timeStamp = new Date().toISOString();
     if (myTimer.isPastDue) {

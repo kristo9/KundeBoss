@@ -8,14 +8,14 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
     const query = {
         id: name
-    }
+    };
 
     const projection = {
-        _id: 0,
-        navn: 1,
-        fdato: 1,
-        kontaktInfo: 1
-    }
+        '_id': 0,
+        'navn': 1,
+        'fdato': 1,
+        'kontaktInfo.tlf': 1
+    };
 
     const inputValidation = () => {
         if (req.body && name && validator.name(name)) {
@@ -28,47 +28,47 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 body: {
                     error: "Wrong input"
                 }
-            }
+            };
             return context.done();
         }
-    }
+    };
 
     const connect = () => {
-        if (dbDep.clientRead == null) {
-            dbDep.MongoClient.connect(dbDep.uriRead, (error, _client) => {
+        if (dbDep.clientRead == null || !dbDep.clientRead.isConnected()) {
+            dbDep.MongoClient.connect(dbDep.uriRead, dbDep.config, (error, _client) => {
                 if (error) {
 
                     context.log('Failed to connect');
-                    context.res = { status: 500, body: 'Failed to connect' }
+                    context.res = { status: 500, body: 'Failed to connect' };
                     return context.done();
                 }
                 dbDep.clientRead = _client;
                 context.log('Connected');
                 authorize(dbDep.clientRead);
-            })
+            });
         }
         else {
             authorize(dbDep.clientRead);
         }
-    }
+    };
 
     const authorize = (client) => {
         if (true) {
             // if valid credentials
-            getEmployeeData(client)
+            getEmployeeData(client);
 
         } else {
             context.log('Unauthorized');
             context.res = { status: 401, body: 'Unauthorized' }
             return context.done();
         }
-    }
+    };
 
     const getEmployeeData = (client) => {
         client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
             if (error) {
                 context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' }
+                context.res = { status: 500, body: 'Error running query' };
                 return context.done();
             }
 
@@ -79,7 +79,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             };
             context.done();
         });
-    }
+    };
 
     inputValidation();
-}
+};
