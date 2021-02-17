@@ -1,0 +1,11 @@
+.Navbar {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+}
+
+.Startpage {
+    position: fixed;
+    top: 100px;
+    width: 100%;
+}
