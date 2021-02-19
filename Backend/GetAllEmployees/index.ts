@@ -55,7 +55,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             context.res = { status: 401, body: 'Unauthorized' };
             return context.done();
         }
-    }
+    };
 
     const getAllEnployees = (client: any) => {
         client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {

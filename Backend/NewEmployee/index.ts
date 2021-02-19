@@ -26,7 +26,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 body: "name, mail or number not given"
             };
             return context.done();
-        };
+        }
 
         if (!validator.name(req.body.name)) {
             errMsg.name = 'false';
