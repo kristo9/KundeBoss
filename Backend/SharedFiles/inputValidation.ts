@@ -1,6 +1,12 @@
+const sanitizeHtml = require('sanitize-html');
+
+module.exports.sanitizeHtml = (input: string) => sanitizeHtml(input);
+
+module.exports.sanitizeHtmlJson = (input: JSON) => JSON.parse(sanitizeHtml(JSON.stringify(input)));
+
 module.exports.name = (name: string) => name.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u) != null;
 
-module.exports.phone = (number: string) => number.match(/^[+]{1}[0-9]{10}$|^[0-9]{8}$|^[0-9]{12}$/) != null;
+module.exports.phone = (number: any) => number.toString().match(/^[+]{1}[0-9]{10}$|^[0-9]{8}$|^[0-9]{12}$/) != null;
 
 module.exports.mail = (mail: string) => mail.match(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i) != null;
 

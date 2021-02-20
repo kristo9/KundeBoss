@@ -1,7 +1,9 @@
 import { Context, HttpRequest } from "@azure/functions"
 
+const dbDep: any = require('../SharedFiles/dataBase');
+const validator = require('../SharedFiles/inputValidation');
+
 module.exports = (context: Context, req: HttpRequest): any => {
-    const dbDep: any = require('../SharedFiles/dataBase');
 
     const query = {};
 
@@ -45,6 +47,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 context.res = { status: 500, body: 'Error running query' };
                 return context.done();
             }
+
+            docs = validator.sanitizeHtmlJson(docs);
 
             context.log('Success!');
             context.res = {

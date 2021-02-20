@@ -1,9 +1,8 @@
 import { Context } from "@azure/functions"
 
+const dbDep: any = require('../SharedFiles/dataBase');
+
 module.exports = (context: Context, myTimer: any) => {
-
-    const dbDep: any = require('../SharedFiles/dataBase');
-
     // Connecting du db to prevent cold start
 
     var timeStamp = new Date().toISOString();
@@ -12,6 +11,6 @@ module.exports = (context: Context, myTimer: any) => {
     }
     context.log('Timer trigger function ran!', timeStamp);
 
-    dbDep.connectWrite(context, (dummy: any) => { dbDep.connectRead(context, (dummy: any) => context.done(), true) }, true);
+    dbDep.connectWrite(context, () => { dbDep.connectRead(context, () => context.done(), true) }, true);
 
 };
