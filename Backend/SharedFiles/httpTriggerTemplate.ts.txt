@@ -1,30 +1,45 @@
 import { Context, HttpRequest } from "@azure/functions"
 
 module.exports = (context: Context, req: HttpRequest): any => {
+    
+    let token = req.headers.authorization;
+
+    if (token)
+        token = req.headers.authorization.replace(/^Bearer\s+/, "");
+    else {
+        context.res = {
+            status: 400,
+            body: {
+                "error": "no token"
+            }
+        };
+        return context.done();
+    }
+
     const dbDep: any = require('../SharedFiles/dataBase');
 
-    // Todo: Query to run on database
+    // TODO: Query to run on database
     const query = {
 
     };
 
-    // Todo: Projection,  Only for retrieving data
+    // TODO: Projection,  Only for retrieving data
     const projection = {
     };
 
     const inputValidation = () => {
 
-        //Todo: Checks to see if inputs are valid
+        //TODO: Checks to see if inputs are valid
 
         if (/* If vaiid inputs are */ true) {
 
-            connect();
+            dbDep.connectRead(context, authorize);
 
         } else {
             context.res = {
                 status: 400,
                 body: {
-                    // Todo:
+                    // TODO:
                     error: "Appropriate error message"
                 }
             };
@@ -32,45 +47,44 @@ module.exports = (context: Context, req: HttpRequest): any => {
         }
     };
 
-    const connect = () => {
-        // Todo: replace clientRead with clientWrite
-
-        if (dbDep.clientRead == null || !dbDep.clientRead.isConnected()) {
-            dbDep.MongoClient.connect(dbDep.uriRead, dbDep.config, (error, _client) => {
-                if (error) {
-
-                    context.log('Failed to connect');
-                    context.res = { status: 500, body: 'Failed to connect' };
-                    return context.done();
-                }
-                dbDep.clientRead = _client;
-                context.log('Connected');
-                authorize(dbDep.clientRead);
-            });
-        }
-        else {
-            authorize(dbDep.clientRead);
-        }
-    };
-
     const authorize = (client) => {
 
-        // Todo: check if valid credentials
+        verify(token, options)
+            .then(decoded => {
+                //TODO Verify that user has permission to do what is asked
+                 context.log("valid token");
+                if(yes){
+                    functionQuery(client);
+                }else{
 
-        if (/* if valid credetials are */ true) {
+                // not authorizazed
+                    context.res = {
+                        status: 401,
+                        body: {
+                            'name': "unauthorized",
+                        }
+                    };
+                    context.log("not authorizazed");
+                    return context.done();
+                }                
+            })
+            .catch(error => {
+                // invalid token
+                context.res = {
+                    status: 401,
+                    body: {
+                        'name': "unauthorized",
+                    }
+                };
+                context.log("invalid token");
+                return context.done();
+        });
 
-            functionQuery(client);
-
-        } else {
-            context.log('Unauthorized');
-            context.res = { status: 401, body: 'Unauthorized' };
-            return context.done();
-        }
     };
 
     const functionQuery = (client) => {
 
-        /* Todo: add collection name
+        /* TODO: add collection name
         
         if inserting : client.db(dbDep.DBName).collection("Collection Name").insertOne(query, (error, docs) => {*/
         client.db(dbDep.DBName).collection("Collection Name").find(query).project(projection).toArray((error, docs) => {

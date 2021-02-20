@@ -20,7 +20,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     const inputValidation = () => {
         if (req.body && name && validator.name(name)) {
 
-            connect();
+            dbDep.connectRead(context, authorize);
 
         } else {
             context.res = {
@@ -30,25 +30,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 }
             };
             return context.done();
-        }
-    };
-
-    const connect = () => {
-        if (dbDep.clientRead == null || !dbDep.clientRead.isConnected()) {
-            dbDep.MongoClient.connect(dbDep.uriRead, dbDep.config, (error, _client) => {
-                if (error) {
-
-                    context.log('Failed to connect');
-                    context.res = { status: 500, body: 'Failed to connect' };
-                    return context.done();
-                }
-                dbDep.clientRead = _client;
-                context.log('Connected');
-                authorize(dbDep.clientRead);
-            });
-        }
-        else {
-            authorize(dbDep.clientRead);
         }
     };
 

@@ -42,7 +42,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             validInput = false;
         } if (validInput) {
 
-            connect();
+            dbDep.connectWrite(context, authorize);
 
         } else {
             context.res = {
@@ -54,24 +54,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
     };
 
     // Connect to db
-    const connect = () => {
-        if (dbDep.clientWrite == null || !dbDep.clientWrite.isConnected()) {
-            dbDep.MongoClient.connect(dbDep.uriWrite, dbDep.config, (error, _client) => {
-                if (error) {
-
-                    context.log('Failed to connect');
-                    context.res = { status: 500, body: 'Failed to connect' };
-                    return context.done();
-                }
-                dbDep.clientWrite = _client;
-                context.log('Connected');
-                authorize(dbDep.clientWrite);
-            });
-        }
-        else {
-            authorize(dbDep.clientWrite);
-        }
-    };
 
     const authorize = (client) => {
 
