@@ -9,21 +9,13 @@
     "start": "func start",
     "test": "echo \"No tests yet...\""
   },
-  "dependencies": {
-    "azure-ad-verify-token": "^1.1.1",
-    "azure-function-express": "^2.0.0",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "mongodb": "^3.6.4",
-    "morgan": "^1.10.0",
-    "node-fetch": "^2.6.1",
-    "passport": "^0.4.1",
-    "passport-azure-ad": "^4.3.0",
-    "sanitize-html": "^2.3.2"
-  },
   "devDependencies": {
-    "@azure/functions": "^1.0.2-beta2",
-    "@types/node": "^14.14.25",
-    "typescript": "^3.3.3"
+    "@azure/functions": "^1.2.3",
+    "@types/jsonwebtoken": "^8.5.0"
+  },
+  "dependencies": {
+    "jwks-rsa": "^1.12.2",
+    "mongodb": "^3.6.4",
+    "sanitize-html": "^2.3.2"
   }
 }

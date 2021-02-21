@@ -12,7 +12,7 @@ module.exports.DBName = "KundeBossDB";
 
 module.exports.connectRead = (context, callback: (arg0: any) => void, overrideTest = false) => {
     if ((clientRead == null || !clientRead.isConnected()) || overrideTest) {
-        MongoClient.connect(uriRead, config, (error, _client) => {
+        MongoClient.connect(uriRead, config, (error: any, _client: any) => {
             if (error) {
 
                 context.log('Failed to connect read client');
@@ -31,7 +31,7 @@ module.exports.connectRead = (context, callback: (arg0: any) => void, overrideTe
 
 module.exports.connectWrite = (context, callback: (arg0: any) => void, overrideTest = false) => {
     if ((clientWrite == null || !clientWrite.isConnected()) || overrideTest) {
-        MongoClient.connect(uriWrite, config, (error, _client) => {
+        MongoClient.connect(uriWrite, config, (error: any, _client: any) => {
             if (error) {
 
                 context.log('Failed to connect');

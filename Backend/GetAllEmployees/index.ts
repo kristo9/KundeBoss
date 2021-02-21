@@ -3,7 +3,7 @@ import { Context, HttpRequest } from "@azure/functions"
 const dbDep: any = require('../SharedFiles/dataBase');
 const validator = require('../SharedFiles/inputValidation');
 
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
 
     const query = {};
 

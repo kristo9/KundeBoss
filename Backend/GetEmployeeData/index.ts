@@ -3,7 +3,7 @@ import { Context, HttpRequest } from "@azure/functions"
 const validator: any = require('../SharedFiles/inputValidation');
 const dbDep: any = require('../SharedFiles/dataBase');
 
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
 
     req.body = validator.sanitizeHtmlJson(req.body);
 

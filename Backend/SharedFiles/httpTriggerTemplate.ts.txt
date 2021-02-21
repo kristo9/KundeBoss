@@ -55,8 +55,20 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
     const authorize = (client) => {
 
-        verify(token, options)
-            .then(decoded => {
+    verify(token, auth.getKey, auth.options, (err: any, decoded: { [x: string]: any; }) => {
+            // verified and decoded token
+            if (err) {
+                auth.signingKey = null;
+                // invalid token
+                context.res = {
+                    status: 401,
+                    body: {
+                        'name': "unauthorized",
+                    }
+                };
+                context.log("invalid token");
+                return context.done();   
+            } else {
                 //TODO Verify that user has permission to do what is asked
                  context.log("valid token");
                 if(yes){
@@ -72,21 +84,12 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     };
                     context.log("not authorizazed");
                     return context.done();
-                }                
-            })
-            .catch(error => {
-                // invalid token
-                context.res = {
-                    status: 401,
-                    body: {
-                        'name': "unauthorized",
-                    }
-                };
-                context.log("invalid token");
-                return context.done();
+                }   
+            }
+            context.done();
         });
-
     };
+       
 
     const functionQuery = (client) => {
 

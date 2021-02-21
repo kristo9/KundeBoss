@@ -1,13 +1,15 @@
 import { Context, HttpRequest } from "@azure/functions"
-import { verify } from 'azure-ad-verify-token';
+import { verify } from "jsonwebtoken"
+
 const auth = require('../SharedFiles/auth');
 
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
 
     let token = req.headers.authorization;
 
-    if (token)
+    if (token) {
         token = req.headers.authorization.replace(/^Bearer\s+/, "");
+    }
     else {
         context.res = {
             status: 400,
@@ -18,13 +20,21 @@ module.exports = (context: Context, req: HttpRequest): any => {
         return context.done();
     }
 
+    verify(token, auth.getKey, auth.options, (err: any, decoded: { [x: string]: any; }) => {
+        // verified and decoded token
+        if (err) {
+            auth.signingKey = null;
+            // invalid token
+            context.res = {
+                status: 401,
+                body: {
+                    'name': "unauthorized",
+                }
+            };
 
+            return context.done();
 
-    verify(token, auth.options)
-        .then(decoded => {
-            // verified and decoded token
-            context.log("valid token");
-
+        } else {
             context.res = {
                 status: 200,
                 body: {
@@ -34,17 +44,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     'using-scope': decoded['scp']
                 }
             };
-            return context.done();
-        })
-        .catch(error => {
-            // invalid token
-            context.res = {
-                status: 500,
-                body: {
-                    'name': "unauthorized",
-                }
-            };
-            context.log("invalid token");
-            return context.done();
-        });
+        }
+        context.done();
+    });
 };
