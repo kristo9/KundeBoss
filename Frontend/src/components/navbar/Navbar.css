@@ -2,14 +2,13 @@
 .topnav {
     background-color: #ffffff;
     overflow: hidden;
-    position: absolute;
-    top: 0%;
-    right: 0%;
-    left: 0%;
+    position: fixed;
+    top: 0px;
+    width: 100%;
   }
   
   /* Style the links inside the navigation bar */
-  .topnav a {
+  .topnav .Link, .login {
     float: left;
     color: black;
     text-align: center;
@@ -19,13 +18,13 @@
   }
 
   /* Change the color of links on hover */
-  .topnav a:hover {
+  .topnav .Link:hover {
     background-color: #0BC4DE;
     color: black;
   }
   
   /* Add a color to the active/current link */
-  .topnav a.active {
+  .topnav .Link.active {
     background-color: white;
     color: black;
   }
@@ -33,5 +32,13 @@
   /* Adjust positioning and move right-section to right*/
 
   .right {
-      float:right;
+    display: flex;
+    flex-direction: row;
+    float:right;
+  }
+
+  .left {
+    display: flex;
+    flex-direction: row;
+    float: left;
   }

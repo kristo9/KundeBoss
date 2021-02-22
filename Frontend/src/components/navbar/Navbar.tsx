@@ -2,51 +2,96 @@ import React, { useState } from 'react';
 import './Navbar.css';
 import AzureAuthenticationButton from "../../azure/azure-authentication-component";
 import { AccountInfo } from "@azure/msal-browser";
+import { Link, Route, Switch } from "react-router-dom";
 
 
 
 function Navbar() {
 
-  // current authenticated user
-  //const [currentUser, setCurrentUser] = useState<AccountInfo>();
+//current authenticated user
+const [currentUser, setCurrentUser] = useState<AccountInfo>();
 
-  // authentication callback
-  //const onAuthenticated = async (userAccountInfo: AccountInfo) => {
-  //  setCurrentUser(userAccountInfo);
-  //};
+//authentication callback
+const onAuthenticated = async (userAccountInfo: AccountInfo) => {
+    setCurrentUser(userAccountInfo);
+};
 
-  // Render JSON data in readable format
-  //const PrettyPrintJson = ({ data }: any) => {
-  //  return (
-  //    <div>
-  //      <pre>{JSON.stringify(data, null, 2)}</pre>
-  //    </div>
-  //  );
-  //};
+  /* Render JSON data in readable format
+  const PrettyPrintJson = ({ data }: any) => {
+    return (
+      <div>
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
+    );
+  };*/
 
-  //const AccInfo = ({ data }: any) =>{
-  //  return(
-  //   <div>
-  //    <pre>
-  //     {JSON.stringify(data.idTokenClaims, null, 2)}
-  //  </pre>
-  //    </div>
-  //  )
-  //}
+  const AccInfo = ({ data }: any) =>{
+    return(
+     <div>
+      <pre>
+       {JSON.stringify(data.idTokenClaims, null, 2)}
+    </pre>
+      </div>
+    )
+  }
+
+  const Home = () => (
+    <div>
+      <h2>Home</h2>
+    </div>
+  );
+
+  const Contact = () => (
+    <div>
+      <h2>Contact</h2>
+    </div>
+  );
+  
+  const Help = () => (
+    <div>
+      <h2>Help</h2>
+    </div>
+  );
+
+  const About = () => (
+    <div>
+      <h2>About</h2>
+    </div>
+  );
+  
+  
 
 return (
     <div className="topnav">
         <div className="left">
-            <a className="active" href="#home">"Logo"</a>
+            <li>
+                <Link to="/" className='Link'>"Logo"</Link>
+            </li>
         </div>
         <div className="right">
-            <a href="#contact">Contact</a>
-            <a href="#help">Help</a>
-            <a href="#about">About</a>
-            <a  className="App-link" href="https://timiansfuncapp.azurewebsites.net/.auth/login/aad/callback" target="_blank" rel="noopener noreferrer">
-                Log In
-            </a>
+            <li>
+                <Link to="/contact" className='Link'>Contact</Link>
+            </li>
+            <li>
+                <Link to="/help" className='Link'>Help</Link>
+            </li>
+            <li>
+                <Link to="/about" className='Link'>About</Link>
+            </li>
+            <div className="login">
+                <AzureAuthenticationButton onAuthenticated={onAuthenticated} />
+                {currentUser && (
+                    <div>
+                        <AccInfo data={currentUser}/>
+                    </div>
+                    )
+                }
+            </div>
         </div>
+        <Route exatct path="/"><Home /></Route>
+        <Route path="/contact"><Contact /></Route>
+        <Route path="/help"><Help /></Route>
+        <Route path="/about"><About /></Route>
     </div>
     );
 }
@@ -54,11 +99,4 @@ return (
 
 export default Navbar;
 
-/*
-<AzureAuthenticationButton onAuthenticated={onAuthenticated} />
-            {currentUser && (
-                <div>
-                    <AccInfo data={currentUser}/>
-                </div>
-                )
-            }*/
+
