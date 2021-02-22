@@ -4,37 +4,40 @@ import AzureAuthenticationButton from "../../azure/azure-authentication-componen
 import { AccountInfo } from "@azure/msal-browser";
 import { Link, Route, Switch } from "react-router-dom";
 
+const authRedirect = require("../../azure/authRedirect");
+
 const authPopup = require("../../azure/authPopup");
+
 
 
 function Navbar() {
 
-  //current authenticated user
-  const [currentUser, setCurrentUser] = useState<AccountInfo>();
-
-  //authentication callback
-  const onAuthenticated = async (userAccountInfo: AccountInfo) => {
-    setCurrentUser(userAccountInfo);
-  };
-
-  /* Render JSON data in readable format
-  const PrettyPrintJson = ({ data }: any) => {
-    return (
-      <div>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-    );
-  };*/
-
-  const AccInfo = ({ data }: any) => {
-    return (
-      <div>
-        <pre>
-          {JSON.stringify(data.idTokenClaims, null, 2)}
-        </pre>
-      </div>
-    )
-  }
+  /* //current authenticated user
+   const [currentUser, setCurrentUser] = useState<AccountInfo>();
+ 
+   //authentication callback
+   const onAuthenticated = async (userAccountInfo: AccountInfo) => {
+     setCurrentUser(userAccountInfo);
+   };
+ 
+   /* Render JSON data in readable format
+   const PrettyPrintJson = ({ data }: any) => {
+     return (
+       <div>
+         <pre>{JSON.stringify(data, null, 2)}</pre>
+         </div>
+     );
+   };
+ 
+   const AccInfo = ({ data }: any) => {
+     return (
+       <div>
+         <pre>
+           {JSON.stringify(data.idTokenClaims, null, 2)}
+         </pre>
+       </div>
+     )
+   }*/
 
   const Home = () => (
     <div>
@@ -59,12 +62,6 @@ function Navbar() {
       <h2>About</h2>
     </div>
   );
-  const Login = () => {
-    authPopup.signIn();
-    return (<div>
-      <h2>About</h2>
-    </div>)
-  };
 
 
 
@@ -86,15 +83,14 @@ function Navbar() {
         <li>
           <Link to="/about" className='Link'>About</Link>
         </li>
-        <li>
-          <Link to="/login" className='Link'>Log in</Link>
-        </li>
+
+        <button className="Link" onClick={authRedirect.signIn} >Login</button>
+
       </div>
       <Route exatct path="/"><Home /></Route>
       <Route path="/contact"><Contact /></Route>
       <Route path="/help"><Help /></Route>
       <Route path="/about"><About /></Route>
-      <Route path="/login"><Login /></Route>
     </div>
   );
 }

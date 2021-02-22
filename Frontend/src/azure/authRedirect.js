@@ -1,10 +1,18 @@
 // Create the main myMSALObj instance
 // configuration parameters are located at authConfig.js
+import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
+
 const authConfig = require("./authConfig");
 
-const myMSALObj = new msal.PublicClientApplication(authConfig.msalConfig);
+const myMSALObj = new PublicClientApplication(authConfig.msalConfig);
 
 let username = "";
+
+const ui = require("./ui");
+
+const api = require("./api");
+
+const apiConfig = require("./apiConfig")
 
 myMSALObj.handleRedirectPromise()
     .then(handleResponse)
@@ -28,11 +36,12 @@ function selectAccount() {
         console.warn("Multiple accounts detected.");
     } else if (currentAccounts.length === 1) {
         username = currentAccounts[0].username;
-        welcomeUser(username);
+        ui.welcomeUser(username);
     }
 }
 
 function handleResponse(response) {
+    console.log(response);
 
     /**
      * To see the full list of response object properties, visit:
@@ -41,23 +50,23 @@ function handleResponse(response) {
 
     if (response !== null) {
         username = response.account.username;
-        welcomeUser(username);
+        ui.welcomeUser(username);
     } else {
         selectAccount();
     }
 }
 
-function signIn() {
+export function signIn() {
 
     /**
      * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
      */
 
-    myMSALObj.loginRedirect(loginRequest);
+    myMSALObj.loginRedirect(authConfig.loginRequest);
 }
 
-function signOut() {
+export function signOut() {
 
     /**
      * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
@@ -85,7 +94,7 @@ function getTokenRedirect(request) {
         .catch(error => {
             console.error(error);
             console.warn("silent token acquisition fails. acquiring token using popup");
-            if (error instanceof msal.InteractionRequiredAuthError) {
+            if (error instanceof InteractionRequiredAuthError) {
                 // fallback to interaction when silent call fails
                 return myMSALObj.acquireTokenRedirect(request);
             } else {
@@ -96,9 +105,9 @@ function getTokenRedirect(request) {
 
 // Acquires and access token and then passes it to the API call
 function passTokenToApi() {
-    getTokenRedirect(tokenRequest)
+    getTokenRedirect(authConfig.tokenRequest)
         .then(response => {
-            callApi(apiConfig.uri, response.accessToken);
+            api.callApi(apiConfig.uri, response.accessToken);
         }).catch(error => {
             console.error(error);
         });

@@ -36,9 +36,8 @@ function selectAccount() {
 }
 
 function handleResponse(response) {
-    console.log("REspones:")
     console.log(response);
-    console.log("REspones:")
+
 
     /**
      * To see the full list of response object properties, visit:
