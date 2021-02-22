@@ -4,17 +4,18 @@ import AzureAuthenticationButton from "../../azure/azure-authentication-componen
 import { AccountInfo } from "@azure/msal-browser";
 import { Link, Route, Switch } from "react-router-dom";
 
+const authPopup = require("../../azure/authPopup");
 
 
 function Navbar() {
 
-//current authenticated user
-const [currentUser, setCurrentUser] = useState<AccountInfo>();
+  //current authenticated user
+  const [currentUser, setCurrentUser] = useState<AccountInfo>();
 
-//authentication callback
-const onAuthenticated = async (userAccountInfo: AccountInfo) => {
+  //authentication callback
+  const onAuthenticated = async (userAccountInfo: AccountInfo) => {
     setCurrentUser(userAccountInfo);
-};
+  };
 
   /* Render JSON data in readable format
   const PrettyPrintJson = ({ data }: any) => {
@@ -25,12 +26,12 @@ const onAuthenticated = async (userAccountInfo: AccountInfo) => {
     );
   };*/
 
-  const AccInfo = ({ data }: any) =>{
-    return(
-     <div>
-      <pre>
-       {JSON.stringify(data.idTokenClaims, null, 2)}
-    </pre>
+  const AccInfo = ({ data }: any) => {
+    return (
+      <div>
+        <pre>
+          {JSON.stringify(data.idTokenClaims, null, 2)}
+        </pre>
       </div>
     )
   }
@@ -46,7 +47,7 @@ const onAuthenticated = async (userAccountInfo: AccountInfo) => {
       <h2>Contact</h2>
     </div>
   );
-  
+
   const Help = () => (
     <div>
       <h2>Help</h2>
@@ -58,42 +59,44 @@ const onAuthenticated = async (userAccountInfo: AccountInfo) => {
       <h2>About</h2>
     </div>
   );
-  
-  
+  const Login = () => {
+    authPopup.signIn();
+    return (<div>
+      <h2>About</h2>
+    </div>)
+  };
 
-return (
+
+
+
+  return (
     <div className="topnav">
-        <div className="left">
-            <li>
-                <Link to="/" className='Link'>"Logo"</Link>
-            </li>
-        </div>
-        <div className="right">
-            <li>
-                <Link to="/contact" className='Link'>Contact</Link>
-            </li>
-            <li>
-                <Link to="/help" className='Link'>Help</Link>
-            </li>
-            <li>
-                <Link to="/about" className='Link'>About</Link>
-            </li>
-            <div className="login">
-                <AzureAuthenticationButton onAuthenticated={onAuthenticated} />
-                {currentUser && (
-                    <div>
-                        <AccInfo data={currentUser}/>
-                    </div>
-                    )
-                }
-            </div>
-        </div>
-        <Route exatct path="/"><Home /></Route>
-        <Route path="/contact"><Contact /></Route>
-        <Route path="/help"><Help /></Route>
-        <Route path="/about"><About /></Route>
+      <div className="left">
+        <li>
+          <Link to="/" className='Link'>"Logo"</Link>
+        </li>
+      </div>
+      <div className="right">
+        <li>
+          <Link to="/contact" className='Link'>Contact</Link>
+        </li>
+        <li>
+          <Link to="/help" className='Link'>Help</Link>
+        </li>
+        <li>
+          <Link to="/about" className='Link'>About</Link>
+        </li>
+        <li>
+          <Link to="/login" className='Link'>Log in</Link>
+        </li>
+      </div>
+      <Route exatct path="/"><Home /></Route>
+      <Route path="/contact"><Contact /></Route>
+      <Route path="/help"><Help /></Route>
+      <Route path="/about"><About /></Route>
+      <Route path="/login"><Login /></Route>
     </div>
-    );
+  );
 }
 
 
