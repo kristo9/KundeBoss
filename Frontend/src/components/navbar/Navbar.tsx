@@ -84,7 +84,7 @@ function Navbar() {
           <Link to="/about" className='Link'>About</Link>
         </li>
 
-        <button className="Link" onClick={authRedirect.signIn} >Login</button>
+        <button className="Link" onClick={authPopup.signIn} >Login</button>
 
       </div>
       <Route exatct path="/"><Home /></Route>
