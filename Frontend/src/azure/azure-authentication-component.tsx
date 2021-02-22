@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AzureAuthenticationContext from "./azure-authentication-context";
 import { AccountInfo } from "@azure/msal-browser";
-import '../App.css'
+import "../components/navbar/Navbar.css"
 
 const ua = window.navigator.userAgent;
 const msie = ua.indexOf("MSIE ");
