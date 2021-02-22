@@ -1,11 +1,10 @@
 import { Context, HttpRequest } from "@azure/functions"
-
-const validator: any = require('../SharedFiles/inputValidation');
-const dbDep: any = require('../SharedFiles/dataBase');
+import { DBName, connectRead } from "../SharedFiles/dataBase";
+import { sanitizeHtmlJson, nameVal } from "../SharedFiles/inputValidation";
 
 export default (context: Context, req: HttpRequest): any => {
 
-    req.body = validator.sanitizeHtmlJson(req.body);
+    req.body = sanitizeHtmlJson(req.body);
 
     let name = req.body.name;
 
@@ -14,16 +13,16 @@ export default (context: Context, req: HttpRequest): any => {
     };
 
     const projection = {
-        '_id': 0,
-        'navn': 1,
-        'fdato': 1,
-        'kontaktInfo.tlf': 1
+        "_id": 0,
+        "navn": 1,
+        "fdato": 1,
+        "kontaktInfo.tlf": 1
     };
 
     const inputValidation = () => {
-        if (req.body && name && validator.name(name)) {
+        if (req.body && name && nameVal(name)) {
 
-            dbDep.connectRead(context, authorize);
+            connectRead(context, authorize);
 
         } else {
             context.res = {
@@ -42,27 +41,28 @@ export default (context: Context, req: HttpRequest): any => {
             getEmployeeData(client);
 
         } else {
-            context.log('Unauthorized');
-            context.res = { status: 401, body: 'Unauthorized' }
+            context.log("Unauthorized");
+            context.res = { status: 401, body: "Unauthorized" }
             return context.done();
         }
     };
 
     const getEmployeeData = (client) => {
-        client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
+        client.db(DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
+
             if (error) {
-                context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' };
+                context.log("Error running query");
+                context.res = { status: 500, body: "Error running query" };
                 return context.done();
+
+            } else {
+                docs = sanitizeHtmlJson(docs);
+                context.log("Success!");
+                context.res = {
+                    headers: { "Content-Type": "application/json" },
+                    body: docs
+                };
             }
-
-            docs = validator.sanitizeHtmlJson(docs);
-
-            context.log('Success!');
-            context.res = {
-                headers: { 'Content-Type': 'application/json' },
-                body: docs
-            };
             context.done();
         });
     };

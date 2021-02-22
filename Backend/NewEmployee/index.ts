@@ -1,11 +1,10 @@
 import { Context, HttpRequest } from "@azure/functions"
-
-const validator: any = require('../SharedFiles/inputValidation');
-const dbDep: any = require('../SharedFiles/dataBase');
+import { sanitizeHtmlJson, nameVal, dateVal, mailVal, phoneVal } from "../SharedFiles/inputValidation";
+import { connectWrite, DBName } from "../SharedFiles/dataBase";
 
 export default (context: Context, req: HttpRequest): any => {
 
-    req.body = validator.sanitizeHtmlJson(req.body);
+    req.body = sanitizeHtmlJson(req.body);
 
     const query = {
         id: req.body.name,
@@ -31,21 +30,21 @@ export default (context: Context, req: HttpRequest): any => {
             return context.done();
         }
 
-        if (!validator.name(req.body.name)) {
-            errMsg.name = 'false';
+        if (!nameVal(req.body.name)) {
+            errMsg.name = "false";
             validInput = false;
-        } if (!validator.phone(req.body.number)) {
-            errMsg.number = 'false';
+        } if (!phoneVal(req.body.number)) {
+            errMsg.number = "false";
             validInput = false;
-        } if (!validator.mail(req.body.mail)) {
-            errMsg.mail = 'false';
+        } if (!mailVal(req.body.mail)) {
+            errMsg.mail = "false";
             validInput = false;
-        } if (req.body.date && !validator.date(req.body.date)) {
-            errMsg.date = 'false';
+        } if (req.body.date && !dateVal(req.body.date)) {
+            errMsg.date = "false";
             validInput = false;
         } if (validInput) {
 
-            dbDep.connectWrite(context, authorize);
+            connectWrite(context, authorize);
 
         } else {
             context.res = {
@@ -60,32 +59,32 @@ export default (context: Context, req: HttpRequest): any => {
 
     const authorize = (client) => {
 
-        // client.db(dbDep.DBName).collection("ansatte").find({ /* name of employee requesting access */ }).project({'employess}).toArray((error, docs) => {
+        // client.db(dbDep.DBName).collection("ansatte").find({ /* name of employee requesting access */ }).project({"employess}).toArray((error, docs) => {
 
         if (true) {
             // if valid credentials
             newEmployee(client);
 
         } else {
-            context.log('Unauthorized');
-            context.res = { status: 401, body: 'Unauthorized' }
+            context.log("Unauthorized");
+            context.res = { status: 401, body: "Unauthorized" }
             return context.done();
         }
     };
 
     const newEmployee = (client) => {
-        client.db(dbDep.DBName).collection('ansatte').insertOne(query, (error, docs) => {
+        client.db(DBName).collection("ansatte").insertOne(query, (error, docs) => {
             if (error) {
-                context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' };
+                context.log("Error running query");
+                context.res = { status: 500, body: "Error running query" };
                 return context.done();
             }
 
-            docs = validator.sanitizeHtmlJson(docs);
+            docs = sanitizeHtmlJson(docs);
 
-            context.log('Success!');
+            context.log("Success!");
             context.res = {
-                headers: { 'Content-Type': 'application/json' },
+                headers: { "Content-Type": "application/json" },
                 body: docs
             };
             context.done();

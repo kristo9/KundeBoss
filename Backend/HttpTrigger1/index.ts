@@ -1,7 +1,6 @@
 import { Context, HttpRequest } from "@azure/functions"
-import { verify } from "jsonwebtoken"
-
-const auth = require('../SharedFiles/auth');
+import { verify } from "jsonwebtoken";
+import { getKey, options, setKeyNull } from "../SharedFiles/auth";
 
 export default (context: Context, req: HttpRequest): any => {
 
@@ -20,15 +19,15 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
     }
 
-    verify(token, auth.getKey, auth.options, (err: any, decoded: { [x: string]: any; }) => {
+    verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
         // verified and decoded token
         if (err) {
-            auth.signingKey = null;
+            setKeyNull();
             // invalid token
             context.res = {
                 status: 401,
                 body: {
-                    'name': "unauthorized",
+                    "name": "unauthorized",
                 }
             };
 
@@ -38,10 +37,10 @@ export default (context: Context, req: HttpRequest): any => {
             context.res = {
                 status: 200,
                 body: {
-                    'name': decoded['name'],
-                    'issued-by': decoded['iss'],
-                    'issued-for': decoded['aud'],
-                    'using-scope': decoded['scp']
+                    "name": decoded["name"],
+                    "issued-by": decoded["iss"],
+                    "issued-for": decoded["aud"],
+                    "using-scope": decoded["scp"]
                 }
             };
         }

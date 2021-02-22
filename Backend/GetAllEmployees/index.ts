@@ -1,7 +1,6 @@
 import { Context, HttpRequest } from "@azure/functions"
-
-const dbDep: any = require('../SharedFiles/dataBase');
-const validator = require('../SharedFiles/inputValidation');
+import { DBName, connectRead } from "../SharedFiles/dataBase";
+import { sanitizeHtmlJson } from "../SharedFiles/inputValidation";
 
 export default (context: Context, req: HttpRequest): any => {
 
@@ -15,7 +14,7 @@ export default (context: Context, req: HttpRequest): any => {
     const inputValidation = () => {
         if (true) {
 
-            dbDep.connectRead(context, authorize);
+            connectRead(context, authorize);
 
         } else {
             context.res = {
@@ -34,27 +33,29 @@ export default (context: Context, req: HttpRequest): any => {
             getAllEnployees(client);
 
         } else {
-            context.log('Unauthorized');
-            context.res = { status: 401, body: 'Unauthorized' };
+            context.log("Unauthorized");
+            context.res = { status: 401, body: "Unauthorized" };
             return context.done();
         }
     };
 
     const getAllEnployees = (client: any) => {
-        client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error: any, docs: any) => {
+        client.db(DBName).collection("ansatte").find(query).project(projection).toArray((error: any, docs: any) => {
+
             if (error) {
-                context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' };
+                context.log("Error running query");
+                context.res = { status: 500, body: "Error running query" };
                 return context.done();
+
+            } else {
+                docs = sanitizeHtmlJson(docs);
+
+                context.log("Success!");
+                context.res = {
+                    headers: { "Content-Type": "application/json" },
+                    body: docs
+                };
             }
-
-            docs = validator.sanitizeHtmlJson(docs);
-
-            context.log('Success!');
-            context.res = {
-                headers: { 'Content-Type': 'application/json' },
-                body: docs
-            };
             context.done();
         });
     };

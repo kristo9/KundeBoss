@@ -12,7 +12,7 @@ const issuer = `https://${authority}/${tenantID}/${version}`;
 const audience = "6bb502c3-c416-44f7-97cb-705b2b1a50ba"; // TODO Kundeboss
 //const audience = "8c5bb92b-060f-4c48-b577-12b9389d2c80"; // TODO LOCAL
 
-module.exports.options = {
+export const options = {
 	audience: audience,
 	issuer: issuer
 };
@@ -24,8 +24,7 @@ let client = jwksClient({
 });
 
 let signingKey = null;
-
-module.exports.getKey = (header, callback) => {
+export const getKey = (header, callback) => {
 	if (signingKey == null) {
 
 		client.getSigningKey(header.kid, (err, key) => {
@@ -36,4 +35,8 @@ module.exports.getKey = (header, callback) => {
 	else {
 		callback(null, signingKey);
 	}
+}
+
+export const setKeyNull = () => {
+	signingKey = null;
 }
