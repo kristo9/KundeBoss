@@ -1,26 +1,28 @@
 import { Context, HttpRequest } from "@azure/functions"
+import { DBName, connectRead } from "../SharedFiles/dataBase";
+import { sanitizeHtmlJson, mailVal } from "../SharedFiles/inputValidation";
 
-module.exports = (context: Context, req: HttpRequest): any => {
-    const validator: any = require('../SharedFiles/inputValidation');
-    const dbDep: any = require('../SharedFiles/dataBase');
+export default (context: Context, req: HttpRequest): any => {
 
-    let name = req.body.name;
+    req.body = sanitizeHtmlJson(req.body);
+
+    let id = req.body.id;
 
     const query = {
-        id: name
+        "employeeId": id
     };
 
     const projection = {
-        '_id': 0,
-        'navn': 1,
-        'fdato': 1,
-        'kontaktInfo.tlf': 1
+        "_id": 0,
+        "name": 1,
+        "employeeId": 1,
+        "customers": 1
     };
 
     const inputValidation = () => {
-        if (req.body && name && validator.name(name)) {
+        if (req.body && id && mailVal(id)) {
 
-            connect();
+            connectRead(context, authorize);
 
         } else {
             context.res = {
@@ -33,50 +35,34 @@ module.exports = (context: Context, req: HttpRequest): any => {
         }
     };
 
-    const connect = () => {
-        if (dbDep.clientRead == null || !dbDep.clientRead.isConnected()) {
-            dbDep.MongoClient.connect(dbDep.uriRead, dbDep.config, (error, _client) => {
-                if (error) {
-
-                    context.log('Failed to connect');
-                    context.res = { status: 500, body: 'Failed to connect' };
-                    return context.done();
-                }
-                dbDep.clientRead = _client;
-                context.log('Connected');
-                authorize(dbDep.clientRead);
-            });
-        }
-        else {
-            authorize(dbDep.clientRead);
-        }
-    };
-
     const authorize = (client) => {
         if (true) {
             // if valid credentials
             getEmployeeData(client);
 
         } else {
-            context.log('Unauthorized');
-            context.res = { status: 401, body: 'Unauthorized' }
+            context.log("Unauthorized");
+            context.res = { status: 401, body: "Unauthorized" }
             return context.done();
         }
     };
 
     const getEmployeeData = (client) => {
-        client.db(dbDep.DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
-            if (error) {
-                context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' };
-                return context.done();
-            }
+        client.db(DBName).collection("employee").find(query).project(projection).toArray((error, docs) => {
 
-            context.log('Success!');
-            context.res = {
-                headers: { 'Content-Type': 'application/json' },
-                body: docs
-            };
+            if (error) {
+                context.log("Error running query");
+                context.res = { status: 500, body: "Error running query" };
+                return context.done();
+
+            } else {
+                docs = sanitizeHtmlJson(docs);
+                context.log("Success!");
+                context.res = {
+                    headers: { "Content-Type": "application/json" },
+                    body: docs
+                };
+            }
             context.done();
         });
     };

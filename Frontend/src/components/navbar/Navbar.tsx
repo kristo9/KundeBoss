@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import './Navbar.css';
-import AzureAuthenticationButton from "../../azure/azure-authentication-component";
 import { AccountInfo } from "@azure/msal-browser";
 import { Link } from "react-router-dom";
 
 
+
+const authRedirect = require("../../azure/authRedirect");
+
+const authPopup = require("../../azure/authPopup");
 
 
 
@@ -37,35 +40,22 @@ const onAuthenticated = async (userAccountInfo: AccountInfo) => {
     )
   }  
 
-return (
+
+
+
+  return (
     <div className="topnav">
         <div className="left">
-            <div>
-                <Link to='/' className='Logo'>"Logo"</Link>
-            </div>
+            <Link to='/' className='Logo'>"Logo"</Link>
         </div>
         <div className="right">
-            <div>
-                <Link to='/contact' className='Link'>Contact</Link>
-            </div>
-            <div>
-                <Link to='/help' className='Link'>Help</Link>
-            </div>
-            <div>
-                <Link to='/about' className='Link'>About</Link>
-            </div>
-            <div className="login">
-                <AzureAuthenticationButton onAuthenticated={onAuthenticated} />
-                {currentUser && (
-                    <div>
-                        <AccInfo data={currentUser}/>
-                    </div>
-                    )
-                }
-            </div>
+            <Link to='/contact' className='Link'>Contact</Link>
+            <Link to='/help' className='Link'>Help</Link>
+            <Link to='/about' className='Link'>About</Link>
+            <button className="Link" onClick={authPopup.signIn} >Login</button>
         </div>
     </div>
-    );
+  );
 }
 
 
