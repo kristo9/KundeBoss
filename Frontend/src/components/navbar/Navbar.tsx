@@ -6,42 +6,16 @@ import { Link } from "react-router-dom";
 
 
 
-import { signIn } from "../../azure/authPopup"; // For popup
+import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
 //import { signIn } from "../../azure/authRedirect"; // For redirect
-
-
-
 
 function Navbar() {
 
-  //current authenticated user
-  const [currentUser, setCurrentUser] = useState<AccountInfo>();
-
-  //authentication callback
-  const onAuthenticated = async (userAccountInfo: AccountInfo) => {
-    setCurrentUser(userAccountInfo);
-  };
-
-  /* Render JSON data in readable format
-  const PrettyPrintJson = ({ data }: any) => {
-    return (
-      <div>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-    );
-  };*/
-
-  const AccInfo = ({ data }: any) => {
-    return (
-      <div>
-        <pre>
-          {JSON.stringify(data.idTokenClaims, null, 2)}
-        </pre>
-      </div>
-    )
-  }
-
-
+    if (authenticated){ // Set auth to say login
+      console.log("Authenticated1")
+    } else {            // Set auth to say logout
+      console.log("Not authenticated1")
+    }
 
 
   return (
@@ -59,7 +33,25 @@ function Navbar() {
   );
 }
 
-
 export default Navbar;
 
 
+
+  /*//current authenticated user
+  const [currentUser, setCurrentUser] = useState<AccountInfo>();
+
+  //authentication callback
+  const onAuthenticated = async (userAccountInfo: AccountInfo) => {
+    setCurrentUser(userAccountInfo);
+  };
+  
+  
+  const AccInfo = ({ data }: any) => {
+    return (
+      <div>
+        <pre>
+          {JSON.stringify(data.idTokenClaims, null, 2)}
+        </pre>
+      </div>
+    )
+  }*/
