@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import './Navbar.css';
 import AzureAuthenticationButton from "../../azure/azure-authentication-component";
 import { AccountInfo } from "@azure/msal-browser";
-import { Link, Route, Switch } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+
 
 
 
@@ -33,51 +35,25 @@ const onAuthenticated = async (userAccountInfo: AccountInfo) => {
     </pre>
       </div>
     )
-  }
-
-  const Home = () => (
-    <div>
-      <h2>Home</h2>
-    </div>
-  );
-
-  const Contact = () => (
-    <div>
-      <h2>Contact</h2>
-    </div>
-  );
-  
-  const Help = () => (
-    <div>
-      <h2>Help</h2>
-    </div>
-  );
-
-  const About = () => (
-    <div>
-      <h2>About</h2>
-    </div>
-  );
-  
-  
+  }  
 
 return (
     <div className="topnav">
         <div className="left">
-            <li>
-                <Link to="/" className='Link'>"Logo"</Link>
-            </li>
+            <div>
+                <Link to='/' className='Logo'>"Logo"</Link>
+            </div>
         </div>
         <div className="right">
-            <li>
-                <Link to="/contact" className='Link'>Contact</Link>
-            </li>
-            <li>
-                <Link to="/help" className='Link'>Help</Link>
-            </li>
-            <li>
-                <Link to="/about" className='Link'>About</Link>
-            </li>
+            <div>
+                <Link to='/contact' className='Link'>Contact</Link>
+            </div>
+            <div>
+                <Link to='/help' className='Link'>Help</Link>
+            </div>
+            <div>
+                <Link to='/about' className='Link'>About</Link>
+            </div>
             <div className="login">
                 <AzureAuthenticationButton onAuthenticated={onAuthenticated} />
                 {currentUser && (
@@ -88,10 +64,6 @@ return (
                 }
             </div>
         </div>
-        <Route exatct path="/"><Home /></Route>
-        <Route path="/contact"><Contact /></Route>
-        <Route path="/help"><Help /></Route>
-        <Route path="/about"><About /></Route>
     </div>
     );
 }
