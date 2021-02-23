@@ -2,7 +2,8 @@
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
 import { welcomeUser } from "./ui";
-import { loginRequest, msalConfig, } from "./authConfig";
+import { loginRequest, msalConfig } from "./authConfig";
+import { callLogin } from "./api";
 
 
 const myMSALObj = new PublicClientApplication(msalConfig);
@@ -68,6 +69,7 @@ export function signIn() {
 
     myMSALObj.loginPopup(loginRequest)
         .then(handleResponse)
+        .then(callLogin)
         .catch(error => {
             console.error(error);
         });

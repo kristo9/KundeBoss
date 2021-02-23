@@ -1,4 +1,4 @@
-const apiConfig = require("./authConfig");
+import { apiConfig } from "./apiConfig";
 /**
  * Configuration object to be passed to MSAL instance on creation. 
  * For a full list of MSAL.js configuration parameters, visit:
