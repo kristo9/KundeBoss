@@ -10,6 +10,16 @@ const myMSALObj = new PublicClientApplication(msalConfig);
 let username = "";
 
 
+/*export class AuthText {
+    public authenticated = false;
+
+
+    function setAuth(isAuthenticated:boolean) {
+        
+    }
+}*/
+
+export let authenticated = false;
 
 function selectAccount() {
 
@@ -28,6 +38,7 @@ function selectAccount() {
     } else if (currentAccounts.length === 1) {
         username = currentAccounts[0].username;
         welcomeUser(username);
+        authenticated = true;
     }
 }
 
@@ -62,7 +73,7 @@ export function signIn() {
         });
 }
 
-function signOut() {
+export function signOut() {
 
     /**
      * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
@@ -75,6 +86,7 @@ function signOut() {
     };
 
     myMSALObj.logout(logoutRequest);
+    authenticated = false;
 }
 
 selectAccount();
