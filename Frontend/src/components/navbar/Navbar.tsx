@@ -9,6 +9,21 @@ import { Link } from "react-router-dom";
 import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
 //import { signIn } from "../../azure/authRedirect"; // For redirect
 
+
+function AuthText(){ //Funker ikke
+  const [txt, setAuthText] = useState("Login");
+
+  if(txt === "Login"){
+    return (
+      <button onClick={() => setAuthText("Logout")}>{txt}</button>
+    )
+  }else{
+    return (
+      <button onClick={() => setAuthText("Login")}>{txt}</button>
+    )
+  }
+}
+
 function Navbar() {
 
     if (authenticated){ // Set auth to say login
@@ -17,20 +32,21 @@ function Navbar() {
       console.log("Not authenticated1")
     }
 
-
-  return (
-    <div className="topnav">
-      <div className="left">
-        <Link to='/' className='Logo'>"Logo"</Link>
-      </div>
-      <div className="right">
-        <Link to='/contact' className='Link'>Contact</Link>
-        <Link to='/help' className='Link'>Help</Link>
-        <Link to='/about' className='Link'>About</Link>
-        <button className="Link" onClick={signIn} >Login</button>
-      </div>
-    </div >
-  );
+    return (
+      <div className="topnav">
+        <div className="left">
+          <Link to='/' className='Logo'>"Logo"</Link>
+        </div>
+        <div className="right">
+          <Link to='/contact' className='Link'>Contact</Link>
+          <Link to='/help' className='Link'>Help</Link>
+          <Link to='/about' className='Link'>About</Link>
+          <div>
+            <button id="nt" className="Link" onClick={signIn} >Login</button>
+          </div>
+        </div>
+      </div >
+    );
 }
 
 export default Navbar;
