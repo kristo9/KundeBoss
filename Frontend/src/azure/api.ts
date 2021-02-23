@@ -25,7 +25,6 @@ export function callApi(endpoint, token, data) {
     .then(response => response.json())
     .then(response => {
 
-      console.log(response);
 
       if (response) {
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');

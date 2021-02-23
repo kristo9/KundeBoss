@@ -26,7 +26,7 @@ function AuthText(){ //Funker ikke
 
 function Navbar() {
 
-    if (authenticated){ // Set auth to say login
+   if (authenticated){ // Set auth to say login
       console.log("Authenticated1")
     } else {            // Set auth to say logout
       console.log("Not authenticated1")
