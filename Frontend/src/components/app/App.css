@@ -1,11 +1,12 @@
 body {
+    margin-top: 45px;
     width: 100%;
-    max-width: 2000px;
     margin: 0 auto;
+    background-color: lightsalmon;
   }
-
-.Startpage {
-    position: fixed;
-    top: 100px;
-    width: 100%;
+.app {
+    display:flex;
+    flex-wrap: wrap;
+    
 }
+
