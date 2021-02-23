@@ -1,29 +1,20 @@
 // Create the main myMSALObj instance
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
+import { welcomeUser } from "./ui";
+import { loginRequest, msalConfig, } from "./authConfig";
 
-const authConfig = require("./authConfig");
 
-const myMSALObj = new PublicClientApplication(authConfig.msalConfig);
+const myMSALObj = new PublicClientApplication(msalConfig);
 
 let username = "";
 
-const ui = require("./ui");
 
-const api = require("./api");
-
-const apiConfig = require("./apiConfig")
-
-myMSALObj.handleRedirectPromise()
-    .then(handleResponse)
-    .catch(error => {
-        console.error(error);
-    });
 
 function selectAccount() {
 
     /**
-     * See here for more information on account retrieval: 
+     * See here for more info on account retrieval: 
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
      */
 
@@ -36,12 +27,13 @@ function selectAccount() {
         console.warn("Multiple accounts detected.");
     } else if (currentAccounts.length === 1) {
         username = currentAccounts[0].username;
-        ui.welcomeUser(username);
+        welcomeUser(username);
     }
 }
 
 function handleResponse(response) {
     console.log(response);
+
 
     /**
      * To see the full list of response object properties, visit:
@@ -50,7 +42,7 @@ function handleResponse(response) {
 
     if (response !== null) {
         username = response.account.username;
-        ui.welcomeUser(username);
+        //ui.welcomeUser(username);
     } else {
         selectAccount();
     }
@@ -63,10 +55,14 @@ export function signIn() {
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
      */
 
-    myMSALObj.loginRedirect(authConfig.loginRequest);
+    myMSALObj.loginPopup(loginRequest)
+        .then(handleResponse)
+        .catch(error => {
+            console.error(error);
+        });
 }
 
-export function signOut() {
+function signOut() {
 
     /**
      * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
@@ -81,10 +77,12 @@ export function signOut() {
     myMSALObj.logout(logoutRequest);
 }
 
-function getTokenRedirect(request) {
+selectAccount();
+
+export function getTokenPopup(request) {
 
     /**
-    * See here for more info on account retrieval: 
+    * See here for more information on account retrieval: 
     * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
     */
 
@@ -92,23 +90,19 @@ function getTokenRedirect(request) {
 
     return myMSALObj.acquireTokenSilent(request)
         .catch(error => {
-            console.error(error);
+            console.warn(error);
             console.warn("silent token acquisition fails. acquiring token using popup");
             if (error instanceof InteractionRequiredAuthError) {
                 // fallback to interaction when silent call fails
-                return myMSALObj.acquireTokenRedirect(request);
+                return myMSALObj.acquireTokenPopup(request)
+                    .then(response => {
+                        console.log(response);
+                        return response;
+                    }).catch(error => {
+                        console.error(error);
+                    });
             } else {
-                console.error(error);
+                console.warn(error);
             }
-        });
-}
-
-// Acquires and access token and then passes it to the API call
-function passTokenToApi() {
-    getTokenRedirect(authConfig.tokenRequest)
-        .then(response => {
-            api.callApi(apiConfig.uri, response.accessToken);
-        }).catch(error => {
-            console.error(error);
         });
 }

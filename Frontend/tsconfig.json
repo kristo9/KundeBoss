@@ -1,6 +1,6 @@
 {
-  "options": { 
-  "useCommonEndpoint": false,
+  "options": {
+    "useCommonEndpoint": false,
   },
   "compilerOptions": {
     "target": "es5",

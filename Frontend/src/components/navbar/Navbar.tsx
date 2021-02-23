@@ -4,9 +4,10 @@ import AzureAuthenticationButton from "../../azure/azure-authentication-componen
 import { AccountInfo } from "@azure/msal-browser";
 import { Link, Route, Switch } from "react-router-dom";
 
-const authRedirect = require("../../azure/authRedirect");
 
-const authPopup = require("../../azure/authPopup");
+import { signIn } from "../../azure/authPopup"; // For popup
+//import { signIn } from "../../azure/authRedirect"; // For redirect
+
 
 
 
@@ -84,7 +85,7 @@ function Navbar() {
           <Link to="/about" className='Link'>About</Link>
         </li>
 
-        <button className="Link" onClick={authPopup.signIn} >Login</button>
+        <button className="Link" onClick={signIn} >Login</button>
 
       </div>
       <Route exatct path="/"><Home /></Route>
