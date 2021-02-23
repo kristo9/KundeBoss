@@ -1,26 +1,26 @@
 import { Context, HttpRequest } from "@azure/functions"
 import { DBName, connectRead } from "../SharedFiles/dataBase";
-import { sanitizeHtmlJson, nameVal } from "../SharedFiles/inputValidation";
+import { sanitizeHtmlJson, mailVal } from "../SharedFiles/inputValidation";
 
 export default (context: Context, req: HttpRequest): any => {
 
     req.body = sanitizeHtmlJson(req.body);
 
-    let name = req.body.name;
+    let id = req.body.id;
 
     const query = {
-        id: name
+        "employeeId": id
     };
 
     const projection = {
         "_id": 0,
-        "navn": 1,
-        "fdato": 1,
-        "kontaktInfo.tlf": 1
+        "name": 1,
+        "employeeId": 1,
+        "customers": 1
     };
 
     const inputValidation = () => {
-        if (req.body && name && nameVal(name)) {
+        if (req.body && id && mailVal(id)) {
 
             connectRead(context, authorize);
 
@@ -48,7 +48,7 @@ export default (context: Context, req: HttpRequest): any => {
     };
 
     const getEmployeeData = (client) => {
-        client.db(DBName).collection("ansatte").find(query).project(projection).toArray((error, docs) => {
+        client.db(DBName).collection("employee").find(query).project(projection).toArray((error, docs) => {
 
             if (error) {
                 context.log("Error running query");

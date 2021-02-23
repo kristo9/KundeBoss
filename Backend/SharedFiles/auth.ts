@@ -24,6 +24,7 @@ let client = jwksClient({
 });
 
 let signingKey = null;
+
 export const getKey = (header, callback) => {
 	if (signingKey == null) {
 
@@ -35,8 +36,8 @@ export const getKey = (header, callback) => {
 	else {
 		callback(null, signingKey);
 	}
-}
+};
 
 export const setKeyNull = () => {
 	signingKey = null;
-}
+};

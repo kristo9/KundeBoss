@@ -34,6 +34,7 @@ export default (context: Context, req: HttpRequest): any => {
             return context.done();
 
         } else {
+            context.log(JSON.stringify(decoded));
             context.res = {
                 status: 200,
                 body: {

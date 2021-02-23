@@ -1,14 +1,14 @@
 import { Context, HttpRequest } from "@azure/functions"
+import { sanitizeHtmlJson, nameVal } from "../SharedFiles/inputValidation";
+import { getKey, options, setKeyNull } from "../SharedFiles/auth";
+import { verify } from "jsonwebtoken";
+import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
 
-    const validator: any = require('../SharedFiles/inputValidation');
+    req.body = sanitizeHtmlJson(req.body);
 
-    req.body = validator.sanitizeHtmlJson(req.body);
-    
     let token = req.headers.authorization;
-
-    req.body = 
 
     if (token)
         token = req.headers.authorization.replace(/^Bearer\s+/, "");
@@ -22,16 +22,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
         return context.done();
     }
 
-    const dbDep: any = require('../SharedFiles/dataBase');
-
-    // TODO: Query to run on database
-    const query = {
-
-    };
-
-    // TODO: Projection,  Only for retrieving data
-    const projection = {
-    };
 
     const inputValidation = () => {
 
@@ -39,7 +29,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
         if (/* If vaiid inputs are */ true) {
 
-            dbDep.connectRead(context, authorize);
+            connectRead(context, authorize);
 
         } else {
             context.res = {
@@ -55,10 +45,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
     const authorize = (client) => {
 
-    verify(token, auth.getKey, auth.options, (err: any, decoded: { [x: string]: any; }) => {
+        verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
-                auth.signingKey = null;
+                setKeyNull();
                 // invalid token
                 context.res = {
                     status: 401,
@@ -67,15 +57,15 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     }
                 };
                 context.log("invalid token");
-                return context.done();   
+                return context.done();
             } else {
                 //TODO Verify that user has permission to do what is asked
-                 context.log("valid token");
-                if(yes){
+                context.log("valid token");
+                if (true) {
                     functionQuery(client);
-                }else{
+                } else {
 
-                // not authorizazed
+                    // not authorizazed
                     context.res = {
                         status: 401,
                         body: {
@@ -84,26 +74,35 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     };
                     context.log("not authorizazed");
                     return context.done();
-                }   
+                }
             }
             context.done();
         });
     };
-       
+
+    // TODO: Query to run on database
+    const query = {
+
+    };
+
+    // TODO: Projection,  Only for retrieving data
+    const projection = {
+    };
+
 
     const functionQuery = (client) => {
 
         /* TODO: add collection name
         
-        if inserting : client.db(dbDep.DBName).collection("Collection Name").insertOne(query, (error, docs) => {*/
-        client.db(dbDep.DBName).collection("Collection Name").find(query).project(projection).toArray((error, docs) => {
+        if inserting : client.db(DBName).collection("Collection Name").insertOne(query, (error, docs) => {*/
+        client.db(DBName).collection("Collection Name").find(query).project(projection).toArray((error, docs) => {
             if (error) {
                 context.log('Error running query');
                 context.res = { status: 500, body: 'Error running query' }
                 return context.done();
             }
 
-            docs = validator.sanitizeHtmlJson(docs);
+            docs = sanitizeHtmlJson(docs);
 
             context.log('Success!');
             context.res = {
