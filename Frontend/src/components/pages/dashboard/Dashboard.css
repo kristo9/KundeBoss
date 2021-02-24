@@ -1,0 +1,14 @@
+.Help {
+    background-color: lightblue;
+  }
+
+.infoDiv{
+    background-color: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+}
+
+span + span {
+    margin-left: 100px;
+}

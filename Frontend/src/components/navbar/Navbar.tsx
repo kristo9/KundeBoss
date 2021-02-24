@@ -60,8 +60,17 @@ export default Navbar;
   const onAuthenticated = async (userAccountInfo: AccountInfo) => {
     setCurrentUser(userAccountInfo);
   };
-  
-  
+
+  /* Render JSON data in readable format
+  const PrettyPrintJson = ({ data }: any) => {
+    return (
+      <div>
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+      </div>
+    );
+  };*/
+
+
   const AccInfo = ({ data }: any) => {
     return (
       <div>
@@ -70,4 +79,4 @@ export default Navbar;
         </pre>
       </div>
     )
-  }*/
+  }
