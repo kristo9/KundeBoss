@@ -6,11 +6,11 @@ import { Link } from "react-router-dom";
 
 
 
-import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
-//import { signIn } from "../../azure/authRedirect"; // For redirect
+//import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
+import { signIn } from "../../azure/authRedirect"; // For redirect
 
 
-function AuthText(){ //Funker ikke
+/*function AuthText(){ //Funker ikke
   const [txt, setAuthText] = useState("Login");
 
   if(txt === "Login"){
@@ -22,15 +22,15 @@ function AuthText(){ //Funker ikke
       <button onClick={() => setAuthText("Login")}>{txt}</button>
     )
   }
-}
+}*/
 
 function Navbar() {
 
-   if (authenticated){ // Set auth to say login
+  /* if (authenticated){ // Set auth to say login
       console.log("Authenticated1")
     } else {            // Set auth to say logout
       console.log("Not authenticated1")
-    }
+    }*/
 
     return (
       <div className="topnav">

@@ -1,5 +1,7 @@
 import { apiConfig } from "./apiConfig";
-import { getTokenPopup } from "./authPopup";
+//import { getTokenPopup } from "./authPopup";
+import { getTokenRedirect } from "./authRedirect";
+
 import { tokenRequest } from "./authConfig";
 
 const ui = require("./ui");
@@ -35,9 +37,10 @@ export async function callApi(endpoint, token, data) {
   return retData;
 }
 
+
 export async function callLogin() {
   let retDataApi = null;
-  await getTokenPopup(tokenRequest)
+  await getTokenRedirect(tokenRequest)
     .then(response => {
       if (response) {
         console.log("access_token acquired at: " + new Date().toString());
@@ -47,8 +50,9 @@ export async function callLogin() {
           console.warn(error);
         }
       }
+    }).catch(error => {
+      console.error(error);
     });
-
   console.log(retDataApi);
   return retDataApi;
 }

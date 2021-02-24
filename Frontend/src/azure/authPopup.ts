@@ -11,15 +11,6 @@ const myMSALObj = new PublicClientApplication(msalConfig);
 let username = "";
 
 
-/*export class AuthText {
-    public authenticated = false;
-
-
-    function setAuth(isAuthenticated:boolean) {
-        
-    }
-}*/
-
 export let authenticated = false;
 
 function selectAccount() {
