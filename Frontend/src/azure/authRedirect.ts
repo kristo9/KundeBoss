@@ -12,7 +12,10 @@ let username = "";
 
 myMSALObj.handleRedirectPromise()
     .then(handleResponse)
-    .then(callLogin)
+    .then(async () => {
+        let c = await callLogin();
+        console.log(c.name);
+    })
     .catch(error => {
         console.error(error);
     });
