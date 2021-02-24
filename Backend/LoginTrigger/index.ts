@@ -94,7 +94,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
             "name": decodedToken["name"],
             "employeeId": decodedToken["preferred_username"],
             "customers": [],
-            "admin": "write"
+            "admin": "write",
+            "customer": null
         };
         createEmplyee(client, query);
     };
@@ -107,7 +108,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
             "name": decodedToken["name"],
             "employeeId": decodedToken["preferred_username"],
             "customers": [],
-            "admin": null
+            "admin": null,
+            "customer": null
+
         };
         createEmplyee(client, query);
     };

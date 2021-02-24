@@ -10,10 +10,13 @@ export default (context: Context, myTimer: any) => {
     }
     context.log("Timer trigger function ran!", timeStamp);
 
+    /* connectRead(context, () => {
+         connectWrite(context, () => {
+             context.log("Connected both clients");
+             context.done();
+         }, true);
+     }, true);*/
     connectRead(context, () => {
-        connectWrite(context, () => {
-            context.log("Connected both clients");
-            context.done();
-        }, true);
+        context.done();
     }, true);
 };
