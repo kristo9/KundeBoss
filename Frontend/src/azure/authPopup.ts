@@ -2,7 +2,8 @@
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
 import { welcomeUser } from "./ui";
-import { loginRequest, msalConfig, } from "./authConfig";
+import { loginRequest, msalConfig } from "./authConfig";
+import { callLogin } from "./api";
 
 
 const myMSALObj = new PublicClientApplication(msalConfig);
@@ -10,6 +11,16 @@ const myMSALObj = new PublicClientApplication(msalConfig);
 let username = "";
 
 
+/*export class AuthText {
+    public authenticated = false;
+
+
+    function setAuth(isAuthenticated:boolean) {
+        
+    }
+}*/
+
+export let authenticated = false;
 
 function selectAccount() {
 
@@ -28,6 +39,7 @@ function selectAccount() {
     } else if (currentAccounts.length === 1) {
         username = currentAccounts[0].username;
         welcomeUser(username);
+        authenticated = true;
     }
 }
 
@@ -57,12 +69,13 @@ export function signIn() {
 
     myMSALObj.loginPopup(loginRequest)
         .then(handleResponse)
+        .then(callLogin)
         .catch(error => {
             console.error(error);
         });
 }
 
-function signOut() {
+export function signOut() {
 
     /**
      * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
@@ -75,6 +88,7 @@ function signOut() {
     };
 
     myMSALObj.logout(logoutRequest);
+    authenticated = false;
 }
 
 selectAccount();

@@ -2,8 +2,9 @@
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
 import { welcomeUser } from "./ui";
-import { loginRequest, msalConfig, } from "./authConfig";
-
+import { loginRequest, msalConfig, tokenRequest } from "./authConfig";
+import { apiConfig } from "./apiConfig";
+import { callApi } from "./api";
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
@@ -59,7 +60,8 @@ export function signIn() {
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
      */
 
-    myMSALObj.loginRedirect(loginRequest);
+    myMSALObj.loginRedirect(loginRequest)
+        .then(passTokenToApi);
 }
 
 export function signOut() {
@@ -77,7 +79,7 @@ export function signOut() {
     myMSALObj.logout(logoutRequest);
 }
 
-function getTokenRedirect(request) {
+function getTokenRedirect(request): Promise<any> {
 
     /**
     * See here for more info on account retrieval: 
@@ -99,4 +101,12 @@ function getTokenRedirect(request) {
         });
 }
 
+function passTokenToApi() {
+    getTokenRedirect(tokenRequest)
+        .then(response => {
+            callApi(apiConfig.uri, response.accessToken, {});
+        }).catch(error => {
+            console.error(error);
+        });
+}
 // Acquires and access token and then passes it to the API call

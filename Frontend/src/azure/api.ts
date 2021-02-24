@@ -1,6 +1,10 @@
+import { apiConfig } from "./apiConfig";
+import { getTokenPopup } from "./authPopup";
+import { tokenRequest } from "./authConfig";
+
 const ui = require("./ui");
 
-export function callApi(endpoint, token) {
+export async function callApi(endpoint, token, data) {
   console.log(endpoint, token)
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
@@ -9,23 +13,42 @@ export function callApi(endpoint, token) {
 
   const options = {
     method: "POST",
-    headers: headers
+    headers: headers,
+    body: data
   };
 
-  ui.logMessage('Calling Web API...');
+  console.log('Calling Web API...');
 
-  fetch(endpoint, options)
+  let retData = null;
+
+  await fetch(endpoint, options)
     .then(response => response.json())
     .then(response => {
 
-      console.log(response);
-
       if (response) {
-        ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
+        //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
+        retData = response;
       }
-
-      return response;
     }).catch(error => {
       console.error(error);
     });
+  return retData;
+}
+
+export async function callLogin() {
+  let retDataApi = null;
+  await getTokenPopup(tokenRequest)
+    .then(response => {
+      if (response) {
+        console.log("access_token acquired at: " + new Date().toString());
+        try {
+          retDataApi = callApi(apiConfig.uri + "LoginTrigger", response.accessToken, {});
+        } catch (error) {
+          console.warn(error);
+        }
+      }
+    });
+
+  console.log(retDataApi);
+  return retDataApi;
 }
