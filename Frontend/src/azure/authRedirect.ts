@@ -93,7 +93,7 @@ export function getTokenRedirect(request): Promise<any> {
     return myMSALObj.acquireTokenSilent(request)
         .catch(error => {
             console.error(error);
-            console.warn("silent token acquisition fails. acquiring token using popup");
+            console.warn("silent token acquisition fails. acquiring token using redirect");
             if (error instanceof InteractionRequiredAuthError) {
                 // fallback to interaction when silent call fails
                 return myMSALObj.acquireTokenRedirect(request);
