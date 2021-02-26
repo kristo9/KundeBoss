@@ -60,8 +60,7 @@ class Dashboard extends React.Component<{},{customers: any}>{
     return (
       <div>
         <div className="page">
-          <h1>Velkommen</h1>
-          <h1>Her er dashboard</h1>
+          {this.displayGreeting()}
           <div>
             {
               this.displayCustomers()
@@ -71,9 +70,25 @@ class Dashboard extends React.Component<{},{customers: any}>{
       </div>
     );
   }
+
+  /**
+   * Displays a greeting if the user is logged in.
+   */
+  private displayGreeting(){
+    if(this.state.customers){
+      return(
+        <h1>Velkommen {this.state.customers.name} </h1>
+      );
+    }
+    else{
+      return(
+        <h1>Velkommen</h1>
+      );
+    }
+  }
   
   /**
-  * Displayies the customers of the emplyee
+  * Displays the emplyees customers
   */
   private displayCustomers(){
     if(this.state.customers){
@@ -91,7 +106,7 @@ class Dashboard extends React.Component<{},{customers: any}>{
     else{
       return(
         <div>
-          <p>Kan ikke hente data!</p>
+          <p>Henter data...</p>
         </div>
       );
     }
@@ -112,13 +127,11 @@ interface customerProp{
  */
 function InfoBox(prop: customerProp){
   return(
-
         <tr className="rad">
-          <td>{prop.customerName}</td>
+          <td><b>{prop.customerName}</b></td>
           <td>{prop.contactName}</td>
           <td>{prop.mail}</td>
          </tr>
-
   );
 }
 
