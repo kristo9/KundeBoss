@@ -1,47 +1,62 @@
 import { Context, HttpRequest } from "@azure/functions"
+import { verify } from "jsonwebtoken";
+import { getKey, options, setKeyNull } from "../SharedFiles/auth";
 import { DBName, connectRead } from "../SharedFiles/dataBase";
 import { sanitizeHtmlJson } from "../SharedFiles/inputValidation";
 
 export default (context: Context, req: HttpRequest): any => {
 
-    const query = {};
+    let token = req.headers.authorization;
 
-    const projection = {
-        "_id": 0,
-        "name": 1,
-        "employeeId": 1,
-        "admin": 1
-    };
+    if (token) {
+        token = req.headers.authorization.replace(/^Bearer\s+/, "");
+    }
+    else {
+        context.res = {
+            status: 400,
+            body: {
+                "error": "no token"
+            }
+        };
+        return context.done();
+    }
+
 
     const inputValidation = () => {
-        if (true) {
-
-            connectRead(context, authorize);
-
-        } else {
-            context.res = {
-                status: 400,
-                body: {
-                    error: "Wrong input"
-                }
-            }
-            return context.done();
-        }
+        connectRead(context, authorize);
     };
 
     const authorize = (client: any) => {
-        if (true) {
-            // if valid credentials
-            getAllEnployees(client);
+        verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
+            // verified and decoded token
+            if (err) {
+                setKeyNull();
+                // invalid token
+                context.res = {
+                    status: 401,
+                    body: {
+                        'name': "unauthorized",
+                    }
+                };
+                context.log("invalid token");
 
-        } else {
-            context.log("Unauthorized");
-            context.res = { status: 401, body: "Unauthorized" };
-            return context.done();
-        }
+                return context.done();
+            }
+            else {
+                context.log("valid token");
+
+                functionQuery(client);
+            }
+        });
     };
 
-    const getAllEnployees = (client: any) => {
+    const query = {};
+
+    const projection = {
+        "_id": 0
+    };
+
+    const functionQuery = (client: any) => {
         client.db(DBName).collection("employee").find(query).project(projection).toArray((error: any, docs: any) => {
 
             if (error) {
