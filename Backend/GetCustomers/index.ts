@@ -6,8 +6,16 @@ import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
 
-    let employeeId, authLevel;
+    //req.body = sanitizeHtmlJson(req.body);
+
+    let employeeId;//= req.body.employeeId;
+
+    //console.log(employeeId);
+
+
     let token = req.headers.authorization;
+    //console.log(token);
+
     
     if (token)
         token = req.headers.authorization.replace(/^Bearer\s+/, "");
@@ -22,8 +30,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
 
 
-    const inputValidation = () => {
-
+    const inputValidation = () => {        
         //TODO: Checks to see if inputs are valid
 
         if (/* If vaiid inputs are */ true) {
@@ -43,7 +50,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     };
 
     const authorize = (client) => {
-
+        
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
@@ -59,62 +66,69 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 return context.done();
             } else {
                 //TODO Verify that user has permission to do what is asked
-                context.log("valid token");
                 employeeId = decoded.preferred_username;
-                
-                //authLevel = getAuthLevel;
-                if (authLevel == "write") {
-                    functionQuery(client);
-                } else {
-
-                    // not authorizazed
-                    context.res = {
-                        status: 401,
-                        body: {
-                            'name': "unauthorized",
-                        }
-                    };
-                    context.log("not authorizazed");
-                    return context.done();
-                }
+                context.log("valid token");
+                functionQuery(client);
             }
-            context.done();
         });
     };
 
     // TODO: Query to run on database
     const query = {
+        "employeeId":employeeId
 
     };
 
     // TODO: Projection,  Only for retrieving data
     const projection = {
-        "_id": 0,
-        "name": 1,
-        "employeeId": 1,
-        "admin": 1,
-        "customer": 1
+        "name":1,
+        "employeeId":1,
+        "customerNames._id":1,
+        "customerNames.name":1,
+        "customerNames.contact.name":1,
+        "customerNames.contact.mail":1,
+        "customerNames.tags":1
     };
 
 
     const functionQuery = (client) => {
 
-        /* TODO: add collection name
-        
-        if inserting : client.db(DBName).collection("Collection Name").insertOne(query, (error, docs) => {*/
-        client.db(DBName).collection("employee").find(query).project(projection).toArray((error, docs) => {
+
+        client.db(DBName).collection("employee").aggregate([
+            { $lookup:
+                {
+                    from: 'customer',
+                    localField: 'customers',
+                    foreignField: '_id',
+                    as: 'customerNames'
+                }
+            }/*, 
+            {
+                $group: query
+            }*/
+        ]).project(projection).toArray((error, docs) => {
+
+        //client.db(DBName).collection("employee").find(query).project(projection).toArray((error, docs) => {
             if (error) {
                 context.log('Error running query');
                 context.res = { status: 500, body: 'Error running query' }
                 return context.done();
             }
 
-            docs = sanitizeHtmlJson(docs);
+
+            let emp;
+            docs.forEach(element => {
+                if(element.employeeId == employeeId){
+                    emp = element;
+                }
+            });
+            
+            emp = sanitizeHtmlJson(emp);
 
             context.log('Success!');
             context.res = {
                 headers: { 'Content-Type': 'application/json' },
-                body: docs
+                body: emp
             };
             context.done();
         });
