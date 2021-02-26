@@ -1,5 +1,8 @@
 import "./Help.css";
 
+/**
+ * @returns A react component with the help page
+ */
 function Help() {
 
   return (

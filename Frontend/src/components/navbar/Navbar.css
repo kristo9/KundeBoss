@@ -33,27 +33,29 @@
     color: black;
   }
 
-  /* Adjust positioning and move right-section to right*/
-
+  /* Adjust positioning and move right-section to the right*/
   .right {
     display: flex;
     flex-direction: row;
     float:right;
   }
 
+  /* Adjust positioning and move left-section to the left*/
   .left {
     display: flex;
     flex-direction: row;
     float: left;
   }
 
+  /*makes the buttons transparent*/
   button {
     background: transparent;
     box-shadow: 0px 0px 0px transparent;
     border: 0px solid transparent;
     text-shadow: 0px 0px 0px transparent;
   }
-  
+
+  /* Change the style of buttons on hover */
   button:hover {
     background: transparent;
     box-shadow: 0px 0px 0px transparent;
@@ -61,15 +63,17 @@
     text-shadow: 0px 0px 0px transparent;
   }
   
+  /* Change the syle of buttons when active*/
   button:active {
     outline: none;
     border: none;
   }
-  
+  /* Change the style of buttons when focused*/
   button:focus {
     outline: 0;
   }
 
+  /* Removes the list tyle*/
   li {
     list-style-type: none;
 }
