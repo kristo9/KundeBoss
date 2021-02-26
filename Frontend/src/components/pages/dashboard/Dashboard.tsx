@@ -43,7 +43,7 @@ class Dashboard extends React.Component<{},{customers: any}>{
   };
 
   kr = {
-    "customerNames": [
+    "customerInformation": [
         {
           "_id": "6038a9dd01c4ba40c8203cc5",
           "name": "Test AS",
@@ -99,8 +99,8 @@ class Dashboard extends React.Component<{},{customers: any}>{
             <table className="diasplayTable">
             {
                 //Creates a table entry for each customer returned from the database.
-                this.state.customers.customerNames.map(customer=>(
-                  <InfoBox customerName={customer.name} contactName={customer.contact.name} mail={customer.contact.mail}/>
+                this.state.customers.customerInformation.map(customer=>(
+                  <InfoBox customerName={customer.name} contactName={customer.contact.name} mail={customer.contact.mail} key={customer._id}/>
                 ))
             }
             </table>

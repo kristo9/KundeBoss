@@ -6,13 +6,7 @@ import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
 
-    //req.body = sanitizeHtmlJson(req.body);
-
-    let employeeId;//= req.body.employeeId;
-
-    //console.log(employeeId);
-
-
+    let employeeId: any;
     let token = req.headers.authorization;
     //console.log(token);
 
@@ -28,26 +22,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
         };
         return context.done();
     }
-
-
-    const inputValidation = () => {
-        //TODO: Checks to see if inputs are valid
-
-        if (/* If vaiid inputs are */ true) {
-
-            connectRead(context, authorize);
-
-        } else {
-            context.res = {
-                status: 400,
-                body: {
-                    // TODO:
-                    error: "Appropriate error message"
-                }
-            };
-            return context.done();
-        }
-    };
 
     const authorize = (client) => {
 
@@ -65,8 +39,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 context.log("invalid token");
                 return context.done();
             } else {
-                //TODO Verify that user has permission to do what is asked
                 employeeId = decoded.preferred_username;
+                console.log(employeeId);
                 context.log("valid token");
                 functionQuery(client);
             }
@@ -83,16 +57,15 @@ module.exports = (context: Context, req: HttpRequest): any => {
     const projection = {
         "name": 1,
         "employeeId": 1,
-        "customerNames._id": 1,
-        "customerNames.name": 1,
-        "customerNames.contact.name": 1,
-        "customerNames.contact.mail": 1,
-        "customerNames.tags": 1
+        "customerInformation._id": 1,
+        "customerInformation.name": 1,
+        "customerInformation.contact.name": 1,
+        "customerInformation.contact.mail": 1,
+        "customerInformation.tags": 1
     };
 
 
     const functionQuery = (client) => {
-
 
         client.db(DBName).collection("employee").aggregate([
             {
@@ -101,21 +74,15 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     from: 'customer',
                     localField: 'customers',
                     foreignField: '_id',
-                    as: 'customerNames'
+                    as: 'customerInformation'
                 }
-            }/*, 
-            {
-                $group: query
-            }*/
+            }
         ]).project(projection).toArray((error, docs) => {
-
-            //client.db(DBName).collection("employee").find(query).project(projection).toArray((error, docs) => {
             if (error) {
                 context.log('Error running query');
                 context.res = { status: 500, body: 'Error running query' }
                 return context.done();
             }
-
 
             let emp;
             docs.forEach(element => {
@@ -135,5 +102,5 @@ module.exports = (context: Context, req: HttpRequest): any => {
         });
     };
 
-    inputValidation();
+    connectRead(context, authorize);
 };

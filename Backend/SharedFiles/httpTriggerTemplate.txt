@@ -76,7 +76,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     return context.done();
                 }
             }
-            context.done();
         });
     };
 

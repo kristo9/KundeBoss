@@ -6,8 +6,10 @@ import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
 
-    let employeeId, authLevel;
+    let employeeId: any;
     let token = req.headers.authorization;
+    //console.log(token);
+
     
     if (token)
         token = req.headers.authorization.replace(/^Bearer\s+/, "");
@@ -21,29 +23,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
         return context.done();
     }
 
-
-    const inputValidation = () => {
-
-        //TODO: Checks to see if inputs are valid
-
-        if (/* If vaiid inputs are */ true) {
-
-            connectRead(context, authorize);
-
-        } else {
-            context.res = {
-                status: 400,
-                body: {
-                    // TODO:
-                    error: "Appropriate error message"
-                }
-            };
-            return context.done();
-        }
-    };
-
     const authorize = (client) => {
-
+        
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
@@ -58,33 +39,33 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 context.log("invalid token");
                 return context.done();
             } else {
-                //TODO Verify that user has permission to do what is asked
                 context.log("valid token");
                 employeeId = decoded.preferred_username;
-                
-                //authLevel = getAuthLevel;
-                if (authLevel == "write") {
-                    functionQuery(client);
-                } else {
+                console.log(employeeId);
 
-                    // not authorizazed
-                    context.res = {
-                        status: 401,
-                        body: {
-                            'name': "unauthorized",
+                client.db(DBName).collection("employee").find({ "employeeId": employeeId }).project({ "admin": 1 }).toArray((error, docs) => {
+
+                    if (error) {
+                        context.log("Error running query");
+                        context.res = { status: 500, body: "Error running query" };
+                        return context.done();
+
+                    } else {
+                        if (docs[0].admin === "write")
+                            functionQuery(client);
+                        else {
+                            context.res = {
+                                status: 401, body: {
+                                    'name': "ERROR: Need higher access level"
+                                }
+                            };
+                            context.log("Accessed by user without admin permission");
+                            return context.done();
                         }
-                    };
-                    context.log("not authorizazed");
-                    return context.done();
-                }
+                    }
+                });
             }
-            context.done();
         });
-    };
-
-    // TODO: Query to run on database
-    const query = {
-
     };
 
     // TODO: Projection,  Only for retrieving data
@@ -98,11 +79,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
 
     const functionQuery = (client) => {
-
-        /* TODO: add collection name
         
-        if inserting : client.db(DBName).collection("Collection Name").insertOne(query, (error, docs) => {*/
-        client.db(DBName).collection("employee").find(query).project(projection).toArray((error, docs) => {
+        client.db(DBName).collection("employee").find().project(projection).toArray((error, docs) => {
             if (error) {
                 context.log('Error running query');
                 context.res = { status: 500, body: 'Error running query' }
@@ -120,5 +98,5 @@ module.exports = (context: Context, req: HttpRequest): any => {
         });
     };
 
-    inputValidation();
+    connectRead(context, authorize);
 };
