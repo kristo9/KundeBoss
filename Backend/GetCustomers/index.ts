@@ -16,7 +16,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     let token = req.headers.authorization;
     //console.log(token);
 
-    
+
     if (token)
         token = req.headers.authorization.replace(/^Bearer\s+/, "");
     else {
@@ -30,7 +30,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
 
 
-    const inputValidation = () => {        
+    const inputValidation = () => {
         //TODO: Checks to see if inputs are valid
 
         if (/* If vaiid inputs are */ true) {
@@ -50,7 +50,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     };
 
     const authorize = (client) => {
-        
+
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
@@ -75,19 +75,19 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
     // TODO: Query to run on database
     const query = {
-        "employeeId":employeeId
+        "employeeId": employeeId
 
     };
 
     // TODO: Projection,  Only for retrieving data
     const projection = {
-        "name":1,
-        "employeeId":1,
-        "customerNames._id":1,
-        "customerNames.name":1,
-        "customerNames.contact.name":1,
-        "customerNames.contact.mail":1,
-        "customerNames.tags":1
+        "name": 1,
+        "employeeId": 1,
+        "customerNames._id": 1,
+        "customerNames.name": 1,
+        "customerNames.contact.name": 1,
+        "customerNames.contact.mail": 1,
+        "customerNames.tags": 1
     };
 
 
@@ -95,7 +95,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
 
         client.db(DBName).collection("employee").aggregate([
-            { $lookup:
+            {
+                $lookup:
                 {
                     from: 'customer',
                     localField: 'customers',
@@ -108,7 +109,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             }*/
         ]).project(projection).toArray((error, docs) => {
 
-        //client.db(DBName).collection("employee").find(query).project(projection).toArray((error, docs) => {
+            //client.db(DBName).collection("employee").find(query).project(projection).toArray((error, docs) => {
             if (error) {
                 context.log('Error running query');
                 context.res = { status: 500, body: 'Error running query' }
@@ -118,11 +119,11 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
             let emp;
             docs.forEach(element => {
-                if(element.employeeId == employeeId){
+                if (element.employeeId == employeeId) {
                     emp = element;
                 }
             });
-            
+
             emp = sanitizeHtmlJson(emp);
 
             context.log('Success!');
