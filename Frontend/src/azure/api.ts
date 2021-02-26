@@ -43,15 +43,14 @@ export function isLogedIn() {
   return username;
 }
 
-
-export async function callLogin() {
+async function prepareCall(apiName, data = {}) {
   let retDataApi = null;
   await getTokenRedirect(tokenRequest)
     .then(async response => {
       if (response) {
         console.log("access_token acquired at: " + new Date().toString());
         try {
-          retDataApi = await callApi(apiConfig.uri + "LoginTrigger", response.accessToken, {});
+          retDataApi = await callApi(apiConfig.uri + apiName, response.accessToken, data);
         } catch (error) {
           console.warn(error);
         }
@@ -65,21 +64,11 @@ export async function callLogin() {
   return retDataApi;
 }
 
-export async function getEmployee() {
-  let retDataApi = null;
-  await getTokenRedirect(tokenRequest)
-    .then(async response => {
-      if (response) {
-        console.log("access_token acquired at: " + new Date().toString());
-        try {
-          retDataApi = await callApi(apiConfig.uri + "GetCustomers", response.accessToken, {});
-        } catch (error) {
-          console.warn(error);
-        }
-      }
-    }).catch(error => {
-      console.error(error);
-    });
 
-  return retDataApi;
+export async function callLogin() {
+  return await prepareCall("LoginTrigger");
+}
+
+export async function getEmployee() {
+  return await prepareCall("GetCustomers");
 }

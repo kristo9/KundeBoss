@@ -81,6 +81,8 @@ export function signOut() {
     myMSALObj.logout(logoutRequest);
 }
 
+selectAccount();
+
 export function getTokenRedirect(request): Promise<any> {
 
     /**
@@ -96,9 +98,15 @@ export function getTokenRedirect(request): Promise<any> {
             console.warn("silent token acquisition fails. acquiring token using redirect");
             if (error instanceof InteractionRequiredAuthError) {
                 // fallback to interaction when silent call fails
-                return myMSALObj.acquireTokenRedirect(request);
+                return myMSALObj.acquireTokenRedirect(request)
+                    .then(response => {
+                        console.log(response);
+                        return response;
+                    }).catch(error => {
+                        console.error(error);
+                    });
             } else {
-                console.error(error);
+                console.warn(error);
             }
         });
 }
