@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
 import './Navbar.css';
-import { AccountInfo } from "@azure/msal-browser";
 import { Link } from "react-router-dom";
 
 
@@ -33,51 +31,51 @@ function Navbar() {
       console.log("Not authenticated1")
     }*/
 
-    return (
-      <div className="topnav">
-        <div className="left">
-          <Link to='/' className='Logo'>"Logo"</Link>
+  return (
+    <div className="topnav">
+      <div className="left">
+        <Link to='/' className='Logo'>"Logo"</Link>
+      </div>
+      <div className="right">
+        <Link to='/contact' className='Link'>Contact</Link>
+        <Link to='/help' className='Link'>Help</Link>
+        <Link to='/about' className='Link'>About</Link>
+        <div>
+          <button id="nt" className="Link" onClick={signIn} >Login</button>
         </div>
-        <div className="right">
-          <Link to='/contact' className='Link'>Contact</Link>
-          <Link to='/help' className='Link'>Help</Link>
-          <Link to='/about' className='Link'>About</Link>
-          <div>
-            <button id="nt" className="Link" onClick={signIn} >Login</button>
-          </div>
-        </div>
-      </div >
-    );
+      </div>
+    </div >
+  );
 }
 
 export default Navbar;
 
 
 
-  /*//current authenticated user
-  const [currentUser, setCurrentUser] = useState<AccountInfo>();
+/*//current authenticated user
+const [currentUser, setCurrentUser] = useState<AccountInfo>();
 
-  //authentication callback
-  const onAuthenticated = async (userAccountInfo: AccountInfo) => {
-    setCurrentUser(userAccountInfo);
-  };
+//authentication callback
+const onAuthenticated = async (userAccountInfo: AccountInfo) => {
+  setCurrentUser(userAccountInfo);
+};
 
-  /* Render JSON data in readable format
-  const PrettyPrintJson = ({ data }: any) => {
-    return (
-      <div>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </div>
-    );
-  };*/
+/* Render JSON data in readable format
+const PrettyPrintJson = ({ data }: any) => {
+  return (
+    <div>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};*/
 
 
-  const AccInfo = ({ data }: any) => {
-    return (
-      <div>
-        <pre>
-          {JSON.stringify(data.idTokenClaims, null, 2)}
-        </pre>
-      </div>
-    )
-  }
+const AccInfo = ({ data }: any) => {
+  return (
+    <div>
+      <pre>
+        {JSON.stringify(data.idTokenClaims, null, 2)}
+      </pre>
+    </div>
+  )
+}

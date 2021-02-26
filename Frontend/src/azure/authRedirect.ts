@@ -2,12 +2,11 @@
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
 import { loginRequest, msalConfig } from "./authConfig";
-import { callLogin } from "./api";
+import { callLogin, setUsername } from "./api";
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
 let username = "";
-
 
 myMSALObj.handleRedirectPromise()
     .then(handleResponse)
@@ -39,6 +38,8 @@ function selectAccount() {
 }
 
 function handleResponse(response) {
+
+    setUsername(username);
     console.log(response);
 
     /**

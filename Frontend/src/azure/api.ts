@@ -35,6 +35,10 @@ export async function callApi(endpoint, token, data) {
   return retData;
 }
 
+export function setUsername(user) {
+  username = user;
+}
+
 export function isLogedIn() {
   return username;
 }
