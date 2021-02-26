@@ -6,7 +6,6 @@ import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
 
-
     if (req.body) {
         req.body = sanitizeHtmlJson(req.body);
         context.log(JSON.stringify(req.body))
@@ -21,8 +20,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
         return context.done();
     }
-
-    let username = null;
 
     let token = req.headers.authorization;
 
@@ -110,12 +107,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
                             context.log("Accessed by ueser without admin permission");
                             return context.done();
                         }
-
                     }
                 });
-
-
-
             }
         });
     };
