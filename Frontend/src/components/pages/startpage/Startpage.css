@@ -1,18 +1,17 @@
-.App {
-    background-color: lightblue;
-    font-family: "OpenSans";
-  }
 
+/**/
 .page{
   margin-top: 100px;
 }
 
+/* Styles the loginDiv*/
 .loginDiv{
   position: absolute;
   bottom: 20%;
   width: 150px;
 }
 
+/* Styles the login button*/
 .login{
   border-radius: 25px;
   background: #73AD21;
@@ -20,6 +19,7 @@
   height: 50px;
 }
 
+/* Styles the text under the login button*/
 .loginText{
   font-size: 10px;
   text-align: center;

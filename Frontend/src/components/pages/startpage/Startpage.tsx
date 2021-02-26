@@ -1,10 +1,13 @@
 import "./Startpage.css";
-import { signIn } from "../../../azure/authPopup"; // For popup
+import { signIn } from "../../../azure/authRedirect"; // For popup
 import { Link } from "react-router-dom";
 
+/**
+ * @returns A react component with the login page
+ */
 function Startpage() {
   return (
-    <div className="App">
+    <div>
       <div className="page">
         <h1 style={{fontSize: 100}}>Velkommen</h1>
       </div>

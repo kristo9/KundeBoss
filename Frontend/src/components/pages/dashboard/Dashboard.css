@@ -1,14 +1,24 @@
-.Help {
-    background-color: lightblue;
+
+/* Changes the syle of the table contaning the customer information */
+.diasplayTable {
+    border-collapse: separate;
+    width: 100%;
+    border-spacing: 0 10px;
+  }  
+
+/* Changes the syle of the table-square */
+td {
+    padding: 8px 20px 8px 20px;
+    text-align: left;
   }
 
-.infoDiv{
+/* Changes the syle of the rows in the table */
+.rad{
     background-color: white;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 15px;
-}
+    box-shadow: 0px 0px 6px lightgray;
+  }
 
-span + span {
-    margin-left: 100px;
+/* Changes the syle of the rows in the table when hover*/
+.rad:hover {
+  background-color:#f5f5f5;
 }

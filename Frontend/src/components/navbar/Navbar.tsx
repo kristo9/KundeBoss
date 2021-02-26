@@ -4,8 +4,6 @@ import { AccountInfo } from "@azure/msal-browser";
 import { Link } from "react-router-dom";
 
 
-
-
 //import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
 import { signIn } from "../../azure/authRedirect"; // For redirect
 
@@ -24,6 +22,9 @@ import { signIn } from "../../azure/authRedirect"; // For redirect
   }
 }*/
 
+/**
+ * @returns a react component of the navbar 
+ */
 function Navbar() {
 
   /* if (authenticated){ // Set auth to say login

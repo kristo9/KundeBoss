@@ -1,5 +1,8 @@
 import "./Contact.css";
 
+/**
+ * @returns A react component with the contact page
+ */
 function Contact() {
 
   return (

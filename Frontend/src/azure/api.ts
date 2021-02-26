@@ -61,6 +61,17 @@ export async function callLogin() {
     });
 
   username = retDataApi.name;
-
+  
+  retDataApi["test"]="alex";
+  retDataApi["abc"]="nfaso";
+  
+  retDataApi= {"Kunder": [
+    {"name": "navn1", "epost": "epost1", "divText": "Div Text 1"},
+    {"name": "navn2", "epost": "epost2", "divText": "Div Text 2"},
+    {"name": "navn3", "epost": "epost3", "divText": "Div Text 3"},
+    {"name": "navn4", "epost": "epost4", "divText": "Div Text 4"}
+  ]
+  }
+  
   return retDataApi;
 }
