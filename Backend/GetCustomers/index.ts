@@ -66,7 +66,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 return context.done();
             } else {
                 //TODO Verify that user has permission to do what is asked
-                console.log(decoded);
                 employeeId = decoded.preferred_username;
                 context.log("valid token");
                 functionQuery(client);

@@ -6,7 +6,7 @@ import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
 
-    let employeeId;
+    req.body = sanitizeHtmlJson(req.body);
 
     let token = req.headers.authorization;
 
