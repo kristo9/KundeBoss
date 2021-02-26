@@ -1,10 +1,6 @@
 import { apiConfig } from "./apiConfig";
-//import { getTokenPopup } from "./authPopup";
 import { getTokenRedirect } from "./authRedirect";
-
 import { tokenRequest } from "./authConfig";
-
-const ui = require("./ui");
 
 let username = null;
 
