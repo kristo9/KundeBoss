@@ -5,7 +5,7 @@ import { tokenRequest } from "./authConfig";
 let username = null;
 
 export async function callApi(endpoint, token, data) {
-  console.log(endpoint, token)
+
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
 
@@ -35,14 +35,6 @@ export async function callApi(endpoint, token, data) {
   return retData;
 }
 
-export function setUsername(user) {
-  username = user;
-}
-
-export function isLogedIn() {
-  return username;
-}
-
 async function prepareCall(apiName, data = {}) {
   let retDataApi = null;
   await getTokenRedirect(tokenRequest)
@@ -59,8 +51,6 @@ async function prepareCall(apiName, data = {}) {
       console.error(error);
     });
 
-  username = retDataApi.name;
-
   return retDataApi;
 }
 
@@ -71,4 +61,21 @@ export async function callLogin() {
 
 export async function getEmployee() {
   return await prepareCall("GetCustomers");
+}
+
+
+export function setUsername(user) {
+  username = user;
+}
+
+export function isLogedIn() {
+  return username;
+}
+
+export function logToken() {
+  getTokenRedirect(tokenRequest)
+    .then(response => {
+      if (response)
+        console.log(response.accessToken)
+    });
 }
