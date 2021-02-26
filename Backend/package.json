@@ -17,8 +17,6 @@
   "dependencies": {
     "jwks-rsa": "^1.12.2",
     "mongodb": "^3.6.4",
-    "sanitize-html": "^2.3.2",
-    "tsc": "^1.20150623.0",
-    "typescript": "^4.2.2"
+    "sanitize-html": "^2.3.2"
   }
 }
