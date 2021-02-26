@@ -10,7 +10,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     let token = req.headers.authorization;
     //console.log(token);
 
-    
+
     if (token)
         token = req.headers.authorization.replace(/^Bearer\s+/, "");
     else {
@@ -24,7 +24,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
 
     const authorize = (client) => {
-        
+
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
@@ -49,26 +49,27 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
     // TODO: Query to run on database
     const query = {
-        "employeeId":employeeId
+        "employeeId": employeeId
 
     };
 
     // TODO: Projection,  Only for retrieving data
     const projection = {
-        "name":1,
-        "employeeId":1,
-        "customerInformation._id":1,
-        "customerInformation.name":1,
-        "customerInformation.contact.name":1,
-        "customerInformation.contact.mail":1,
-        "customerInformation.tags":1
+        "name": 1,
+        "employeeId": 1,
+        "customerInformation._id": 1,
+        "customerInformation.name": 1,
+        "customerInformation.contact.name": 1,
+        "customerInformation.contact.mail": 1,
+        "customerInformation.tags": 1
     };
 
 
     const functionQuery = (client) => {
 
         client.db(DBName).collection("employee").aggregate([
-            { $lookup:
+            {
+                $lookup:
                 {
                     from: 'customer',
                     localField: 'customers',
@@ -85,11 +86,11 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
             let emp;
             docs.forEach(element => {
-                if(element.employeeId == employeeId){
+                if (element.employeeId == employeeId) {
                     emp = element;
                 }
             });
-            
+
             emp = sanitizeHtmlJson(emp);
 
             context.log('Success!');

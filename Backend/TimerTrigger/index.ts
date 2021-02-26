@@ -1,5 +1,5 @@
 import { Context } from "@azure/functions"
-import { connectWrite, connectRead } from "../SharedFiles/dataBase";
+import { connectRead } from "../SharedFiles/dataBase";
 
 export default (context: Context, myTimer: any) => {
     // Connecting du db to prevent cold start
