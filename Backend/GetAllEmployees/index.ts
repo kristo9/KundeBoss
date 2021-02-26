@@ -4,6 +4,9 @@
 import { Context, HttpRequest } from "@azure/functions"
 import { verify } from "jsonwebtoken";
 import { getKey, options, setKeyNull } from "../SharedFiles/auth";
+<<<<<<< HEAD
+>>>>>>> 67892811a5bcbd7caaf6fa0d20493bc37fc0b7ec
+=======
 >>>>>>> 67892811a5bcbd7caaf6fa0d20493bc37fc0b7ec
 import { DBName, connectRead } from "../SharedFiles/dataBase";
 import { sanitizeHtmlJson } from "../SharedFiles/inputValidation";
@@ -29,6 +32,7 @@ export default (context: Context, req: HttpRequest): any => {
     const inputValidation = () => {
         connectRead(context, authorize);
     };
+<<<<<<< HEAD
 
     const authorize = (client: any) => {
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
@@ -51,6 +55,30 @@ export default (context: Context, req: HttpRequest): any => {
 
                 functionQuery(client);
             }
+=======
+
+    const authorize = (client: any) => {
+        verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
+            // verified and decoded token
+            if (err) {
+                setKeyNull();
+                // invalid token
+                context.res = {
+                    status: 401,
+                    body: {
+                        'name': "unauthorized",
+                    }
+                };
+                context.log("invalid token");
+
+                return context.done();
+            }
+            else {
+                context.log("valid token");
+
+                functionQuery(client);
+            }
+>>>>>>> 67892811a5bcbd7caaf6fa0d20493bc37fc0b7ec
         });
     };
 
