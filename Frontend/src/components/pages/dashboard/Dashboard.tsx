@@ -1,6 +1,7 @@
 import { callLogin, getEmployee } from "../../../azure/api";
 import "./Dashboard.css";
 import React from "react";
+import { useHistory } from 'react-router-dom'
 
 
 /**
@@ -75,9 +76,10 @@ class Dashboard extends React.Component<{},{customers: any}>{
    * Displays a greeting if the user is logged in.
    */
   private displayGreeting(){
-    if(this.state.customers){
+    if(this.state.customers && this.state.customers.name){
       return(
-        <h1>Velkommen {this.state.customers.name} </h1>
+        <h1>Velkommen {this.state.customers.name.split(" ")[0]}
+        </h1>
       );
     }
     else{
@@ -122,13 +124,14 @@ interface customerProp{
 
 
 /**
- * @param {customerProp} customerProp contains the informastion about the customer
+ * @param {customerProp} prop contains the informastion about the customer
  * @returns A react component with a table row contaning customer information
  */
 function InfoBox(prop: customerProp){
   return(
-        <tr className="rad">
-          <td><b>{prop.customerName}</b></td>
+        <tr className="rad" onClick={ ()=>{console.log("trykk " + prop.customerName)} }>
+          <td><button>
+          <b>{prop.customerName}</b></button></td>
           <td>{prop.contactName}</td>
           <td>{prop.mail}</td>
          </tr>
