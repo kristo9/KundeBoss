@@ -72,7 +72,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 $lookup:
                 {
                     from: 'customer',
-                    localField: 'customers',
+                    localField: 'customers.id',
                     foreignField: '_id',
                     as: 'customerInformation'
                 }
