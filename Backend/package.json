@@ -11,8 +11,7 @@
   },
   "devDependencies": {
     "@azure/functions": "^1.2.3",
-    "@types/jsonwebtoken": "^8.5.0",
-    "@types/node": "^14.14.31"
+    "@types/jsonwebtoken": "^8.5.0"
   },
   "dependencies": {
     "jwks-rsa": "^1.12.2",

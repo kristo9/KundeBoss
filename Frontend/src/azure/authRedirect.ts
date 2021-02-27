@@ -2,7 +2,7 @@
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
 import { loginRequest, msalConfig } from "./authConfig";
-import { setUsername, logToken } from "./api";
+import { setUsername, callLogin } from "./api";
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
@@ -10,7 +10,7 @@ let username = "";
 
 myMSALObj.handleRedirectPromise()
     .then(handleResponse)
-    .then(logToken)
+    .then(callLogin)
     .catch(error => {
         console.error(error);
     });
@@ -35,10 +35,6 @@ function selectAccount() {
 }
 
 function handleResponse(response) {
-
-    setUsername(username);
-    console.log(username);
-
     /**
      * To see the full list of response object properties, visit:
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#response
@@ -49,6 +45,9 @@ function handleResponse(response) {
     } else {
         selectAccount();
     }
+
+    setUsername(username);
+    console.log(username);
 }
 
 export function signIn() {

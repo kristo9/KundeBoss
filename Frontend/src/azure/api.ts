@@ -49,9 +49,19 @@ function prepareCall(apiName, data = {}) {
     });
 }
 
-
 export function callLogin() {
-  return prepareCall("LoginTrigger");
+  if (username) {
+
+    getTokenRedirect(tokenRequest)
+      .then(response => {
+        if (response)
+          console.log(response.accessToken)
+      });
+    return prepareCall("LoginTrigger")
+      .then(response => {
+        console.log("Called login func");
+      });
+  }
 }
 
 export function getEmployee() {
@@ -68,10 +78,10 @@ export function isLogedIn() {
 }
 
 export function logToken() {
-  if (username)
-    getTokenRedirect(tokenRequest)
-      .then(response => {
-        if (response)
-          console.log(response.accessToken)
-      });
+
+  getTokenRedirect(tokenRequest)
+    .then(response => {
+      if (response)
+        console.log(response.accessToken)
+    });
 }
