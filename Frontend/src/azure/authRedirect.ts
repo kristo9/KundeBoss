@@ -37,7 +37,7 @@ function selectAccount() {
 function handleResponse(response) {
 
     setUsername(username);
-    console.log(response);
+    console.log(username);
 
     /**
      * To see the full list of response object properties, visit:

@@ -68,9 +68,10 @@ export function isLogedIn() {
 }
 
 export function logToken() {
-  getTokenRedirect(tokenRequest)
-    .then(response => {
-      if (response)
-        console.log(response.accessToken)
-    });
+  if (username)
+    getTokenRedirect(tokenRequest)
+      .then(response => {
+        if (response)
+          console.log(response.accessToken)
+      });
 }
