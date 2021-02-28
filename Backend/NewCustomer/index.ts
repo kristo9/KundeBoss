@@ -1,110 +1,66 @@
 import { Context, HttpRequest } from "@azure/functions"
-import { sanitizeHtmlJson, nameVal, mailVal } from "../SharedFiles/inputValidation";
-import { getKey, options, setKeyNull } from "../SharedFiles/auth";
+import { prepInput, nameVal, mailVal, returnResult, errorWrongInput } from "../SharedFiles/dataValidation";
+import { getKey, options, prepToken, errorQuery, errorUnauthorized } from "../SharedFiles/auth";
 import { verify } from "jsonwebtoken";
 import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
+    req.body = prepInput(context, req.body);
 
-    if (req.body) {
-        req.body = sanitizeHtmlJson(req.body);
-        context.log(JSON.stringify(req.body))
-    }
-    else {
-        context.res = {
-            status: 400,
-            body: {
-                "error": "no body"
-            }
-        };
-
+    if (req.body === null) {
         return context.done();
     }
 
-    let token = req.headers.authorization;
+    let token = prepToken(context, req.headers.authorization);
 
-    if (token)
-        token = req.headers.authorization.replace(/^Bearer\s+/, "");
-    else {
-        context.res = {
-            status: 400,
-            body: {
-                "error": "no token"
-            }
-        };
+    if (token === null) {
         return context.done();
     }
-
 
     const inputValidation = () => {
         let errMsg = req.body;
         let validInput = true;
 
         if (!(req.body.name && req.body.mail)) {
-            context.res = {
-                status: 400,
-                body: "wrong input"
-            };
+            errorWrongInput(context)
             return context.done();
         }
-
         if (!nameVal(req.body.name)) {
             errMsg.name = "false";
             validInput = false;
-        } if (!mailVal(req.body.mail)) {
+        }
+        if (!mailVal(req.body.mail)) {
             errMsg.mail = "false";
             validInput = false;
-        } if (validInput) {
-
+        }
+        if (validInput) {
             connectRead(context, authorize);
-
-        } else {
-            context.res = {
-                status: 400,
-                body: errMsg
-            }
+        }
+        else {
+            errorWrongInput(context)
             return context.done();
         }
     };
 
-    const authorize = (client) => {
-
+    const authorize = (client: { db: (arg0: string) => any }) => {
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
-                setKeyNull();
-                // invalid token
-                context.res = {
-                    status: 401,
-                    body: {
-                        'name': "unauthorized",
-                    }
-
-                };
-                context.log("invalid token");
+                errorUnauthorized(context, "Token not valid");
                 return context.done();
-            } else {
-
-                context.log("valid token");
-
-                client.db(DBName).collection("employee").find({ "employeeId": decoded.preferred_username }).project({ "admin": 1 }).toArray((error, docs) => {
-
+            }
+            else {
+                client.db(DBName).collection("employee").find({ "employeeId": decoded.preferred_username }).project({ "admin": 1 }).toArray((error: any, docs: { admin: string; }[]) => {
                     if (error) {
-                        context.log("Error running query");
-                        context.res = { status: 500, body: "Error running query" };
+                        errorQuery(context);
                         return context.done();
-
-                    } else {
-
-                        if (docs[0].admin === "write")
+                    }
+                    else {
+                        if (docs[0].admin === "write") {
                             connectWrite(context, functionQuery);
+                        }
                         else {
-                            context.res = {
-                                status: 401, body: {
-                                    'name': "unauthorized, you need admin-write permission"
-                                }
-                            };
-                            context.log("Accessed by ueser without admin permission");
+                            errorUnauthorized(context, "User dont have admin permission");
                             return context.done();
                         }
                     }
@@ -129,23 +85,13 @@ module.exports = (context: Context, req: HttpRequest): any => {
         "infoReference": req.body.infoReference || "null"
     };
 
-
-    const functionQuery = (client) => {
-
-        client.db(DBName).collection("customer").insertOne(query, (error, docs) => {
+    const functionQuery = (client: { db: (arg0: string) => any }) => {
+        client.db(DBName).collection("customer").insertOne(query, (error: any, docs: JSON | JSON[]) => {
             if (error) {
-                context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' }
+                errorQuery(context);
                 return context.done();
             }
-
-            docs = sanitizeHtmlJson(docs);
-
-            context.log('Success!');
-            context.res = {
-                headers: { 'Content-Type': 'application/json' },
-                body: docs
-            };
+            returnResult(context, docs[0]);
             context.done();
         });
     };

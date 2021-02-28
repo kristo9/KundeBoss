@@ -1,65 +1,41 @@
 import { Context, HttpRequest } from "@azure/functions"
-import { sanitizeHtmlJson, nameVal } from "../SharedFiles/inputValidation";
-import { getKey, options, setKeyNull } from "../SharedFiles/auth";
+import { returnResult } from "../SharedFiles/dataValidation";
+import { getKey, options, prepToken, errorQuery, errorUnauthorized } from "../SharedFiles/auth";
 import { verify } from "jsonwebtoken";
-import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
+import { DBName, connectRead } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
-
     let employeeId: any;
-    let token = req.headers.authorization;
     //console.log(token);
+    let token = prepToken(context, req.headers.authorization)
 
-    
-    if (token)
-        token = req.headers.authorization.replace(/^Bearer\s+/, "");
-    else {
-        context.res = {
-            status: 400,
-            body: {
-                "error": "no token"
-            }
-        };
+    if (token === null) {
         return context.done();
     }
 
-    const authorize = (client) => {
-        
+    const authorize = (client: { db: (arg0: string) => any }) => {
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
-                setKeyNull();
-                // invalid token
-                context.res = {
-                    status: 401,
-                    body: {
-                        'name': "unauthorized",
-                    }
-                };
-                context.log("invalid token");
+                errorUnauthorized(context, "Token not valid");
                 return context.done();
-            } else {
-                context.log("valid token");
+            }
+            else {
                 employeeId = decoded.preferred_username;
                 console.log(employeeId);
 
-                client.db(DBName).collection("employee").find({ "employeeId": employeeId }).project({ "admin": 1 }).toArray((error, docs) => {
+                client.db(DBName).collection("employee").find({ "employeeId": employeeId }).project({ "admin": 1 }).toArray((error: any, docs: JSON | JSON[]) => {
 
                     if (error) {
-                        context.log("Error running query");
-                        context.res = { status: 500, body: "Error running query" };
+                        errorQuery(context);
                         return context.done();
-
-                    } else {
-                        if (docs[0].admin === "write")
+                    }
+                    else {
+                        if (docs[0].admin === "write") {
                             functionQuery(client);
+                        }
                         else {
-                            context.res = {
-                                status: 401, body: {
-                                    'name': "ERROR: Need higher access level"
-                                }
-                            };
-                            context.log("Accessed by user without admin permission");
+                            errorUnauthorized(context, "User dont have admin-write permission");
                             return context.done();
                         }
                     }
@@ -77,23 +53,13 @@ module.exports = (context: Context, req: HttpRequest): any => {
         "customer": 1
     };
 
-
-    const functionQuery = (client) => {
-        
-        client.db(DBName).collection("employee").find().project(projection).toArray((error, docs) => {
+    const functionQuery = (client: { db: (arg0: string) => any }) => {
+        client.db(DBName).collection("employee").find().project(projection).toArray((error: any, docs: JSON) => {
             if (error) {
-                context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' }
+                errorQuery(context);
                 return context.done();
             }
-
-            docs = sanitizeHtmlJson(docs);
-
-            context.log('Success!');
-            context.res = {
-                headers: { 'Content-Type': 'application/json' },
-                body: docs
-            };
+            returnResult(context, docs)
             context.done();
         });
     };
