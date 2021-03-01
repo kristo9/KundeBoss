@@ -1,8 +1,8 @@
 import { Context, HttpRequest } from "@azure/functions"
-import { prepInput, nameVal, mailVal, returnResult, errorWrongInput } from "../SharedFiles/dataValidation";
+import { returnResult, prepInput, errorWrongInput } from "../SharedFiles/dataValidation";
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from "../SharedFiles/auth";
 import { verify } from "jsonwebtoken";
-import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
+import { DBName, connectRead } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
     req.body = prepInput(context, req.body);
@@ -21,46 +21,44 @@ module.exports = (context: Context, req: HttpRequest): any => {
         let errMsg = req.body;
         let validInput = true;
 
-        if (!(req.body.name && req.body.mail)) {
-            errorWrongInput(context)
+        if (!(req.body.types)) {
+            errorWrongInput(context);
             return context.done();
         }
-        if (!nameVal(req.body.name)) {
-            errMsg.name = "false";
-            validInput = false;
-        }
-        if (!mailVal(req.body.mail)) {
-            errMsg.mail = "false";
-            validInput = false;
-        }
+        //console.log(req.body.types);
+        console.log(req.body.types);
+
         if (validInput) {
             connectRead(context, authorize);
         }
         else {
-            errorWrongInput(context)
+            context.res = {
+                status: 400,
+                body: errMsg
+            }
             return context.done();
         }
     };
 
-    const authorize = (client: { db: (arg0: string) => any }) => {
+    const authorize = (client) => {
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
-                errorUnauthorized(context, "Token not valid");
+                errorUnauthorized(context, "Msg");
                 return context.done();
             }
             else {
                 client.db(DBName).collection("employee").find({ "employeeId": decoded.preferred_username }).project({ "admin": 1 }).toArray((error: any, docs: { admin: string; }[]) => {
+
                     if (error) {
                         errorQuery(context);
                         return context.done();
                     }
                     else {
-                        if (docs[0].admin === "write") {
-                            connectWrite(context, functionQuery);
-                        }
+                        if (docs[0].admin === "write") { }
                         else {
-                            errorUnauthorized(context, "User dont have admin permission");
+                            errorUnauthorized(context, "Msg");
+
                             return context.done();
                         }
                     }
@@ -70,28 +68,17 @@ module.exports = (context: Context, req: HttpRequest): any => {
     };
 
     const query = {
-        "name": req.body.name,
-        "contact": {
-            "phone": req.body.phone || "null",
-            "mail": req.body.mail,
-            "name": req.body.contactName || "null"
-        },
-        "suppliers": req.body.suppliers || [],
-        "tags": req.body.tags || [],
-        "comment": req.body.comment || "null",
-        "types": [],
-        "typeValues": [],
-        "customerAgreements": [],
-        "infoReference": req.body.infoReference || "null"
+
     };
 
-    const functionQuery = (client: { db: (arg0: string) => any }) => {
-        client.db(DBName).collection("customer").insertOne(query, (error: any, docs: JSON | JSON[]) => {
+    const functionQuery = (client) => {
+
+        client.db(DBName).collection("customer").insertOne(query, (error: any, docs: JSON) => {
             if (error) {
                 errorQuery(context);
                 return context.done();
             }
-            returnResult(context, docs[0]);
+            returnResult(context, docs);
             context.done();
         });
     };

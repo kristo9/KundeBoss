@@ -1,31 +1,7 @@
 import { callLogin, getEmployee } from "../../../azure/api";
 import "./Dashboard.css";
 import React from "react";
-
-
-interface customerProp{
-  customerName: string;
-  contactName: string;
-  mail: string;
-  tags?: any;
-}
-
-
-/**
- * @param {customerProp} customerProp contains the informastion about the customer
- * @returns A react component with a table row contaning customer information
- */
-function InfoBox(prop: customerProp){
-  return(
-
-        <tr className="rad">
-          <td>{prop.customerName}</td>
-          <td>{prop.contactName}</td>
-          <td>{prop.mail}</td>
-         </tr>
-
-  );
-}
+import { useHistory } from 'react-router-dom'
 
 
 /**
@@ -34,16 +10,8 @@ function InfoBox(prop: customerProp){
 class Dashboard extends React.Component<{},{customers: any}>{
 
   //test data
-  k = {"customerName": [
-    {"name": "navn1", "epost": "epost1", "divText": "Div Text 1"},
-    {"name": "navn2", "epost": "epost2", "divText": "Div Text 2"},
-    {"name": "navn3", "epost": "epost3", "divText": "Div Text 3"},
-    {"name": "navn4", "epost": "epost4", "divText": "Div Text 4"}
-  ]
-  };
-
   kr = {
-    "customerNames": [
+    "customerInformation": [
         {
           "_id": "6038a9dd01c4ba40c8203cc5",
           "name": "Test AS",
@@ -63,7 +31,7 @@ class Dashboard extends React.Component<{},{customers: any}>{
   constructor(props) {
     super(props);
     this.state = {
-      customers: this.kr
+      customers: null
     };
   }
 
@@ -93,22 +61,81 @@ class Dashboard extends React.Component<{},{customers: any}>{
     return (
       <div>
         <div className="page">
-          <h1>Velkommen</h1>
-          <h1>Her er dashboard</h1>
+          {this.displayGreeting()}
           <div>
-            <table className="diasplayTable">
             {
-                //Creates a table entry for each customer returned from the database.
-                this.state.customers.customerNames.map(customer=>(
-                  <InfoBox customerName={customer.name} contactName={customer.contact.name} mail={customer.contact.mail}/>
-                ))
+              this.displayCustomers()
             }
-            </table>
           </div>
         </div>
       </div>
     );
   }
+
+  /**
+   * Displays a greeting if the user is logged in.
+   */
+  private displayGreeting(){
+    if(this.state.customers && this.state.customers.name){
+      return(
+        <h1>Velkommen {this.state.customers.name.split(" ")[0]}
+        </h1>
+      );
+    }
+    else{
+      return(
+        <h1>Velkommen</h1>
+      );
+    }
+  }
+  
+  /**
+  * Displays the emplyees customers
+  */
+  private displayCustomers(){
+    if(this.state.customers){
+      return(
+        <table className="diasplayTable">
+        {
+            //Creates a table entry for each customer returned from the database.
+            this.state.customers.customerInformation.map(customer=>(
+              <InfoBox customerName={customer.name} contactName={customer.contact.name} mail={customer.contact.mail} key={customer._id}/>
+            ))
+        }
+        </table>
+      );
+    }
+    else{
+      return(
+        <div>
+          <p>Henter data...</p>
+        </div>
+      );
+    }
+  }
+}
+
+interface customerProp{
+  customerName: string;
+  contactName: string;
+  mail: string;
+  tags?: any;
+}
+
+
+/**
+ * @param {customerProp} prop contains the informastion about the customer
+ * @returns A react component with a table row contaning customer information
+ */
+function InfoBox(prop: customerProp){
+  return(
+        <tr className="rad" onClick={ ()=>{console.log("trykk " + prop.customerName)} }>
+          <td><button>
+          <b>{prop.customerName}</b></button></td>
+          <td>{prop.contactName}</td>
+          <td>{prop.mail}</td>
+         </tr>
+  );
 }
 
 export default Dashboard;

@@ -1,7 +1,6 @@
 // Create the main myMSALObj instance
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
-import { welcomeUser } from "./ui";
 import { loginRequest, msalConfig } from "./authConfig";
 import { callLogin } from "./api";
 
@@ -29,7 +28,6 @@ function selectAccount() {
         console.warn("Multiple accounts detected.");
     } else if (currentAccounts.length === 1) {
         username = currentAccounts[0].username;
-        welcomeUser(username);
         authenticated = true;
     }
 }

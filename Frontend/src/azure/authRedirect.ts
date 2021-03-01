@@ -1,21 +1,16 @@
 // Create the main myMSALObj instance
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
-import { welcomeUser } from "./ui";
 import { loginRequest, msalConfig } from "./authConfig";
-import { callLogin } from "./api";
+import { setUsername, callLogin } from "./api";
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
 let username = "";
 
-
 myMSALObj.handleRedirectPromise()
     .then(handleResponse)
-    .then(async () => {
-        let c = await callLogin();
-        console.log(c.name);
-    })
+    .then(callLogin)
     .catch(error => {
         console.error(error);
     });
@@ -36,13 +31,10 @@ function selectAccount() {
         console.warn("Multiple accounts detected.");
     } else if (currentAccounts.length === 1) {
         username = currentAccounts[0].username;
-        welcomeUser(username);
     }
 }
 
 function handleResponse(response) {
-    console.log(response);
-
     /**
      * To see the full list of response object properties, visit:
      * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#response
@@ -50,10 +42,12 @@ function handleResponse(response) {
 
     if (response !== null) {
         username = response.account.username;
-        welcomeUser(username);
     } else {
         selectAccount();
     }
+
+    setUsername(username);
+    console.log(username);
 }
 
 export function signIn() {
@@ -81,6 +75,8 @@ export function signOut() {
     myMSALObj.logout(logoutRequest);
 }
 
+selectAccount();
+
 export function getTokenRedirect(request): Promise<any> {
 
     /**
@@ -96,9 +92,15 @@ export function getTokenRedirect(request): Promise<any> {
             console.warn("silent token acquisition fails. acquiring token using redirect");
             if (error instanceof InteractionRequiredAuthError) {
                 // fallback to interaction when silent call fails
-                return myMSALObj.acquireTokenRedirect(request);
+                return myMSALObj.acquireTokenRedirect(request)
+                    .then(response => {
+                        console.log(response);
+                        return response;
+                    }).catch(error => {
+                        console.error(error);
+                    });
             } else {
-                console.error(error);
+                console.warn(error);
             }
         });
 }

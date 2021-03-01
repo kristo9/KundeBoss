@@ -1,15 +1,11 @@
 import { apiConfig } from "./apiConfig";
-//import { getTokenPopup } from "./authPopup";
 import { getTokenRedirect } from "./authRedirect";
-
 import { tokenRequest } from "./authConfig";
-
-const ui = require("./ui");
 
 let username = null;
 
-export async function callApi(endpoint, token, data) {
-  console.log(endpoint, token)
+export function callApi(endpoint, token, data) {
+
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
 
@@ -23,63 +19,69 @@ export async function callApi(endpoint, token, data) {
 
   console.log('Calling Web API...');
 
-  let retData = null;
-
-  await fetch(endpoint, options)
+  return fetch(endpoint, options)
     .then(response => response.json())
     .then(response => {
 
       if (response) {
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
-        retData = response;
+        return response;
       }
     }).catch(error => {
       console.error(error);
     });
-  return retData;
+}
+
+function prepareCall(apiName, data = {}) {
+
+  return getTokenRedirect(tokenRequest)
+    .then(response => {
+      if (response) {
+        console.log("access_token acquired at: " + new Date().toString());
+        try {
+          return callApi(apiConfig.uri + apiName, response.accessToken, data);
+        } catch (error) {
+          console.warn(error);
+        }
+      }
+    }).catch(error => {
+      console.error(error);
+    });
+}
+
+export function callLogin() {
+  if (username) {
+
+    getTokenRedirect(tokenRequest)
+      .then(response => {
+        if (response)
+          console.log(response.accessToken)
+      });
+    return prepareCall("LoginTrigger")
+      .then(response => {
+        console.log("Called login func");
+      });
+  }
+}
+
+export function getEmployee() {
+  return prepareCall("GetCustomers");
+}
+
+
+export function setUsername(user) {
+  username = user;
 }
 
 export function isLogedIn() {
   return username;
 }
 
+export function logToken() {
 
-export async function callLogin() {
-  let retDataApi = null;
-  await getTokenRedirect(tokenRequest)
-    .then(async response => {
-      if (response) {
-        console.log("access_token acquired at: " + new Date().toString());
-        try {
-          retDataApi = await callApi(apiConfig.uri + "LoginTrigger", response.accessToken, {});
-        } catch (error) {
-          console.warn(error);
-        }
-      }
-    }).catch(error => {
-      console.error(error);
+  getTokenRedirect(tokenRequest)
+    .then(response => {
+      if (response)
+        console.log(response.accessToken)
     });
-
-  username = retDataApi.name;
-
-  return retDataApi;
-}
-
-export async function getEmployee() {
-  let retDataApi = null;
-  await getTokenRedirect(tokenRequest)
-    .then(async response => {
-      if (response) {
-        console.log("access_token acquired at: " + new Date().toString());
-        try {
-          retDataApi = await callApi(apiConfig.uri + "GetCustomers", response.accessToken, {});
-        } catch (error) {
-          console.warn(error);
-        }
-      }
-    }).catch(error => {
-      console.error(error);
-    });
-
-  return retDataApi;
 }
