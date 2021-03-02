@@ -1,10 +1,8 @@
-import './Navbar.css';
+import "./Navbar.css";
 import { Link } from "react-router-dom";
-
 
 //import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
 import { signIn } from "../../azure/authRedirect"; // For redirect
-
 
 /*function AuthText(){ //Funker ikke
   const [txt, setAuthText] = useState("Login");
@@ -21,10 +19,9 @@ import { signIn } from "../../azure/authRedirect"; // For redirect
 }*/
 
 /**
- * @returns a react component of the navbar 
+ * @returns a react component of the navbar
  */
 function Navbar() {
-
   /* if (authenticated){ // Set auth to say login
       console.log("Authenticated1")
     } else {            // Set auth to say logout
@@ -34,23 +31,31 @@ function Navbar() {
   return (
     <div className="topnav">
       <div className="left">
-        <Link to='/' className='Logo'>"Logo"</Link>
+        <Link to="/" className="Logo">
+          "Logo"
+        </Link>
       </div>
       <div className="right">
-        <Link to='/contact' className='Link'>Contact</Link>
-        <Link to='/help' className='Link'>Help</Link>
-        <Link to='/about' className='Link'>About</Link>
+        <Link to="/contact" className="Link">
+          Contact
+        </Link>
+        <Link to="/help" className="Link">
+          Help
+        </Link>
+        <Link to="/about" className="Link">
+          About
+        </Link>
         <div>
-          <button id="nt" className="Link" onClick={signIn} >Login</button>
+          <button id="nt" className="Link" onClick={signIn}>
+            Login
+          </button>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 
 export default Navbar;
-
-
 
 /*//current authenticated user
 const [currentUser, setCurrentUser] = useState<AccountInfo>();
@@ -69,13 +74,10 @@ const PrettyPrintJson = ({ data }: any) => {
   );
 };*/
 
-
 const AccInfo = ({ data }: any) => {
   return (
     <div>
-      <pre>
-        {JSON.stringify(data.idTokenClaims, null, 2)}
-      </pre>
+      <pre>{JSON.stringify(data.idTokenClaims, null, 2)}</pre>
     </div>
-  )
-}
+  );
+};
