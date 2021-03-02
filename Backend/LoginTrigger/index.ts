@@ -3,9 +3,10 @@ import { returnResult } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { verify } from 'jsonwebtoken';
+import { Db, Decoded } from '../SharedFiles/interfaces';
 
 module.exports = (context: Context, req: HttpRequest): any => {
-  /*let decodedToken = null;
+  let decodedToken = null;
 
   let token = prepToken(context, req.headers.authorization);
 
@@ -13,32 +14,26 @@ module.exports = (context: Context, req: HttpRequest): any => {
     return context.done();
   }
 
-  const authorize = (client: { db: (arg0: string) => any }) => {
-    verify(token, getKey, options, (err: any, decoded: { [x: string]: any }) => {
+  const authorize = (db: Db) => {
+    verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // verified and decoded token
       if (err) {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
         decodedToken = decoded;
-        functionQuery(client);
+        functionQuery(db);
       }
     });
   };
 
-  let query = JSON.parse('{}');
-  query['name'] = null;
-  query['employeeId'] = null;
-  query[' customers'] = [];
-  query['admin'] = null;
-  query['customer'] = null;
-
-  const functionQuery = (client: { db: (arg0: string) => any }) => {
-    client
-      .db(DBName)
-      .collection('employee')
+  const functionQuery = (db: Db) => {
+    db.collection('employee')
       .find()
-      .project({ '_id': 0, 'employeeId': 1 })
+      .project({
+        '_id': 0,
+        'employeeId': 1
+      })
       .toArray((error: any, docs: JSON[]) => {
         if (error) {
           errorQuery(context);
@@ -61,35 +56,39 @@ module.exports = (context: Context, req: HttpRequest): any => {
       });
   };
 
-  const firstEmployee = (client: { db: (arg0: string) => any }) => {
+  let query = JSON.parse('{}');
+  query['name'] = null;
+  query['employeeId'] = null;
+  query[' customers'] = [];
+  query['admin'] = null;
+  query['customer'] = null;
+
+  const firstEmployee = (db: Db) => {
     context.log('Creating first employee with admin:write');
     query['admin'] = 'write';
-    createEmplyee(client);
+    createEmplyee(db);
   };
 
-  const createEmplyee = (client: { db: (arg0: string) => any }) => {
+  const createEmplyee = (db: Db) => {
     query['name'] = decodedToken['name'];
     query['employeeId'] = decodedToken['preferred_username'];
 
-    client
-      .db(DBName)
-      .collection('employee')
-      .insertOne(query, (error: any, docs: JSON | JSON[]) => {
-        if (error) {
-          errorQuery(context);
-          return context.done();
-        }
-        context.log('New employee created');
+    db.collection('employee').insertOne(query, (error: any) => {
+      if (error) {
+        errorQuery(context);
+        return context.done();
+      }
+      context.log('New employee created');
 
-        let result: JSON = JSON.parse('{}');
+      let result: JSON = JSON.parse('{}');
 
-        result['name'] = decodedToken['name'];
-        result['firstLogin'] = true;
+      result['name'] = decodedToken['name'];
+      result['firstLogin'] = true;
 
-        returnResult(context, result);
-        context.done();
-      });
+      returnResult(context, result);
+      context.done();
+    });
   };
 
-  connectRead(context, authorize);*/
+  connectRead(context, authorize);
 };
