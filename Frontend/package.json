@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@azure/functions": "^1.2.3",
     "@azure/msal-browser": "^2.11.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -12,6 +13,7 @@
     "@types/node": "^12.19.16",
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
+    "jsonwebtoken": "^8.5.1",
     "msal": "^1.4.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
