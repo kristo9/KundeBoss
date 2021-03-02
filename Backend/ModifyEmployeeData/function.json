@@ -15,5 +15,5 @@
             "name": "res"
         }
     ],
-    "scriptFile": "../dist/ModifyEmployee/index.js"
+    "scriptFile": "../dist/ModifyEmployeeData/index.js"
 }

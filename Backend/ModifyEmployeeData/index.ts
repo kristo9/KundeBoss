@@ -32,7 +32,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
     if (validInput) {
       connectRead(context, authorize);
     } else {
-      console.log('error');
       errorWrongInput(context);
       return context.done();
     }
@@ -56,7 +55,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
               return context.done();
             } else {
               if (docs[0].admin === 'write') {
-                functionQuery(client);
+                connectWrite(context, functionQuery);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
                 console.log(docs[0].admin);
@@ -68,29 +67,40 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  const query = {
-    'name': req.body.name,
-  };
-
-  const projection = {
-    '_id': 0,
-    'name': 1,
-    'employeeId': 1,
-    'admin': 1,
-    'customers': 1,
-    'customer': 1,
-  };
-
   const functionQuery = (client: { db: (arg0: string) => any }) => {
+    const query = { 'name': req.body.origName };
+    console.log('0');
+
+    let newVals = JSON.parse('{}');
+
+    if (req.body.name) {
+      newVals['name'] = req.body.name;
+    }
+    if (req.body.employeeId) {
+      newVals['employeeId'] = req.body.employeeId;
+    }
+    if (req.body.customers) {
+      newVals['customers'] = req.body.customers;
+    }
+    if (req.body.admin) {
+      newVals['admin'] = req.body.admin;
+    }
+    if (req.body.customer) {
+      newVals['customer'] = req.body.customer;
+    }
+
+    newVals = { $set: newVals };
+
     client
       .db(DBName)
       .collection('employee')
-      .find(query)
-      .toArray((error: any, docs: JSON) => {
+      .updateOne(query, newVals, (error: any, docs: JSON) => {
         if (error) {
+          console.log(error);
           errorQuery(context);
           return context.done();
         }
+
         returnResult(context, docs);
         context.done();
       });
