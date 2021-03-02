@@ -56,13 +56,23 @@ module.exports = (context: Context, req: HttpRequest): any => {
       ])
       .project(projection)
       .toArray((error: any, docs: JSON) => {
-        let result = docs[0];
-        let customers = result.customerInformation;
-
         if (error) {
           errorQuery(context);
           return context.done();
         } else {
+          let result = docs[0];
+          let customers = result.customerInformation;
+          let allTags = JSON.parse('[]');
+
+          for (let i = 0; i < customers.length; ++i) {
+            for (let j = 0; j < customers[i].tags.length; ++j) {
+              if (!allTags.includes(customers[i].tags[j])) {
+                allTags.push(customers[i].tags[j]);
+              }
+            }
+          }
+          result['allTags'] = allTags;
+
           if (req.body && req.body.tag) {
             // Search for custoemrs that matches tag search
 
