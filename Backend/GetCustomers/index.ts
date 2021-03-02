@@ -56,6 +56,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
       ])
       .project(projection)
       .toArray((error: any, docs: JSON) => {
+        let result = docs[0];
+        let customers = result.customerInformation;
+
         if (error) {
           errorQuery(context);
           return context.done();
@@ -65,18 +68,18 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
             let customerTagMatch = JSON.parse('[]');
 
-            for (let i = 0; i < docs[0].customerInformation.length; ++i) {
-              for (let j = 0; j < docs[0].customerInformation[i].tags.length; ++j) {
-                if (docs[0].customerInformation[i].tags[j].toLowerCase().includes(req.body.tag.toLowerCase())) {
-                  customerTagMatch.push(docs[0].customerInformation[i]);
+            for (let i = 0; i < customers.length; ++i) {
+              for (let j = 0; j < customers[i].tags.length; ++j) {
+                if (customers[i].tags[j].toLowerCase().includes(req.body.tag.toLowerCase())) {
+                  customerTagMatch.push(customers[i]);
                   break;
                 }
               }
             }
-            docs[0].customerInformation = customerTagMatch;
+            result.customerInformation = customerTagMatch;
           }
 
-          returnResult(context, docs[0]);
+          returnResult(context, result);
           context.done();
         }
       });

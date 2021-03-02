@@ -6,7 +6,7 @@ import { setUsername, callLogin } from './api';
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
-let username = '';
+let username = null;
 
 myMSALObj
   .handleRedirectPromise()
@@ -60,6 +60,8 @@ export function signIn() {
 }
 
 export function signOut() {
+  username = null;
+  setUsername(username);
   /**
    * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request

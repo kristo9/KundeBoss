@@ -60,8 +60,13 @@ export function callLogin() {
   }
 }
 
-export function getEmployee() {
-  return prepareCall('GetCustomers');
+export function getEmployee(tag = {}) {
+  if (tag) {
+    tag = {
+      'tag': tag
+    };
+  }
+  return prepareCall('GetCustomers', tag);
 }
 
 export function setUsername(user) {
