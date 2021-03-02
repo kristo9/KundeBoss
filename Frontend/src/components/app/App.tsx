@@ -8,9 +8,10 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PageNotFound from '../pages/pageNotFound/pageNotFound';
 import Dashboard from '../pages/dashboard/Dashboard';
 
-
+/**
+ * @returns HTML for the entire website
+ */
 function App() {
-
   return (
       <Router>
         <div className="app">

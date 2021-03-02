@@ -1,66 +1,43 @@
 import { Context, HttpRequest } from "@azure/functions"
-import { sanitizeHtmlJson } from "../SharedFiles/inputValidation";
-import { getKey, options, setKeyNull } from "../SharedFiles/auth";
+import { returnResult } from "../SharedFiles/dataValidation";
+import { getKey, options, prepToken, errorQuery, errorUnauthorized } from "../SharedFiles/auth";
 import { DBName, connectRead, connectWrite } from "../SharedFiles/dataBase";
 import { verify } from "jsonwebtoken";
 
 module.exports = (context: Context, req: HttpRequest): any => {
-
-    let token = req.headers.authorization;
-
     let decodedToken = null;
 
-    if (token) {
-        token = req.headers.authorization.replace(/^Bearer\s+/, "");
-    }
-    else {
-        context.res = {
-            status: 400,
-            body: {
-                "error": "no token"
-            }
-        };
+    let token = prepToken(context, req.headers.authorization);
+
+    if (token === null) {
         return context.done();
     }
 
-
-    const inputValidation = () => {
-        connectRead(context, authorize);
-    };
-
-
-    const authorize = (client) => {
+    const authorize = (client: { db: (arg0: string) => any }) => {
         verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
             // verified and decoded token
             if (err) {
-                setKeyNull();
-                // invalid token
-                context.res = {
-                    status: 401,
-                    body: {
-                        'name': "unauthorized",
-                    }
-                };
-                context.log("invalid token");
-
+                errorUnauthorized(context, "Token not valid");
                 return context.done();
             }
             else {
                 decodedToken = decoded;
-                context.log("valid token");
-
                 functionQuery(client);
             }
         });
     };
 
+    let query = JSON.parse("{}");
+    query["name"] = null;
+    query["employeeId"] = null;
+    query[" customers"] = [];
+    query["admin"] = null;
+    query["customer"] = null;
 
-    const functionQuery = (client) => {
-        client.db(DBName).collection("employee").find().project({ "_id": 0, "employeeId": 1 }).toArray((error, docs) => {
+    const functionQuery = (client: { db: (arg0: string) => any }) => {
+        client.db(DBName).collection("employee").find().project({ "_id": 0, "employeeId": 1 }).toArray((error: any, docs: JSON[]) => {
             if (error) {
-                context.log('Error running query');
-                context.res = { status: 500, body: 'Error running query' };
-
+                errorQuery(context);
                 return context.done();
             }
             else {
@@ -68,75 +45,47 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     connectWrite(context, firstEmployee);
                 }
                 else if (JSON.stringify(docs).includes(decodedToken["preferred_username"]) === false) {
-                    connectWrite(context, firstLogin);
+                    connectWrite(context, createEmplyee);
                 }
                 else {
-                    context.res = {
-                        status: 200,
-                        body: {
-                            "name": decodedToken["name"],
-                            "issued-by": decodedToken["iss"],
-                            "issued-for": decodedToken["aud"],
-                            "using-scope": decodedToken["scp"]
-                        }
-                    };
+                    let result: JSON = JSON.parse("{}");
+
+                    result["name"] = decodedToken["name"];
+                    result["firstLogin"] = false;
+
+                    returnResult(context, result);
                     context.done();
                 }
             }
         });
     };
 
-
-    const firstEmployee = (client) => {
+    const firstEmployee = (client: { db: (arg0: string) => any }) => {
         context.log("Creating first employee with admin:write");
-
-        const query = {
-            "name": decodedToken["name"],
-            "employeeId": decodedToken["preferred_username"],
-            "customers": [],
-            "admin": "write",
-            "customer": null
-        };
-        createEmplyee(client, query);
+        query["admin"] = "write";
+        createEmplyee(client);
     };
 
+    const createEmplyee = (client: { db: (arg0: string) => any }) => {
+        query["name"] = decodedToken["name"];
+        query["employeeId"] = decodedToken["preferred_username"];
 
-    const firstLogin = (client) => {
-        context.log("Creating new employee");
-
-        const query = {
-            "name": decodedToken["name"],
-            "employeeId": decodedToken["preferred_username"],
-            "customers": [],
-            "admin": null,
-            "customer": null
-
-        };
-        createEmplyee(client, query);
-    };
-
-
-    const createEmplyee = (client, query) => {
-        client.db(DBName).collection("employee").insertOne(query, (error, docs) => {
+        client.db(DBName).collection("employee").insertOne(query, (error: any, docs: JSON | JSON[]) => {
             if (error) {
-                context.log("Error running query");
-                context.res = { status: 500, body: "Error running query" };
+                errorQuery(context);
                 return context.done();
             }
-
-            docs = sanitizeHtmlJson(docs);
-
             context.log("New employee created");
-            context.res = {
-                headers: { "Content-Type": "application/json" },
-                body: {
-                    "name": decodedToken["name"] + ", contact system admin to set up account",
-                    "docs": docs
-                }
-            };
+
+            let result: JSON = JSON.parse("{}");
+
+            result["name"] = decodedToken["name"];
+            result["firstLogin"] = true;
+
+            returnResult(context, result);
             context.done();
         });
     }
 
-    inputValidation();
+    connectRead(context, authorize);
 };

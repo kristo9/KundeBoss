@@ -1,5 +1,8 @@
 import "./About.css";
 
+/**
+ * @returns A react component with the about page
+ */
 function About() {
 
   return (

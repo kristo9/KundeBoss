@@ -16,7 +16,9 @@ export default (context: Context, req: HttpRequest): any => {
         "_id": 0,
         "name": 1,
         "employeeId": 1,
-        "customers": 1
+        "customers": 1,
+        "admin":1,
+        "customer":1
     };
 
     const inputValidation = () => {

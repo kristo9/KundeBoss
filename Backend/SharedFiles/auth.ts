@@ -1,23 +1,14 @@
+import { Context } from "@azure/functions"
+
 const tenantID = "301091f0-e24f-43fa-bd87-59350cc3fbb6";
-const clientID = "6bb502c3-c416-44f7-97cb-705b2b1a50ba";
 const authority = "login.microsoftonline.com";
 const version = "v2.0";
-const discovery = "well-known/openid-configuration";
-const scope = [
-	"access_as_user"
-];
-
 const jwksUri = `https://${authority}/${tenantID}/discovery/${version}/keys`;
 const issuer = `https://${authority}/${tenantID}/${version}`;
 const audience = "6bb502c3-c416-44f7-97cb-705b2b1a50ba"; // TODO Kundeboss
 //const audience = "8c5bb92b-060f-4c48-b577-12b9389d2c80"; // TODO LOCAL
 
-export const options = {
-	audience: audience,
-	issuer: issuer
-};
-
-let jwksClient = require('jwks-rsa');
+let jwksClient = require("jwks-rsa");
 
 let client = jwksClient({
 	jwksUri: jwksUri
@@ -25,10 +16,15 @@ let client = jwksClient({
 
 let signingKey = null;
 
-export const getKey = (header, callback) => {
+export const options = {
+	audience: audience,
+	issuer: issuer
+};
+
+export const getKey = (header: any, callback: (arg0: any, arg1: any) => void) => {
 	if (signingKey == null) {
 
-		client.getSigningKey(header.kid, (err, key) => {
+		client.getSigningKey(header.kid, (err: any, key: { publicKey: any; }) => {
 			signingKey = key.publicKey;
 			callback(null, signingKey);
 		});
@@ -38,6 +34,31 @@ export const getKey = (header, callback) => {
 	}
 };
 
-export const setKeyNull = () => {
+export const prepToken = (context: Context, token: string) => {
+	if (token)
+		return token.replace(/^Bearer\s+/, "");
+	else {
+		context.res = {
+			status: 400,
+			body: "no token"
+		};
+		return null;
+	}
+};
+
+export const errorQuery = (context: Context, errorMsg: string = "Error running query") => {
+	context.log(errorMsg);
+	context.res = {
+		status: 500, body: errorMsg
+	}
+};
+
+export const errorUnauthorized = (context: Context, errorMsg: string = "Unauthorized") => {
 	signingKey = null;
+
+	context.res = {
+		status: 401,
+		body: errorMsg
+	};
+	context.log(errorMsg);
 };

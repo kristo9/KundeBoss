@@ -6,8 +6,8 @@ import { DBName, connectRead } from "../SharedFiles/dataBase";
 
 module.exports = (context: Context, req: HttpRequest): any => {
     let employeeId: any;
-    //console.log(token);
-    let token = prepToken(context, req.headers.authorization)
+
+    let token = prepToken(context, req.headers.authorization);
 
     if (token === null) {
         return context.done();
@@ -22,45 +22,46 @@ module.exports = (context: Context, req: HttpRequest): any => {
             }
             else {
                 employeeId = decoded.preferred_username;
-                console.log(employeeId);
-
-                client.db(DBName).collection("employee").find({ "employeeId": employeeId }).project({ "admin": 1 }).toArray((error: any, docs: JSON | JSON[]) => {
-
-                    if (error) {
-                        errorQuery(context);
-                        return context.done();
-                    }
-                    else {
-                        if (docs[0].admin === "write") {
-                            functionQuery(client);
-                        }
-                        else {
-                            errorUnauthorized(context, "User dont have admin-write permission");
-                            return context.done();
-                        }
-                    }
-                });
+                functionQuery(client);
             }
         });
     };
 
-    // TODO: Projection,  Only for retrieving data
     const projection = {
-        "_id": 0,
         "name": 1,
         "employeeId": 1,
-        "admin": 1,
-        "customer": 1
+        "customerInformation._id": 1,
+        "customerInformation.name": 1,
+        "customerInformation.contact.name": 1,
+        "customerInformation.contact.mail": 1,
+        "customerInformation.tags": 1
     };
 
     const functionQuery = (client: { db: (arg0: string) => any }) => {
-        client.db(DBName).collection("employee").find().project(projection).toArray((error: any, docs: JSON) => {
+        client.db(DBName).collection("employee").aggregate([
+            {
+                "$match": {
+                    "employeeId": employeeId
+                }
+            },
+            {
+                "$lookup":
+                {
+                    "from": "customer",
+                    "localField": "customers.id",
+                    "foreignField": "_id",
+                    "as": "customerInformation"
+                }
+            }
+        ]).project(projection).toArray((error: any, docs: JSON | JSON[]) => {
             if (error) {
                 errorQuery(context);
                 return context.done();
             }
-            returnResult(context, docs)
-            context.done();
+            else {
+                returnResult(context, docs[0]);
+                context.done();
+            }
         });
     };
 

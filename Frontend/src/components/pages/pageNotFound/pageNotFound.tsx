@@ -1,3 +1,6 @@
+/**
+ * @returns A react component with the page-not-found page
+ */
 function PageNotFound(){
   return(
     <div style={{

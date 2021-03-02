@@ -1,19 +1,13 @@
 import react from 'react'
 import { apiConfig } from "./apiConfig";
-//import { getTokenPopup } from "./authPopup";
 import { getTokenRedirect } from "./authRedirect";
-import { useSelector, useDispatch } from "react-redux";
-
 import { tokenRequest } from "./authConfig";
 import { isLoggedIn } from "../redux/action/Actions";
 
-const ui = require("./ui");
-const dispatched = useDispatch();
-
 let username = null;
 
-export async function callApi(endpoint, token, data) {
-  console.log(endpoint, token)
+export function callApi(endpoint, token, data) {
+
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
 
@@ -27,35 +21,27 @@ export async function callApi(endpoint, token, data) {
 
   console.log('Calling Web API...');
 
-  let retData = null;
-
-  await fetch(endpoint, options)
+  return fetch(endpoint, options)
     .then(response => response.json())
     .then(response => {
 
       if (response) {
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
-        retData = response;
+        return response;
       }
     }).catch(error => {
       console.error(error);
     });
-  return retData;
 }
 
-export function isLogedIn() {
-  return username;
-}
+function prepareCall(apiName, data = {}) {
 
-
-export async function CallLogin() {
-  let retDataApi = null;
-  await getTokenRedirect(tokenRequest)
-    .then(async response => {
+  return getTokenRedirect(tokenRequest)
+    .then(response => {
       if (response) {
         console.log("access_token acquired at: " + new Date().toString());
         try {
-          retDataApi = await callApi(apiConfig.uri + "LoginTrigger", response.accessToken, {});
+          return callApi(apiConfig.uri + apiName, response.accessToken, data);
         } catch (error) {
           console.warn(error);
         }
@@ -63,8 +49,41 @@ export async function CallLogin() {
     }).catch(error => {
       console.error(error);
     });
-  username = null
-  username = retDataApi.name;
-  if (username != null){ const log = dispatched({ type: 'IS_LOGGED_IN' }) };
-  return retDataApi;
+}
+
+export function callLogin() {
+  if (username) {
+
+    getTokenRedirect(tokenRequest)
+      .then(response => {
+        if (response)
+          console.log(response.accessToken)
+      });
+    return prepareCall("LoginTrigger")
+      .then(response => {
+        console.log("Called login func");
+      });
+  }
+}
+
+export function getEmployee() {
+  return prepareCall("GetCustomers");
+}
+
+
+export function setUsername(user) {
+  username = user;
+}
+
+export function isLogedIn() {
+  return username;
+}
+
+export function logToken() {
+
+  getTokenRedirect(tokenRequest)
+    .then(response => {
+      if (response)
+        console.log(response.accessToken)
+    });
 }

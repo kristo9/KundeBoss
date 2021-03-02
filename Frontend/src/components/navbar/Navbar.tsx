@@ -4,8 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { signIn, signOut } from '../../azure/authRedirect';
 
 
-
-
 //import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
 // For redirect
 
@@ -24,6 +22,9 @@ import { signIn, signOut } from '../../azure/authRedirect';
   }
 }*/
 
+/**
+ * @returns a react component of the navbar 
+ */
 function Navbar() {
 
   /* if (authenticated){ // Set auth to say login
@@ -51,7 +52,7 @@ function Navbar() {
               <button id="nt" className="Link" onClick={signOut} >Log Out</button>
             </div>}
         </div>
-      </div >
+      </div>
     );
 }
 
@@ -59,30 +60,30 @@ export default Navbar;
 
 
 
-  /*//current authenticated user
-  const [currentUser, setCurrentUser] = useState<AccountInfo>();
+/*//current authenticated user
+const [currentUser, setCurrentUser] = useState<AccountInfo>();
 
-  //authentication callback
-  const onAuthenticated = async (userAccountInfo: AccountInfo) => {
-    setCurrentUser(userAccountInfo);
-  };
+//authentication callback
+const onAuthenticated = async (userAccountInfo: AccountInfo) => {
+  setCurrentUser(userAccountInfo);
+};
 
-  /* Render JSON data in readable format
-  const PrettyPrintJson = ({ data }: any) => {
-    return (
-      <div>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </div>
-    );
-  };*/
+/* Render JSON data in readable format
+const PrettyPrintJson = ({ data }: any) => {
+  return (
+    <div>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};*/
 
 
-  const AccInfo = ({ data }: any) => {
-    return (
-      <div>
-        <pre>
-          {JSON.stringify(data.idTokenClaims, null, 2)}
-        </pre>
-      </div>
-    )
-  }
+const AccInfo = ({ data }: any) => {
+  return (
+    <div>
+      <pre>
+        {JSON.stringify(data.idTokenClaims, null, 2)}
+      </pre>
+    </div>
+  )
+}
