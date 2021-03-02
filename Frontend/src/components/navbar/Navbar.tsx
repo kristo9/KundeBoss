@@ -30,7 +30,7 @@ function Navbar() {
       console.log("Not authenticated1")
     }*/
 
-    const loggedIn = useSelector(state => state.islogged);
+   
 
     return (
       <div className="topnav">
@@ -41,13 +41,13 @@ function Navbar() {
           <Link to='/contact' className='Link'>Contact</Link>
           <Link to='/help' className='Link'>Help</Link>
           <Link to='/about' className='Link'>About</Link>
-          {!loggedIn ?
+         
             <div>
               <button id="nt" className="Link" onClick={signIn} >Log in</button>
             </div> : 
             <div>
               <button id="nt" className="Link" onClick={signOut} >Log Out</button>
-            </div>}
+            </div>
         </div>
       </div>
     );
