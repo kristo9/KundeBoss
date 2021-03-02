@@ -1,86 +1,97 @@
-import { Context, HttpRequest } from "@azure/functions"
-import { prepInput, returnResult, errorWrongInput } from "./dataValidation";
-import { getKey, options, prepToken, errorQuery, errorUnauthorized } from "./auth";
-import { verify } from "jsonwebtoken";
-import { DBName, connectRead, connectWrite } from "./dataBase";
+import { Context, HttpRequest } from '@azure/functions';
+import { prepInput, returnResult, errorWrongInput } from './dataValidation';
+import { getKey, options, prepToken, errorQuery, errorUnauthorized } from './auth';
+import { verify } from 'jsonwebtoken';
+import { connectRead, connectWrite } from './dataBase';
+import { Db, Decoded } from '../SharedFiles/interfaces';
 
 module.exports = (context: Context, req: HttpRequest): any => {
-    req.body = prepInput(context, req.body);
+  req.body = prepInput(context, req.body);
 
-    if (req.body === null) {
-        return context.done();
+  if (req.body === null) {
+    return context.done();
+  }
+
+  let token = prepToken(context, req.headers.authorization);
+
+  if (token === null) {
+    return context.done();
+  }
+
+  const inputValidation = () => {
+    let validInput = true;
+
+    /*TODO: Create cheks */
+
+    if (validInput) {
+      connectRead(context, authorize);
+    } else {
+      errorWrongInput(context); /*TODO: appropriate error message, optional */
+      return context.done();
     }
+  };
 
-    let token = prepToken(context, req.headers.authorization);
-
-    if (token === null) {
+  const authorize = (db: Db) => {
+    verify(token, getKey, options, (err: any, decoded: Decoded) => {
+      if (err) {
+        errorUnauthorized(context, 'Token not valid'); /*TODO: appropriate error message, optional */
         return context.done();
-    }
-
-    const inputValidation = () => {
-        let validInput = true;
-
-        /*TODO: Create cheks */
-
-        if (validInput) {
-            connectRead(context, authorize);
-        }
-        else {
-            errorWrongInput(context)  /*TODO: appropriate error message, optional */
-            return context.done();
-        }
-    };
-
-    const authorize = (client: { db: (arg0: string) => any }) => {
-        verify(token, getKey, options, (err: any, decoded: { [x: string]: any; }) => {
-            if (err) {
-                errorUnauthorized(context, "Token not valid");  /*TODO: appropriate error message, optional */
-                return context.done();
-            }
-            else {
-                /* TODO: Verify that user has permission to do what is asked
+      } else {
+        /* TODO: Verify that user has permission to do what is asked
                     example for checking if user have admin-write permission */
 
-                client.db(DBName).collection("employee").find({ "employeeId": decoded.preferred_username }).project({ "admin": 1 }).toArray((error: any, docs: JSON | JSON[]) => {
-                    if (error) {
-                        errorQuery(context); /*TODO: appropriate error message, optional */
-                        return context.done();
-                    }
-                    else {
-                        if (docs[0].admin === "write") {
-                            connectWrite(context, functionQuery);
-                        }
-                        else {
-                            errorUnauthorized(context, "User dont have admin permission");  /*TODO: appropriate error message, optional */
-                            return context.done();
-                        }
-                    }
-                });
-            }
-        });
-    };
-
-    const query = {
-        /* TODO: query */
-    };
-
-    const projection = {
-        /* TODO: projection */
-    };
-
-    const functionQuery = (client: { db: (arg0: string) => any }) => {
-        /*  TODO: read or write */
-        /* client.db(DBName).collection("customer").insertOne(query, (error: any, docs: JSON | JSON[]) => {   */
-        client.db(DBName).collection("Collection Name").find(query).project(projection).toArray((error: any, docs: JSON | JSON[]) => {
+        db.collection('employee')
+          .find({
+            'employeeId': decoded.preferred_username
+          })
+          .project({
+            'admin': 1
+          })
+          .toArray((error: any, docs: JSON) => {
             if (error) {
-                errorQuery(context);  /*TODO: appropriate error message, optional */
+              errorQuery(context); /*TODO: appropriate error message, optional */
+              return context.done();
+            } else {
+              if (docs[0].admin === 'write') {
+                connectWrite(context, functionQuery);
+              } else {
+                errorUnauthorized(
+                  /*TODO: appropriate error message, optional */
+                  context,
+                  'User dont have admin permission'
+                );
                 return context.done();
+              }
             }
-            /* TODO:  return docs[0] to not retarn array of json*/
-            returnResult(context, docs);
-            context.done();
-        });
-    };
+          });
+      }
+    });
+  };
 
-    inputValidation();
+  const query = {
+    /* TODO: query */
+  };
+
+  const projection = {
+    /* TODO: projection */
+  };
+
+  const functionQuery = (db: Db) => {
+    /*  TODO: read or write */
+    /* client.db(DBName).collection("customer").insertOne(query, (error: any, docs: JSON | JSON[]) => {   */
+    db.collection('Collection Name')
+      .find(query)
+      .project(projection)
+      .toArray((error: any, docs: JSON) => {
+        if (error) {
+          errorQuery(context); /*TODO: appropriate error message, optional */
+          return context.done();
+        }
+        /* TODO:  return docs[0] to not return array of json*/
+        returnResult(context, docs);
+        context.done();
+      });
+  };
+
+  inputValidation();
 };

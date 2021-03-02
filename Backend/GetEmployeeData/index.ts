@@ -1,8 +1,9 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, nameVal, mailVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
+import { prepInput, nameVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { DBName, connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { connectRead } from '../SharedFiles/dataBase';
+import { Db, Decoded } from '../SharedFiles/interfaces';
 
 module.exports = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
@@ -38,16 +39,14 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
   };
 
-  const authorize = (client: { db: (arg0: string) => any }) => {
-    verify(token, getKey, options, (err: any, decoded: { [x: string]: any }) => {
+  const authorize = (db: Db) => {
+    verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // verified and decoded token
       if (err) {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        client
-          .db(DBName)
-          .collection('employee')
+        db.collection('employee')
           .find({ employeeId: decoded.preferred_username })
           .project({ admin: 1 })
           .toArray((error: any, docs: { admin: string }[]) => {
@@ -56,7 +55,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
               return context.done();
             } else {
               if (docs[0].admin === 'write') {
-                functionQuery(client);
+                functionQuery(db);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
                 console.log(docs[0].admin);
@@ -81,10 +80,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
     'customer': 1,
   };
 
-  const functionQuery = (client: { db: (arg0: string) => any }) => {
-    client
-      .db(DBName)
-      .collection('employee')
+  const functionQuery = (db: Db) => {
+    db.collection('employee')
       .find(query)
       .toArray((error: any, docs: JSON) => {
         if (error) {

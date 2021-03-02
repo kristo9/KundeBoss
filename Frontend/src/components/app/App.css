@@ -1,24 +1,23 @@
 /*css for the body of the document*/
 body {
-    margin-top: 45px;
-    width: 100%;
-    margin: 0 auto;
-    background-color: whitesmoke;
-  }
+  margin-top: 45px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: whitesmoke;
+}
 
 /*css for the entire document */
 .app {
-    display:flex;
-    flex-wrap: wrap;
-    
+  display: flex;
+  flex-wrap: wrap;
 }
 
 /*Uses the Manrope font (manropefont.com)*/
-@font-face{
-    font-family: "Manrope";
-    src:  url('../../fonts/web/Manrope-Regular.woff2') format('woff2'),
-          url('../../fonts/web/Manrope-Regular.woff') format('woff');
-  }
-  *{
-    font-family: Manrope;
-  }
+@font-face {
+  font-family: "Manrope";
+  src: url("../../fonts/web/Manrope-Regular.woff2") format("woff2"),
+    url("../../fonts/web/Manrope-Regular.woff") format("woff");
+}
+* {
+  font-family: Manrope;
+}

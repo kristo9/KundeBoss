@@ -2,7 +2,8 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, nameVal, mailVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { DBName, connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { Db, Decoded } from '../SharedFiles/interfaces';
 
 module.exports = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
@@ -37,16 +38,14 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
   };
 
-  const authorize = (client: { db: (arg0: string) => any }) => {
-    verify(token, getKey, options, (err: any, decoded: { [x: string]: any }) => {
+  const authorize = (db: Db) => {
+    verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // verified and decoded token
       if (err) {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        client
-          .db(DBName)
-          .collection('employee')
+        db.collection('employee')
           .find({ employeeId: decoded.preferred_username })
           .project({ admin: 1 })
           .toArray((error: any, docs: { admin: string }[]) => {
@@ -67,7 +66,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  const functionQuery = (client: { db: (arg0: string) => any }) => {
+  const functionQuery = (db: Db) => {
     const query = { 'name': req.body.origName };
     console.log('0');
 
@@ -91,19 +90,16 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
     newVals = { $set: newVals };
 
-    client
-      .db(DBName)
-      .collection('employee')
-      .updateOne(query, newVals, (error: any, docs: JSON) => {
-        if (error) {
-          console.log(error);
-          errorQuery(context);
-          return context.done();
-        }
+    db.collection('employee').updateOne(query, newVals, (error: any, docs: JSON) => {
+      if (error) {
+        console.log(error);
+        errorQuery(context);
+        return context.done();
+      }
 
-        returnResult(context, docs);
-        context.done();
-      });
+      returnResult(context, docs);
+      context.done();
+    });
   };
 
   inputValidation();
