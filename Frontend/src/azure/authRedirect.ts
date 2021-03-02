@@ -73,6 +73,7 @@ export function signOut() {
     };
 
     myMSALObj.logout(logoutRequest);
+    
 }
 
 selectAccount();

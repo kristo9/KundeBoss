@@ -1,6 +1,8 @@
+import react from 'react'
 import { apiConfig } from "./apiConfig";
 import { getTokenRedirect } from "./authRedirect";
 import { tokenRequest } from "./authConfig";
+import {useDispatch } from "react-redux";
 
 let username = null;
 
@@ -83,5 +85,7 @@ export function logToken() {
     .then(response => {
       if (response)
         console.log(response.accessToken)
+        const dispatch = useDispatch()
+        dispatch('AUTH');
     });
 }
