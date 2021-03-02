@@ -1,12 +1,10 @@
-import './Navbar.css';
+import "./Navbar.css";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { signIn, signOut } from '../../azure/authRedirect';
 
-
 //import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
 // For redirect
-
 
 /*function AuthText(){ //Funker ikke
   const [txt, setAuthText] = useState("Login");
@@ -23,10 +21,9 @@ import { signIn, signOut } from '../../azure/authRedirect';
 }*/
 
 /**
- * @returns a react component of the navbar 
+ * @returns a react component of the navbar
  */
 function Navbar() {
-
   /* if (authenticated){ // Set auth to say login
       console.log("Authenticated1")
     } else {            // Set auth to say logout
@@ -58,8 +55,6 @@ function Navbar() {
 
 export default Navbar;
 
-
-
 /*//current authenticated user
 const [currentUser, setCurrentUser] = useState<AccountInfo>();
 
@@ -77,13 +72,10 @@ const PrettyPrintJson = ({ data }: any) => {
   );
 };*/
 
-
 const AccInfo = ({ data }: any) => {
   return (
     <div>
-      <pre>
-        {JSON.stringify(data.idTokenClaims, null, 2)}
-      </pre>
+      <pre>{JSON.stringify(data.idTokenClaims, null, 2)}</pre>
     </div>
-  )
-}
+  );
+};

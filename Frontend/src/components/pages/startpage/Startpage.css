@@ -1,26 +1,25 @@
-
 /**/
-.page{
+.page {
   margin-top: 100px;
 }
 
 /* Styles the loginDiv*/
-.loginDiv{
+.loginDiv {
   position: absolute;
   bottom: 20%;
   width: 150px;
 }
 
 /* Styles the login button*/
-.login{
+.login {
   border-radius: 25px;
-  background: #73AD21;
+  background: #73ad21;
   width: 100%;
   height: 50px;
 }
 
 /* Styles the text under the login button*/
-.loginText{
+.loginText {
   font-size: 10px;
   text-align: center;
 }
