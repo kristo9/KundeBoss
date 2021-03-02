@@ -60,6 +60,22 @@ module.exports = (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         } else {
+          if (req.body && req.body.tag) {
+            // Search for custoemrs that matches tag search
+
+            let customerTagMatch = JSON.parse('[]');
+
+            for (let i = 0; i < docs[0].customerInformation.length; ++i) {
+              for (let j = 0; j < docs[0].customerInformation[i].tags.length; ++j) {
+                if (docs[0].customerInformation[i].tags[j].toLowerCase().includes(req.body.tag.toLowerCase())) {
+                  customerTagMatch.push(docs[0].customerInformation[i]);
+                  break;
+                }
+              }
+            }
+            docs[0].customerInformation = customerTagMatch;
+          }
+
           returnResult(context, docs[0]);
           context.done();
         }
