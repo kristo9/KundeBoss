@@ -5,9 +5,9 @@ import reportWebVitals from './reportWebVitals';
 import App from './components/app/App';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import isLogged from './redux/reducer/isLogged';
+import reducers from './redux/reducer/Reducers';
 
-const store = createStore(isLogged);
+const store = createStore(reducers);
 
 ReactDOM.render(
   <React.StrictMode>

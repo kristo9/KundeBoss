@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
 import './Navbar.css';
-import { AccountInfo } from "@azure/msal-browser";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { signIn, signOut } from '../../azure/authRedirect';
 
 
 
 
 //import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
-import { signIn } from "../../azure/authRedirect"; // For redirect
+// For redirect
 
 
 /*function AuthText(){ //Funker ikke
@@ -32,6 +32,8 @@ function Navbar() {
       console.log("Not authenticated1")
     }*/
 
+    const loggedIn = useSelector(state => state.islogged);
+
     return (
       <div className="topnav">
         <div className="left">
@@ -41,9 +43,13 @@ function Navbar() {
           <Link to='/contact' className='Link'>Contact</Link>
           <Link to='/help' className='Link'>Help</Link>
           <Link to='/about' className='Link'>About</Link>
-          <div>
-            <button id="nt" className="Link" onClick={signIn} >Login</button>
-          </div>
+          {!loggedIn ?
+            <div>
+              <button id="nt" className="Link" onClick={signIn} >Log in</button>
+            </div> : 
+            <div>
+              <button id="nt" className="Link" onClick={signOut} >Log Out</button>
+            </div>}
         </div>
       </div >
     );

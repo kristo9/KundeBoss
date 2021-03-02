@@ -1,10 +1,14 @@
+import react from 'react'
 import { apiConfig } from "./apiConfig";
 //import { getTokenPopup } from "./authPopup";
 import { getTokenRedirect } from "./authRedirect";
+import { useSelector, useDispatch } from "react-redux";
 
 import { tokenRequest } from "./authConfig";
+import { isLoggedIn } from "../redux/action/Actions";
 
 const ui = require("./ui");
+const dispatched = useDispatch();
 
 let username = null;
 
@@ -44,7 +48,7 @@ export function isLogedIn() {
 }
 
 
-export async function callLogin() {
+export async function CallLogin() {
   let retDataApi = null;
   await getTokenRedirect(tokenRequest)
     .then(async response => {
@@ -59,8 +63,8 @@ export async function callLogin() {
     }).catch(error => {
       console.error(error);
     });
-
+  username = null
   username = retDataApi.name;
-
+  if (username != null){ const log = dispatched({ type: 'IS_LOGGED_IN' }) };
   return retDataApi;
 }

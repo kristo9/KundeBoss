@@ -3,7 +3,7 @@
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
 import { welcomeUser } from "./ui";
 import { loginRequest, msalConfig } from "./authConfig";
-import { callLogin } from "./api";
+import { CallLogin } from "./api";
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
@@ -13,7 +13,7 @@ let username = "";
 myMSALObj.handleRedirectPromise()
     .then(handleResponse)
     .then(async () => {
-        let c = await callLogin();
+        let c = await CallLogin();
         console.log(c.name);
     })
     .catch(error => {
@@ -79,6 +79,7 @@ export function signOut() {
     };
 
     myMSALObj.logout(logoutRequest);
+    
 }
 
 export function getTokenRedirect(request): Promise<any> {

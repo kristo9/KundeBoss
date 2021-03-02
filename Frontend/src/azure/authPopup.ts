@@ -3,12 +3,14 @@
 import { PublicClientApplication, InteractionRequiredAuthError } from "@azure/msal-browser";
 import { welcomeUser } from "./ui";
 import { loginRequest, msalConfig } from "./authConfig";
-import { callLogin } from "./api";
+import { CallLogin } from "./api";
+import { useDispatch } from "react-redux";
 
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
 let username = "";
+const dispatched = useDispatch();
 
 
 export let authenticated = false;
@@ -60,13 +62,14 @@ export function signIn() {
 
     myMSALObj.loginPopup(loginRequest)
         .then(handleResponse)
-        .then(callLogin)
+        .then(CallLogin)
         .catch(error => {
             console.error(error);
         });
 }
 
-export function signOut() {
+export function SignOut() {
+    
 
     /**
      * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
@@ -80,6 +83,7 @@ export function signOut() {
 
     myMSALObj.logout(logoutRequest);
     authenticated = false;
+    if (username != null){ const log = dispatched({ type: 'IS_LOGGED_IN' }) };
 }
 
 selectAccount();
