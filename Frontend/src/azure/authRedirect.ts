@@ -68,6 +68,7 @@ export function signOut() {
      */
 
     // Choose which account to logout from by passing a username.
+
     const logoutRequest = {
         account: myMSALObj.getAccountByUsername(username)
     };
@@ -105,6 +106,7 @@ export function getTokenRedirect(request): Promise<any> {
             }
         });
 }
+
 
 
 // Acquires and access token and then passes it to the API call

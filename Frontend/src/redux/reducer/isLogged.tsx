@@ -1,8 +1,17 @@
-const isLogged = (state = false, action) => {
+import { isLogedIn } from '../../azure/api'
+
+const isLogged = (state = null, action) => {
     switch (action.type) {
-        case 'IS_LOGGED_IN':
-            console.log("Nå byttes det. !!!!!!!!!!!!!!!!")
-            return !state;
+        case 'AUTH':
+            state = isLogedIn();
+            console.log(state);
+            let currState = null;
+            if (state) { currState = 'AUTH' };
+            console.log(currState);
+            return currState;
+
+            /*if (state == null) {return 'Auth'}
+            else {return null}*/
         default:
             return state;
     }

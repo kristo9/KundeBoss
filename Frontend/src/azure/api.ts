@@ -1,8 +1,6 @@
-import react from 'react'
 import { apiConfig } from "./apiConfig";
 import { getTokenRedirect } from "./authRedirect";
 import { tokenRequest } from "./authConfig";
-import {useDispatch } from "react-redux";
 
 let username = null;
 
@@ -20,7 +18,7 @@ export function callApi(endpoint, token, data) {
   };
 
   console.log('Calling Web API...');
-
+  
   return fetch(endpoint, options)
     .then(response => response.json())
     .then(response => {
@@ -76,7 +74,10 @@ export function setUsername(user) {
 }
 
 export function isLogedIn() {
-  return username;
+  let validate = null;
+  console.log(validate);
+  if(username != null) {validate = username; return validate}
+  else return validate;
 }
 
 export function logToken() {
@@ -85,7 +86,5 @@ export function logToken() {
     .then(response => {
       if (response)
         console.log(response.accessToken)
-        const dispatch = useDispatch()
-        dispatch('AUTH');
     });
 }
