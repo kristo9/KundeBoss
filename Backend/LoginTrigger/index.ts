@@ -27,30 +27,47 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
+  let result: JSON = JSON.parse('{}');
+  result['firstLogin'] = false;
+  result['isConfigured'] = false;
+
   const functionQuery = (db: Db) => {
+    result['name'] = decodedToken.name;
+
     db.collection('employee')
       .find()
       .project({
         '_id': 0,
-        'employeeId': 1
+        'employeeId': 1,
+        'isCustomer': 1
       })
-      .toArray((error: any, docs: JSON[]) => {
+      .toArray((error: any, docs: string | any[]) => {
         if (error) {
           errorQuery(context);
           return context.done();
         } else {
           if (docs.length === 0) {
             connectWrite(context, firstEmployee);
-          } else if (JSON.stringify(docs).includes(decodedToken['preferred_username']) === false) {
-            connectWrite(context, createEmplyee);
           } else {
-            let result: JSON = JSON.parse('{}');
+            let element = null;
 
-            result['name'] = decodedToken['name'];
-            result['firstLogin'] = false;
+            for (let i = 0; i < docs.length; ++i) {
+              if (docs[i].employeeId === decodedToken.preferred_username) {
+                element = docs[i];
+                break;
+              }
+            }
 
-            returnResult(context, result);
-            context.done();
+            if (element === null) {
+              connectWrite(context, createEmplyee);
+            } else {
+              if (element.isCustomer !== null) {
+                result['isConfigured'] = true;
+              }
+
+              returnResult(context, result);
+              context.done();
+            }
           }
         }
       });
@@ -59,19 +76,20 @@ module.exports = (context: Context, req: HttpRequest): any => {
   let query = JSON.parse('{}');
   query['name'] = null;
   query['employeeId'] = null;
-  query[' customers'] = [];
+  query['customers'] = [];
   query['admin'] = null;
-  query['customer'] = null;
+  query['isCustomer'] = null;
 
   const firstEmployee = (db: Db) => {
     context.log('Creating first employee with admin:write');
     query['admin'] = 'write';
+    query['isCustomer'] = false;
     createEmplyee(db);
   };
 
   const createEmplyee = (db: Db) => {
-    query['name'] = decodedToken['name'];
-    query['employeeId'] = decodedToken['preferred_username'];
+    query['name'] = decodedToken.name;
+    query['employeeId'] = decodedToken.preferred_username;
 
     db.collection('employee').insertOne(query, (error: any) => {
       if (error) {
@@ -80,9 +98,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
       }
       context.log('New employee created');
 
-      let result: JSON = JSON.parse('{}');
-
-      result['name'] = decodedToken['name'];
       result['firstLogin'] = true;
 
       returnResult(context, result);

@@ -33,7 +33,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     if (validInput) {
       connectRead(context, authorize);
     } else {
-      errorWrongInput(context);
+      errorWrongInput(context, errMsg);
       return context.done();
     }
   };
@@ -45,26 +45,27 @@ module.exports = (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        db.collection('employee')
-          .find({
+        db.collection('employee').findOne(
+          {
             'employeeId': decoded.preferred_username
-          })
-          .project({
+          },
+          {
             'admin': 1
-          })
-          .toArray((error: any, docs: JSON) => {
+          },
+          (error: any, docs: { admin: string }) => {
             if (error) {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs[0].admin === 'write') {
+              if (docs.admin === 'write') {
                 connectWrite(context, functionQuery);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
                 return context.done();
               }
             }
-          });
+          }
+        );
       }
     });
   };
