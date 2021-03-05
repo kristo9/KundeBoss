@@ -68,6 +68,13 @@ export function callLogin() {
   }
 }
 
+export function getCustomer(id: string) {
+  let customerId = {
+    'id': id,
+  };
+  return prepareCall('GetCustomerData', customerId);
+}
+
 export function getEmployee(tag = {}) {
   if (tag) {
     tag = {

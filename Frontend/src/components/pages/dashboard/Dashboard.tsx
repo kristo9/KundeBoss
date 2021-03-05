@@ -1,8 +1,10 @@
-import { callLogin, getEmployee, modifyEmployeeData } from "../../../azure/api";
-import "./Dashboard.css";
-import React from "react";
-import { useHistory } from "react-router-dom";
-import Inputfield from "../../../components/basicComp/searchfield";
+import { getEmployee, modifyEmployeeData } from '../../../azure/api';
+import './Dashboard.css';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Inputfield from '../../../components/basicComp/searchfield';
+
+let customers = getEmployee();
 
 /**
  * A class that contains and renders the dashboard
@@ -15,7 +17,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   constructor(props) {
     super(props);
     this.state = {
-      customers: null,
+      customers: null
     };
   }
 
@@ -25,9 +27,13 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   componentDidMount() {
     const fetchName = async () => {
-      const customers = await getEmployee();
+      customers = await customers;
+
+      if (typeof customers !== 'object') {
+        customers = await getEmployee();
+      }
       this.setState({
-        customers,
+        customers
       });
     };
     fetchName();
@@ -43,9 +49,9 @@ class Dashboard extends React.Component<{}, { customers: any }> {
 
     return (
       <div>
-        <div className="page">
+        <div className='page'>
           {this.displayGreeting()}
-          <div style={{ float: "right" }}>
+          <div style={{ float: 'right' }}>
             <Inputfield />
           </div>
           <div>{this.displayCustomers()}</div>
@@ -72,7 +78,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   private displayCustomers() {
     if (this.state.customers) {
       return (
-        <table className="diasplayTable">
+        <table className='diasplayTable'>
           {
             //Creates a table entry for each customer returned from the database.
             this.state.customers.customerInformation.map((customer) => (
@@ -80,7 +86,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
                 customerName={customer.name}
                 contactName={customer.contact.name}
                 mail={customer.contact.mail}
-                key={customer._id}
+                id={customer._id}
               />
             ))
           }
@@ -101,6 +107,7 @@ interface customerProp {
   contactName: string;
   mail: string;
   tags?: any;
+  id: string;
 }
 
 /**
@@ -110,15 +117,32 @@ interface customerProp {
 function InfoBox(prop: customerProp) {
   return (
     <tr
-      className="rad"
+      className='rad'
       onClick={() => {
-        console.log("trykk " + prop.customerName);
+        <Link
+          to={{
+            pathname: '/customerpage/' + prop.customerName,
+            state: {
+              id: 37,
+              name: prop.customerName
+            }
+          }}
+        ></Link>;
+        console.log('trykk ' + prop.customerName);
       }}
     >
       <td>
-        <button>
+        <Link
+          to={{
+            pathname: '/customerpage/' + prop.id,
+            state: {
+              id: 37,
+              name: prop.customerName
+            }
+          }}
+        >
           <b>{prop.customerName}</b>
-        </button>
+        </Link>
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
