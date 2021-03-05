@@ -4,7 +4,7 @@ import { tokenRequest } from './authConfig';
 
 let username = null;
 
-export function callApi(endpoint, token, data) {
+function callApi(endpoint, token, data) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
 
@@ -17,7 +17,7 @@ export function callApi(endpoint, token, data) {
   };
 
   console.log('Calling Web API...');
-  
+
   return fetch(endpoint, options)
     .then((response) => response.json())
     .then((response) => {
@@ -74,8 +74,14 @@ export function setUsername(user) {
 
 export function isLogedIn() {
   let validate = null;
-  if(username != null) {validate = username; console.log(validate); return validate}
-  else {console.log(validate); return validate}
+  if (username != null) {
+    validate = username;
+    console.log(validate);
+    return validate;
+  } else {
+    console.log(validate);
+    return validate;
+  }
 }
 
 export function logToken() {
