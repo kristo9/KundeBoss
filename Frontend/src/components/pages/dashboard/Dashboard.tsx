@@ -1,8 +1,10 @@
-import { callLogin, getEmployee, modifyEmployeeData } from "../../../azure/api";
-import "./Dashboard.css";
-import React from "react";
-import { useHistory } from "react-router-dom";
-import Inputfield from "../../../components/basicComp/searchfield";
+import { callLogin, getEmployee, modifyEmployeeData } from '../../../azure/api';
+import './Dashboard.css';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import Inputfield from '../../../components/basicComp/searchfield';
+
+let customers = getEmployee();
 
 /**
  * A class that contains and renders the dashboard
@@ -15,7 +17,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   constructor(props) {
     super(props);
     this.state = {
-      customers: null,
+      customers: null
     };
   }
 
@@ -25,9 +27,13 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   componentDidMount() {
     const fetchName = async () => {
-      const customers = await getEmployee();
+      customers = await customers;
+
+      if (typeof customers !== 'object') {
+        customers = await getEmployee();
+      }
       this.setState({
-        customers,
+        customers
       });
     };
     fetchName();
@@ -43,9 +49,9 @@ class Dashboard extends React.Component<{}, { customers: any }> {
 
     return (
       <div>
-        <div className="page">
+        <div className='page'>
           {this.displayGreeting()}
-          <div style={{ float: "right" }}>
+          <div style={{ float: 'right' }}>
             <Inputfield />
           </div>
           <div>{this.displayCustomers()}</div>
@@ -58,9 +64,9 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    * Displays a greeting if the user is logged in.
    */
   private displayGreeting() {
-    modifyEmployeeData("per.aasrud@kundeboss.onmicrosoft.com", "Por Arild R Johkfannesen", null, "write");
+    modifyEmployeeData('per.aasrud@kundeboss.onmicrosoft.com', 'Por Arild R Johkfannesen', 'false', null, 'write');
     if (this.state.customers && this.state.customers.name) {
-      return <h1>Velkommen {this.state.customers.name.split(" ")[0]}</h1>;
+      return <h1>Velkommen {this.state.customers.name.split(' ')[0]}</h1>;
     } else {
       return <h1>Velkommen</h1>;
     }
@@ -72,7 +78,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   private displayCustomers() {
     if (this.state.customers) {
       return (
-        <table className="diasplayTable">
+        <table className='diasplayTable'>
           {
             //Creates a table entry for each customer returned from the database.
             this.state.customers.customerInformation.map((customer) => (
@@ -110,9 +116,9 @@ interface customerProp {
 function InfoBox(prop: customerProp) {
   return (
     <tr
-      className="rad"
+      className='rad'
       onClick={() => {
-        console.log("trykk " + prop.customerName);
+        console.log('trykk ' + prop.customerName);
       }}
     >
       <td>
