@@ -13,7 +13,7 @@ function callApi(endpoint, token, data) {
   const options = {
     method: 'POST',
     headers: headers,
-    body: data,
+    body: data
   };
 
   console.log('Calling Web API...');
@@ -61,10 +61,17 @@ export function callLogin() {
   }
 }
 
+export function getCustomer(id: string) {
+  let customerId = {
+    'id': id
+  };
+  return prepareCall('GetCustomerData', customerId);
+}
+
 export function getEmployee(tag = {}) {
   if (tag) {
     tag = {
-      'tag': tag,
+      'tag': tag
     };
   }
   return prepareCall('GetCustomers', tag);
@@ -83,7 +90,7 @@ export function modifyEmployeeData(
     'name': name,
     'admin': admin,
     'customers': customers,
-    'isCustomer': isCustomer,
+    'isCustomer': isCustomer
   };
   console.log(data);
 
