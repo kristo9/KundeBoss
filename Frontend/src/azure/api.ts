@@ -36,7 +36,6 @@ function callApi(endpoint, token, data) {
     })
     .catch((error) => {
       console.error(error);
-      console.log('Error');
     });
 }
 
@@ -91,7 +90,7 @@ export function modifyEmployeeData(
   isCustomer: boolean = null,
   customers: any
 ) {
-  console.log('Modifying employee data');
+  console.log('Calling ModifyEmployeeData function');
   const data = {
     'employeeId': employeeId,
     'name': name,
@@ -99,7 +98,6 @@ export function modifyEmployeeData(
     'isCustomer': isCustomer,
     'customers': customers,
   };
-  console.log('EmployeeId: ' + employeeId);
   console.log(data);
 
   return prepareCall('ModifyEmployeeData', data);

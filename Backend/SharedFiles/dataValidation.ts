@@ -56,5 +56,5 @@ export const errorWrongInput = (context: Context, errorMsg: string = 'Wrong inpu
     'status': 400,
     'body': errorMsg,
   };
-  context.log(context.res.body + '00');
+  context.log(errorMsg);
 };

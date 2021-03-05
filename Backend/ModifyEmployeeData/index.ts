@@ -19,8 +19,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
     return context.done();
   }
 
-  console.log('reqbody', req.body);
-
   const inputValidation = () => {
     let errMsg = req.body;
     let validInput = true;
@@ -35,7 +33,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
       return context.done();
     }
 
-    // Checks for changes
     if (req.body.name) {
       if (!nameVal(req.body.name)) {
         setError('Invalid name');
