@@ -19,7 +19,7 @@ function Customerpage() {
 
 function Sidebar(params: any) {
   return (
-    <div>
+    <div style={{ height: "100%" }}>
       <button>das 1</button>
       <button>das 2</button>
       <button>das 3</button>

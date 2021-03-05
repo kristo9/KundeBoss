@@ -1,6 +1,7 @@
 import "./Startpage.css";
 import { signIn } from "../../../azure/authRedirect"; // For popup
 import { Link } from "react-router-dom";
+import "../../basicComp/basic.css";
 
 /**
  * @returns A react component with the login page
@@ -9,7 +10,7 @@ function Startpage() {
   return (
     <div>
       <div className="page">
-        <h1 style={{ fontSize: 100 }}>Velkommen</h1>
+        <h1 className="h1-style h1-color">Velkommen</h1>
       </div>
       <div className="loginDiv">
         <button className="login" onClick={signIn}>
