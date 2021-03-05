@@ -1,7 +1,6 @@
 import { apiConfig } from './apiConfig';
 import { getTokenRedirect } from './authRedirect';
 import { tokenRequest } from './authConfig';
-import { useDispatch } from 'react-redux';
 
 let username = null;
 

@@ -1,13 +1,8 @@
-import { callLogin, getEmployee } from "../../../azure/api";
+import { getEmployee } from "../../../azure/api";
 import "./Dashboard.css";
 import React from "react";
-<<<<<<< HEAD
-import { useHistory, Link } from "react-router-dom";
-=======
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Inputfield from "../../../components/basicComp/searchfield";
->>>>>>> fb5887c47aa977f50894f21052ba748984a4bd1f
-
 /**
  * A class that contains and renders the dashboard
  */
@@ -83,7 +78,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
                 customerName={customer.name}
                 contactName={customer.contact.name}
                 mail={customer.contact.mail}
-                key={customer._id}
+                id={customer._id}
               />
             ))
           }
@@ -104,6 +99,7 @@ interface customerProp {
   contactName: string;
   mail: string;
   tags?: any;
+  id: string;
 }
 
 /**
@@ -115,13 +111,26 @@ function InfoBox(prop: customerProp) {
     <tr
       className="rad"
       onClick={() => {
+        <Link to={{
+          pathname: ('/customerpage/' + prop.customerName),
+          state: {
+            id: 37,
+            name: prop.customerName
+            }
+        }}></Link>
         console.log("trykk " + prop.customerName);
       }}
     >
       <td>
-        <button>
-          {prop.customerName}
-        </button>
+        <Link to={{
+          pathname: ('/customerpage/' + prop.id),
+          state: {
+            id: 37,
+            name: prop.customerName
+            }
+          }}>
+          <b>{prop.customerName}</b>
+        </Link> 
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
@@ -131,15 +140,4 @@ function InfoBox(prop: customerProp) {
 
 export default Dashboard;
 
-/*
-<Link to={{
-        pathname: ('/CostumerPage/${37}'),
-        state: {
-            id: 37,
-            name: prop.customerName
-          }
-        }}>
-          <b>{prop.customerName}</b>
-        </Link> 
 
-        */
