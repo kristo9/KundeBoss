@@ -126,15 +126,9 @@ function InfoBox(prop: customerProp) {
       }}
     >
       <td>
-        <Link to={{
-        pathname: ('/CostumerPage/${37}'),
-        state: {
-            id: 37,
-            name: prop.customerName
-          }
-        }}>
-          <b>{prop.customerName}</b>
-        </Link>
+        <button>
+          {prop.customerName}
+        </button>
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
@@ -143,3 +137,16 @@ function InfoBox(prop: customerProp) {
 }
 
 export default Dashboard;
+
+/*
+<Link to={{
+        pathname: ('/CostumerPage/${37}'),
+        state: {
+            id: 37,
+            name: prop.customerName
+          }
+        }}>
+          <b>{prop.customerName}</b>
+        </Link> 
+
+        */
