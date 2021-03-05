@@ -1,23 +1,34 @@
+import React from "react";
+import {RouteComponentProps} from 'react-router';
 import "./customerpage.css";
 
 /**
  * @returns A react component with the customer page
  */
-function Customerpage() {
+
+class customerpage extends React.Component<RouteComponentProps> {
+
+  /**
+  * @constructor
+  * @param {props} props contains infomation about the class
+  */
+
+
+  render() {
   return (
     <div>
       <div style={{ float: "left", background: "gray" }}>
-        <Sidebar />
+        <this.Sidebar />
       </div>
       <div>
         <h1>Velkommen</h1>
-        <h1>Her er kundesiden</h1>
+        <h1>Her er kundesiden for {this.props.match.params.name}</h1>
       </div>
     </div>
   );
 }
 
-function Sidebar(params: any) {
+private Sidebar(params: any) {
   return (
     <div style={{ height: "100%" }}>
       <button>das 1</button>
@@ -34,4 +45,6 @@ function Sidebar(params: any) {
   );
 }
 
-export default Customerpage;
+}
+
+export default customerpage;

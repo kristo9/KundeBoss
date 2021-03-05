@@ -1,11 +1,10 @@
 import { apiConfig } from './apiConfig';
 import { getTokenRedirect } from './authRedirect';
 import { tokenRequest } from './authConfig';
-import { useDispatch } from 'react-redux';
 
 let username = null;
 
-export function callApi(endpoint, token, data) {
+function callApi(endpoint, token, data) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
 
@@ -95,13 +94,19 @@ export function setUsername(user) {
 }
 
 export function isLogedIn() {
-  return username;
+  let validate = null;
+  if (username != null) {
+    validate = username;
+    console.log(validate);
+    return validate;
+  } else {
+    console.log(validate);
+    return validate;
+  }
 }
 
 export function logToken() {
   getTokenRedirect(tokenRequest).then((response) => {
     if (response) console.log(response.accessToken);
-    const dispatch = useDispatch();
-    dispatch('AUTH');
   });
 }

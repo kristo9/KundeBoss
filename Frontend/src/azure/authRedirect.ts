@@ -4,6 +4,7 @@ import { PublicClientApplication, InteractionRequiredAuthError } from '@azure/ms
 import { loginRequest, msalConfig } from './authConfig';
 import { setUsername, callLogin } from './api';
 
+
 const myMSALObj = new PublicClientApplication(msalConfig);
 
 let username = null;
