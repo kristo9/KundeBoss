@@ -1,27 +1,17 @@
 import { callLogin, getEmployee } from "../../../azure/api";
 import "./Dashboard.css";
 import React from "react";
+<<<<<<< HEAD
 import { useHistory, Link } from "react-router-dom";
+=======
+import { useHistory } from "react-router-dom";
+import Inputfield from "../../../components/basicComp/searchfield";
+>>>>>>> fb5887c47aa977f50894f21052ba748984a4bd1f
 
 /**
  * A class that contains and renders the dashboard
  */
 class Dashboard extends React.Component<{}, { customers: any }> {
-  //test data
-  kr = {
-    customerInformation: [
-      {
-        _id: "6038a9dd01c4ba40c8203cc5",
-        name: "Test AS",
-        contact: {
-          mail: "Test@mail.no",
-          name: "Test",
-        },
-        tags: [],
-      },
-    ],
-  };
-
   /**
    * @constructor
    * @param {props} props contains infomation about the class
@@ -59,6 +49,9 @@ class Dashboard extends React.Component<{}, { customers: any }> {
       <div>
         <div className="page">
           {this.displayGreeting()}
+          <div style={{ float: "right" }}>
+            <Inputfield />
+          </div>
           <div>{this.displayCustomers()}</div>
         </div>
       </div>
