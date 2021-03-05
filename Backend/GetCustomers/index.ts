@@ -52,9 +52,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
             'foreignField': '_id',
             'as': 'customerInformation'
           }
-        }
+        },
+        { '$project': projection }
       ])
-      .project(projection)
       .toArray((error: any, docs: JSON) => {
         if (error) {
           errorQuery(context);

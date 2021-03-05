@@ -46,9 +46,10 @@ function handleResponse(response) {
   } else {
     selectAccount();
   }
-
-  setUsername(username);
-  console.log(username);
+  if (username) {
+    setUsername(username);
+    console.log(username);
+  }
 }
 
 export function signIn() {

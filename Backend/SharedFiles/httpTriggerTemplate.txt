@@ -40,30 +40,28 @@ module.exports = (context: Context, req: HttpRequest): any => {
         /* TODO: Verify that user has permission to do what is asked
                     example for checking if user have admin-write permission */
 
-        db.collection('employee')
-          .find({
+        db.collection('employee').findOne(
+          {
             'employeeId': decoded.preferred_username
-          })
-          .project({
+          },
+          {
             'admin': 1
-          })
-          .toArray((error: any, docs: JSON) => {
+          },
+          (error: any, docs: { admin: string }) => {
             if (error) {
               errorQuery(context); /*TODO: appropriate error message, optional */
               return context.done();
             } else {
-              if (docs[0].admin === 'write') {
+              if (docs.admin === 'write') {
                 connectWrite(context, functionQuery);
               } else {
-                errorUnauthorized(
-                  /*TODO: appropriate error message, optional */
-                  context,
-                  'User dont have admin permission'
-                );
+                /*TODO: appropriate error message, optional */
+                errorUnauthorized(context, 'User dont have admin permission');
                 return context.done();
               }
             }
-          });
+          }
+        );
       }
     });
   };
