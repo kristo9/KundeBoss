@@ -8,6 +8,7 @@ import StartPage from '../pages/startpage/Startpage';
 import Contact from '../pages/contact/Contact';
 import Help from '../pages/help/Help';
 import About from '../pages/about/About';
+import CustomerPage from '../pages/customerpage/customerpage';
 
 // CSS Styling
 import './App.css';
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/contact" component={Contact} />
                 <Route path="/help" component={Help} />
                 <Route path="/about" component={About} />
+                <Route path="/customerpage/:id" exact component={CustomerPage} />
             </Switch>
           </div>
         </div>

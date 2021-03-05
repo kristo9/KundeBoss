@@ -1,8 +1,8 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { returnResult, prepInput, errorWrongInput } from '../SharedFiles/dataValidation';
+import { prepInput, nameVal, mailVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead } from '../SharedFiles/dataBase';
+import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
 module.exports = (context: Context, req: HttpRequest): any => {
@@ -22,20 +22,18 @@ module.exports = (context: Context, req: HttpRequest): any => {
     let errMsg = req.body;
     let validInput = true;
 
-    if (!req.body.types) {
+    if (!req.body.name) {
       errorWrongInput(context);
       return context.done();
     }
-    //console.log(req.body.types);
-    console.log(req.body.types);
-
+    if (!nameVal(req.body.name)) {
+      errMsg.name = 'false';
+      validInput = false;
+    }
     if (validInput) {
       connectRead(context, authorize);
     } else {
-      context.res = {
-        status: 400,
-        body: errMsg
-      };
+      errorWrongInput(context);
       return context.done();
     }
   };
@@ -44,25 +42,22 @@ module.exports = (context: Context, req: HttpRequest): any => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // verified and decoded token
       if (err) {
-        errorUnauthorized(context, 'Msg');
+        errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
         db.collection('employee')
-          .find({
-            employeeId: decoded.preferred_username
-          })
-          .project({
-            admin: 1
-          })
-          .toArray((error: any, docs: JSON) => {
+          .find({ employeeId: decoded.preferred_username })
+          .project({ admin: 1 })
+          .toArray((error: any, docs: { admin: string }[]) => {
             if (error) {
               errorQuery(context);
               return context.done();
             } else {
               if (docs[0].admin === 'write') {
+                connectWrite(context, functionQuery);
               } else {
-                errorUnauthorized(context, 'Msg');
-
+                errorUnauthorized(context, 'User dont have admin permission');
+                console.log(docs[0].admin);
                 return context.done();
               }
             }
@@ -71,14 +66,37 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  const query = {};
-
   const functionQuery = (db: Db) => {
-    db.collection('customer').insertOne(query, (error: any, docs: JSON) => {
+    const query = { 'name': req.body.origName };
+    console.log('0');
+
+    let newVals = JSON.parse('{}');
+
+    if (req.body.name) {
+      newVals['name'] = req.body.name;
+    }
+    if (req.body.employeeId) {
+      newVals['employeeId'] = req.body.employeeId;
+    }
+    if (req.body.customers) {
+      newVals['customers'] = req.body.customers;
+    }
+    if (req.body.admin) {
+      newVals['admin'] = req.body.admin;
+    }
+    if (req.body.customer) {
+      newVals['customer'] = req.body.customer;
+    }
+
+    newVals = { $set: newVals };
+
+    db.collection('employee').updateOne(query, newVals, (error: any, docs: JSON) => {
       if (error) {
+        console.log(error);
         errorQuery(context);
         return context.done();
       }
+
       returnResult(context, docs);
       context.done();
     });

@@ -9,7 +9,7 @@ import "./Navbar.css";
 
 
 function Navbar(props) {
-    console.log(props.islogged);
+    
     return (
       <div className="topnav">
         <div className="left">
@@ -19,13 +19,15 @@ function Navbar(props) {
           <Link to='/contact' className='Link'>Contact</Link>
           <Link to='/help' className='Link'>Help</Link>
           <Link to='/about' className='Link'>About</Link>
-          {(props.islogged !== 'AUTH') ?
-            <div>
+          { console.log(props.islogged)}
+          {  (props.islogged !== 'AUTH') ?
+            (<div>
               <button id="nt" className="Link" onClick={signIn} >Log in</button>
-            </div> : 
-            <div>
+            </div> ): 
+            (<div>
               <button id="nt" className="Link" onClick={signOut} >Log Out</button>
-            </div>}
+            </div>)}
+            
             <button id="nt" className="Link" onClick={props.updateAuth}> Bytt Log </button>
         </div>
       </div>
@@ -43,7 +45,6 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
-
 
 /**
  * @returns a react component of the navbar

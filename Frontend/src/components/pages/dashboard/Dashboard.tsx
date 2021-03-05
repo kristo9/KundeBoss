@@ -1,7 +1,7 @@
 import { callLogin, getEmployee } from "../../../azure/api";
 import "./Dashboard.css";
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 /**
  * A class that contains and renders the dashboard
@@ -126,9 +126,15 @@ function InfoBox(prop: customerProp) {
       }}
     >
       <td>
-        <button>
+        <Link to={{
+        pathname: ('/CostumerPage/${37}'),
+        state: {
+            id: 37,
+            name: prop.customerName
+          }
+        }}>
           <b>{prop.customerName}</b>
-        </button>
+        </Link>
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
