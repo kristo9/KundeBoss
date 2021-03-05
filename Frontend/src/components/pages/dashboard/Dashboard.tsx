@@ -1,7 +1,7 @@
-import { callLogin, getEmployee, modifyEmployeeData } from '../../../azure/api';
+import { getEmployee } from '../../../azure/api';
 import './Dashboard.css';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Inputfield from '../../../components/basicComp/searchfield';
 
 let customers = getEmployee();
@@ -64,7 +64,6 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    * Displays a greeting if the user is logged in.
    */
   private displayGreeting() {
-    modifyEmployeeData('per.aasrud@kundeboss.onmicrosoft.com', 'Por Arild R Johkfannesen', 'false', null, 'write');
     if (this.state.customers && this.state.customers.name) {
       return <h1>Velkommen {this.state.customers.name.split(' ')[0]}</h1>;
     } else {
@@ -86,7 +85,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
                 customerName={customer.name}
                 contactName={customer.contact.name}
                 mail={customer.contact.mail}
-                key={customer._id}
+                id={customer._id}
               />
             ))
           }
@@ -107,6 +106,7 @@ interface customerProp {
   contactName: string;
   mail: string;
   tags?: any;
+  id: string;
 }
 
 /**
@@ -118,13 +118,30 @@ function InfoBox(prop: customerProp) {
     <tr
       className='rad'
       onClick={() => {
+        <Link
+          to={{
+            pathname: '/customerpage/' + prop.customerName,
+            state: {
+              id: 37,
+              name: prop.customerName
+            }
+          }}
+        ></Link>;
         console.log('trykk ' + prop.customerName);
       }}
     >
       <td>
-        <button>
+        <Link
+          to={{
+            pathname: '/customerpage/' + prop.id,
+            state: {
+              id: 37,
+              name: prop.customerName
+            }
+          }}
+        >
           <b>{prop.customerName}</b>
-        </button>
+        </Link>
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
