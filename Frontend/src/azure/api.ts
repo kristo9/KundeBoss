@@ -16,13 +16,20 @@ function callApi(endpoint, token, data) {
     body: data,
   };
 
+  console.log(options);
+
   console.log('Calling Web API...');
 
   return fetch(endpoint, options)
-    .then((response) => response.json())
     .then((response) => {
+      //temp, originalt: .then((response) => response.json();)
+      const x = response.json();
+      console.log(x);
+      return x;
+    })
+    .then((response) => {
+      console.log('Response', response);
       if (response) {
-        console.log('');
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
         return response;
       }
@@ -74,17 +81,18 @@ export function modifyEmployeeData(
   employeeId: string = null,
   name: string = null,
   admin: string = null,
-  isCustomer: string = null,
-  customers
+  isCustomer: boolean = null,
+  customers: any
 ) {
   console.log('Modifying employee data');
   const data = {
     'employeeId': employeeId,
     'name': name,
     'admin': admin,
-    'customers': customers,
     'isCustomer': isCustomer,
+    'customers': customers,
   };
+  console.log('EmployeeId: ' + employeeId);
   console.log(data);
 
   return prepareCall('ModifyEmployeeData', data);

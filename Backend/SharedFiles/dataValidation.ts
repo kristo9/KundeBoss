@@ -33,9 +33,9 @@ export const returnResult = (context: Context, data: JSON | JSON[]) => {
   context.log('Success!');
   context.res = {
     'headers': {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    'body': data
+    'body': data,
   };
 };
 
@@ -45,7 +45,7 @@ export const prepInput = (context: Context, input: JSON | JSON[]) => {
   } else {
     context.res = {
       'status': 400,
-      'body': 'no body'
+      'body': 'no body',
     };
     return null;
   }
@@ -54,7 +54,7 @@ export const prepInput = (context: Context, input: JSON | JSON[]) => {
 export const errorWrongInput = (context: Context, errorMsg: string = 'Wrong input') => {
   context.res = {
     'status': 400,
-    'body': errorMsg
+    'body': errorMsg,
   };
-  context.log(errorMsg);
+  context.log(context.res.body + '00');
 };

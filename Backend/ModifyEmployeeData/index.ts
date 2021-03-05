@@ -19,6 +19,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
     return context.done();
   }
 
+  console.log('reqbody', req.body);
+
   const inputValidation = () => {
     let errMsg = req.body;
     let validInput = true;
@@ -29,13 +31,12 @@ module.exports = (context: Context, req: HttpRequest): any => {
     };
 
     if (!req.body.employeeId) {
-      errorWrongInput(context, 'Invalid employeeId');
+      errorWrongInput(context, 'Invalid employeeId.');
       return context.done();
     }
 
     // Checks for changes
     if (req.body.name) {
-      console.log('2');
       if (!nameVal(req.body.name)) {
         setError('Invalid name');
       }
@@ -43,7 +44,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
 
     if (req.body.employeeId) {
-      console.log('3');
       if (!mailVal(req.body.employeeId)) {
         setError('Invalid mail/employeeId');
       }
