@@ -1,10 +1,8 @@
-import { getEmployee } from '../../../azure/api';
-import './Dashboard.css';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Inputfield from '../../../components/basicComp/searchfield';
-
-let customers = getEmployee();
+import { callLogin, getEmployee, modifyEmployeeData } from "../../../azure/api";
+import "./Dashboard.css";
+import React from "react";
+import { useHistory } from "react-router-dom";
+import Inputfield from "../../../components/basicComp/searchfield";
 
 /**
  * A class that contains and renders the dashboard
@@ -17,7 +15,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   constructor(props) {
     super(props);
     this.state = {
-      customers: null
+      customers: null,
     };
   }
 
@@ -27,13 +25,9 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   componentDidMount() {
     const fetchName = async () => {
-      customers = await customers;
-
-      if (typeof customers !== 'object') {
-        customers = await getEmployee();
-      }
+      const customers = await getEmployee();
       this.setState({
-        customers
+        customers,
       });
     };
     fetchName();
@@ -49,9 +43,9 @@ class Dashboard extends React.Component<{}, { customers: any }> {
 
     return (
       <div>
-        <div className='page'>
+        <div className="page">
           {this.displayGreeting()}
-          <div style={{ float: 'right' }}>
+          <div style={{ float: "right" }}>
             <Inputfield />
           </div>
           <div>{this.displayCustomers()}</div>
@@ -64,8 +58,9 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    * Displays a greeting if the user is logged in.
    */
   private displayGreeting() {
+    modifyEmployeeData("per.aasrud@kundeboss.onmicrosoft.com", "Por Arild R Johkfannesen", null, "write");
     if (this.state.customers && this.state.customers.name) {
-      return <h1>Velkommen {this.state.customers.name.split(' ')[0]}</h1>;
+      return <h1>Velkommen {this.state.customers.name.split(" ")[0]}</h1>;
     } else {
       return <h1>Velkommen</h1>;
     }
@@ -77,7 +72,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   private displayCustomers() {
     if (this.state.customers) {
       return (
-        <table className='diasplayTable'>
+        <table className="diasplayTable">
           {
             //Creates a table entry for each customer returned from the database.
             this.state.customers.customerInformation.map((customer) => (
@@ -85,7 +80,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
                 customerName={customer.name}
                 contactName={customer.contact.name}
                 mail={customer.contact.mail}
-                id={customer._id}
+                key={customer._id}
               />
             ))
           }
@@ -106,7 +101,6 @@ interface customerProp {
   contactName: string;
   mail: string;
   tags?: any;
-  id: string;
 }
 
 /**
@@ -116,32 +110,15 @@ interface customerProp {
 function InfoBox(prop: customerProp) {
   return (
     <tr
-      className='rad'
+      className="rad"
       onClick={() => {
-        <Link
-          to={{
-            pathname: '/customerpage/' + prop.customerName,
-            state: {
-              id: 37,
-              name: prop.customerName
-            }
-          }}
-        ></Link>;
-        console.log('trykk ' + prop.customerName);
+        console.log("trykk " + prop.customerName);
       }}
     >
       <td>
-        <Link
-          to={{
-            pathname: '/customerpage/' + prop.id,
-            state: {
-              id: 37,
-              name: prop.customerName
-            }
-          }}
-        >
+        <button>
           <b>{prop.customerName}</b>
-        </Link>
+        </button>
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
