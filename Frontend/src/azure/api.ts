@@ -14,7 +14,7 @@ export function callApi(endpoint, token, data) {
   const options = {
     method: 'POST',
     headers: headers,
-    body: data
+    body: data,
   };
 
   console.log('Calling Web API...');
@@ -29,6 +29,7 @@ export function callApi(endpoint, token, data) {
     })
     .catch((error) => {
       console.error(error);
+      console.log('Error');
     });
 }
 
@@ -63,10 +64,30 @@ export function callLogin() {
 export function getEmployee(tag = {}) {
   if (tag) {
     tag = {
-      'tag': tag
+      'tag': tag,
     };
   }
   return prepareCall('GetCustomers', tag);
+}
+
+export function modifyEmployeeData(
+  employeeId: string = null,
+  name: string = null,
+  customers,
+  admin: string = null,
+  isCustomer: string = null
+) {
+  console.log('Modifying employee data');
+  const data = {
+    'employeeId': employeeId,
+    'name': name,
+    'admin': admin,
+    'customers': customers,
+    'isCustomer': isCustomer,
+  };
+  console.log(data);
+
+  return prepareCall('ModifyEmployeeData', data);
 }
 
 export function setUsername(user) {

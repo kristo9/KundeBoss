@@ -67,11 +67,11 @@ module.exports = (context: Context, req: HttpRequest): any => {
       newVals['admin'] = req.body.admin;
     }
 
-    if (req.body.customer) {
-      if (req.body.customer != 'true' && req.body.customer != 'false') {
+    if (req.body.isCustomer) {
+      if (req.body.isCustomer != true && req.body.isCustomer != false) {
         setError('Invalid customer role');
       }
-      newVals['customer'] = req.body.customer;
+      newVals['isCustomer'] = req.body.isCustomer;
     }
 
     newVals = { $set: newVals }; // Adds the changes to the object
