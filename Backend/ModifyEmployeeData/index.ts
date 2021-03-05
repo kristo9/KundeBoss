@@ -8,17 +8,21 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 module.exports = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
-  if (req.body === null) return context.done();
+  if (req.body === null) {
+    return context.done();
+  }
 
   let token = prepToken(context, req.headers.authorization);
 
-  if (token === null) return context.done();
+  if (token === null) {
+    return context.done();
+  }
 
   const inputValidation = () => {
     let errMsg = req.body;
     let validInput = true;
 
-    if (!(req.body.name && req.body.mail)) {
+    if (!req.body.name) {
       errorWrongInput(context);
       return context.done();
     }
@@ -26,14 +30,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
       errMsg.name = 'false';
       validInput = false;
     }
-    if (!mailVal(req.body.mail)) {
-      errMsg.mail = 'false';
-      validInput = false;
-    }
     if (validInput) {
       connectRead(context, authorize);
     } else {
-      errorWrongInput(context, errMsg);
+      errorWrongInput(context);
       return context.done();
     }
   };
@@ -45,53 +45,58 @@ module.exports = (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        db.collection('employee').findOne(
-          {
-            'employeeId': decoded.preferred_username
-          },
-          {
-            'admin': 1
-          },
-          (error: any, docs: { admin: string }) => {
+        db.collection('employee')
+          .find({ employeeId: decoded.preferred_username })
+          .project({ admin: 1 })
+          .toArray((error: any, docs: { admin: string }[]) => {
             if (error) {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs.admin === 'write') {
+              if (docs[0].admin === 'write') {
                 connectWrite(context, functionQuery);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
+                console.log(docs[0].admin);
                 return context.done();
               }
             }
-          }
-        );
+          });
       }
     });
   };
 
-  const query = {
-    'name': req.body.name,
-    'contact': {
-      'phone': req.body.phone || 'null',
-      'mail': req.body.mail,
-      'name': req.body.contactName || 'null'
-    },
-    'suppliers': req.body.suppliers || [],
-    'tags': req.body.tags || [],
-    'comment': req.body.comment || 'null',
-    'types': [],
-    'typeValues': [],
-    'customerAgreements': [],
-    'infoReference': req.body.infoReference || 'null'
-  };
-
   const functionQuery = (db: Db) => {
-    db.collection('customer').insertOne(query, (error: any, docs: JSON) => {
+    const query = { 'name': req.body.origName };
+    console.log('0');
+
+    let newVals = JSON.parse('{}');
+
+    if (req.body.name) {
+      newVals['name'] = req.body.name;
+    }
+    if (req.body.employeeId) {
+      newVals['employeeId'] = req.body.employeeId;
+    }
+    if (req.body.customers) {
+      newVals['customers'] = req.body.customers;
+    }
+    if (req.body.admin) {
+      newVals['admin'] = req.body.admin;
+    }
+    if (req.body.customer) {
+      newVals['customer'] = req.body.customer;
+    }
+
+    newVals = { $set: newVals };
+
+    db.collection('employee').updateOne(query, newVals, (error: any, docs: JSON) => {
       if (error) {
+        console.log(error);
         errorQuery(context);
         return context.done();
       }
+
       returnResult(context, docs);
       context.done();
     });

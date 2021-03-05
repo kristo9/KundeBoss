@@ -15,6 +15,5 @@
             "name": "res"
         }
     ],
-    "scriptFile": "../dist/LoginTrigger/index.js"
+    "scriptFile": "../dist/GetEmployeeData/index.js"
 }
-

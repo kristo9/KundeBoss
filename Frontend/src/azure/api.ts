@@ -1,18 +1,18 @@
-import { apiConfig } from "./apiConfig";
-import { getTokenRedirect } from "./authRedirect";
-import { tokenRequest } from "./authConfig";
+import { apiConfig } from './apiConfig';
+import { getTokenRedirect } from './authRedirect';
+import { tokenRequest } from './authConfig';
+import { useDispatch } from 'react-redux';
 
 let username = null;
 
 export function callApi(endpoint, token, data) {
-
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
 
-  headers.append("Authorization", bearer);
+  headers.append('Authorization', bearer);
 
   const options = {
-    method: "POST",
+    method: 'POST',
     headers: headers,
     body: data
   };
@@ -20,54 +20,54 @@ export function callApi(endpoint, token, data) {
   console.log('Calling Web API...');
 
   return fetch(endpoint, options)
-    .then(response => response.json())
-    .then(response => {
-
+    .then((response) => response.json())
+    .then((response) => {
       if (response) {
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
         return response;
       }
-    }).catch(error => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
 
 function prepareCall(apiName, data = {}) {
-
   return getTokenRedirect(tokenRequest)
-    .then(response => {
+    .then((response) => {
       if (response) {
-        console.log("access_token acquired at: " + new Date().toString());
+        console.log('access_token acquired at: ' + new Date().toString());
         try {
           return callApi(apiConfig.uri + apiName, response.accessToken, data);
         } catch (error) {
           console.warn(error);
         }
       }
-    }).catch(error => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
 
 export function callLogin() {
   if (username) {
-
-    getTokenRedirect(tokenRequest)
-      .then(response => {
-        if (response)
-          console.log(response.accessToken)
-      });
-    return prepareCall("LoginTrigger")
-      .then(response => {
-        console.log("Called login func");
-      });
+    getTokenRedirect(tokenRequest).then((response) => {
+      if (response) console.log(response.accessToken);
+    });
+    return prepareCall('LoginTrigger').then((response) => {
+      console.log('Called login func');
+    });
   }
 }
 
-export function getEmployee() {
-  return prepareCall("GetCustomers");
+export function getEmployee(tag = {}) {
+  if (tag) {
+    tag = {
+      'tag': tag
+    };
+  }
+  return prepareCall('GetCustomers', tag);
 }
-
 
 export function setUsername(user) {
   username = user;
@@ -78,10 +78,9 @@ export function isLogedIn() {
 }
 
 export function logToken() {
-
-  getTokenRedirect(tokenRequest)
-    .then(response => {
-      if (response)
-        console.log(response.accessToken)
-    });
+  getTokenRedirect(tokenRequest).then((response) => {
+    if (response) console.log(response.accessToken);
+    const dispatch = useDispatch();
+    dispatch('AUTH');
+  });
 }

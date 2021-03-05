@@ -1,8 +1,10 @@
 import "./Navbar.css";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { signIn, signOut } from '../../azure/authRedirect';
 
 //import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
-import { signIn } from "../../azure/authRedirect"; // For redirect
+// For redirect
 
 /*function AuthText(){ //Funker ikke
   const [txt, setAuthText] = useState("Login");
@@ -28,31 +30,27 @@ function Navbar() {
       console.log("Not authenticated1")
     }*/
 
-  return (
-    <div className="topnav">
-      <div className="left">
-        <Link to="/" className="Logo">
-          "Logo"
-        </Link>
-      </div>
-      <div className="right">
-        <Link to="/contact" className="Link">
-          Contact
-        </Link>
-        <Link to="/help" className="Link">
-          Help
-        </Link>
-        <Link to="/about" className="Link">
-          About
-        </Link>
-        <div>
-          <button id="nt" className="Link" onClick={signIn}>
-            Login
-          </button>
+   
+
+    return (
+      <div className="topnav">
+        <div className="left">
+          <Link to='/' className='Logo'>"Logo"</Link>
+        </div>
+        <div className="right">
+          <Link to='/contact' className='Link'>Contact</Link>
+          <Link to='/help' className='Link'>Help</Link>
+          <Link to='/about' className='Link'>About</Link>
+         
+            <div>
+              <button id="nt" className="Link" onClick={signIn} >Log in</button>
+            </div> : 
+            <div>
+              <button id="nt" className="Link" onClick={signOut} >Log Out</button>
+            </div>
         </div>
       </div>
-    </div>
-  );
+    );
 }
 
 export default Navbar;
