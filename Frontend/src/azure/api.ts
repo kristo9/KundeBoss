@@ -22,6 +22,7 @@ function callApi(endpoint, token, data) {
     .then((response) => response.json())
     .then((response) => {
       if (response) {
+        console.log('');
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
         return response;
       }
@@ -72,9 +73,9 @@ export function getEmployee(tag = {}) {
 export function modifyEmployeeData(
   employeeId: string = null,
   name: string = null,
-  customers,
   admin: string = null,
-  isCustomer: string = null
+  isCustomer: string = null,
+  customers
 ) {
   console.log('Modifying employee data');
   const data = {
