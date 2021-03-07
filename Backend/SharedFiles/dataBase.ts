@@ -14,13 +14,13 @@ const uriWrite =
 //module.exports.clientRead = () => this.MongoClient(this.uriRead).connect(); //serverSelectionTimeoutMS: 10000, useUnifiedTopology: true, useNewUriParser: true
 const DBName = 'KundeBossDB';
 
-let clientRead = null;
-let clientWrite = null;
+export let clientRead = null;
+export let clientWrite = null;
 
 export const connectRead = (context: Context, callback: (arg0: any) => void, overrideTest = false) => {
   context.log('Connecting read client');
 
-  if (clientRead == null || !clientRead.isConnected() || overrideTest) {
+  if (clientRead == null || overrideTest) {
     MongoClient.connect(uriRead, config, (error: any, _client: any) => {
       if (error) {
         context.log('Failed to connect read client');
@@ -43,7 +43,7 @@ export const connectRead = (context: Context, callback: (arg0: any) => void, ove
 export const connectWrite = (context: Context, callback: (arg0: any) => void, overrideTest = false) => {
   context.log('Connecting write client');
 
-  if (clientWrite == null || !clientWrite.isConnected() || overrideTest) {
+  if (clientWrite == null || overrideTest) {
     MongoClient.connect(uriWrite, config, (error: any, _client: any) => {
       if (error) {
         context.log('Failed to connect write client');
@@ -60,5 +60,13 @@ export const connectWrite = (context: Context, callback: (arg0: any) => void, ov
     });
   } else {
     callback(clientWrite.db(DBName));
+  }
+};
+
+export const checkDbConnection = (context: Context, connection: any) => {
+  if (connection) {
+    context.log('Reusing open db connection');
+  } else {
+    context.log('No reuseable db connection');
   }
 };

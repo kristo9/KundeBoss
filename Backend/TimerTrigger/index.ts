@@ -1,8 +1,8 @@
 import { Context } from '@azure/functions';
-import { connectRead } from '../SharedFiles/dataBase';
-import { Db } from '../SharedFiles/interfaces';
+import { checkDbConnection, clientRead, connectRead } from '../SharedFiles/dataBase';
 
 export default (context: Context, myTimer: any) => {
+  checkDbConnection(context, clientRead);
   // Connecting du db to prevent cold start
   const timeStamp = new Date().toISOString();
 
@@ -11,21 +11,5 @@ export default (context: Context, myTimer: any) => {
   }
   context.log('Timer trigger function ran!', timeStamp);
 
-  connectRead(
-    context,
-    (db: Db) => {
-      db.collection('employee')
-        .find()
-        .project({ '_id': 0, 'employeeId': 1 })
-        .toArray((error: any, docs: JSON[]) => {
-          if (error) {
-            context.log('Error running query');
-          } else {
-            context.log('Employees in db: ' + docs.length);
-          }
-          context.done();
-        });
-    },
-    true
-  );
+  connectRead(context, () => context.done(), true);
 };
