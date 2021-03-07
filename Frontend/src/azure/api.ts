@@ -7,13 +7,14 @@ let username = null;
 function callApi(endpoint, token, data) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
+  data = data ? JSON.stringify(data) : {};
 
   headers.append('Authorization', bearer);
 
   const options = {
     method: 'POST',
     headers: headers,
-    body: data,
+    body: data
   };
 
   console.log(options);
@@ -39,7 +40,7 @@ function callApi(endpoint, token, data) {
     });
 }
 
-function prepareCall(apiName, data = {}) {
+function prepareCall(apiName, data = null) {
   return getTokenRedirect(tokenRequest)
     .then((response) => {
       if (response) {
@@ -69,17 +70,15 @@ export function callLogin() {
 
 export function getCustomer(id: string) {
   let customerId = {
-    'id': id,
+    'id': id
   };
   return prepareCall('GetCustomerData', customerId);
 }
 
-export function getEmployee(tag = {}) {
-  if (tag) {
-    tag = {
-      'tag': tag,
-    };
-  }
+export function getEmployee(tag = null) {
+  tag = {
+    'tag': tag
+  };
   return prepareCall('GetCustomers', tag);
 }
 
@@ -96,7 +95,7 @@ export function modifyEmployeeData(
     'name': name,
     'admin': admin,
     'isCustomer': isCustomer,
-    'customers': customers,
+    'customers': customers
   };
   console.log(data);
 
