@@ -42,7 +42,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
     }
 
     return (
-      <div>
+      <div className="add-margins">
         <div className="page">
           {this.displayGreeting()}
           <div style={{ float: "right" }}>
@@ -72,17 +72,19 @@ class Dashboard extends React.Component<{}, { customers: any }> {
     if (this.state.customers) {
       return (
         <table className="diasplayTable">
-          {
-            //Creates a table entry for each customer returned from the database.
-            this.state.customers.customerInformation.map((customer) => (
-              <InfoBox
-                customerName={customer.name}
-                contactName={customer.contact.name}
-                mail={customer.contact.mail}
-                key={customer._id}
-              />
-            ))
-          }
+          <tbody>
+            {
+              //Creates a table entry for each customer returned from the database.
+              this.state.customers.customerInformation.map((customer) => (
+                <InfoBox
+                  customerName={customer.name}
+                  contactName={customer.contact.name}
+                  mail={customer.contact.mail}
+                  key={customer._id}
+                />
+              ))
+            }
+          </tbody>
         </table>
       );
     } else {

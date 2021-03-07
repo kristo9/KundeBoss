@@ -15,9 +15,9 @@ import Customerpage from "../pages/customerpage/customerpage";
 function App() {
   return (
     <Router>
-      <div className="app">
+      <div className="app" style={{ height: "100vh" }}>
         <Navbar />
-        <div style={{ marginTop: "23px", marginRight: "7%", marginLeft: "7%", width: "86%" }}>
+        <div style={{ marginTop: "23px", width: "100%" }}>
           <Switch className="Component">
             <Route path="/" exact component={StartPage} />
             <Route path="/contact" component={Contact} />

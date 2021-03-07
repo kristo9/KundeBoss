@@ -1,12 +1,13 @@
 import "./customerpage.css";
+import "../../basicComp/basic.css";
 
 /**
  * @returns A react component with the customer page
  */
 function Customerpage() {
   return (
-    <div>
-      <div style={{ float: "left", background: "gray" }}>
+    <div className="margin-right H100">
+      <div style={{ float: "left", background: "gray", height: "100%", width: "10%" }}>
         <Sidebar />
       </div>
       <div>
@@ -19,17 +20,32 @@ function Customerpage() {
 
 function Sidebar(params: any) {
   return (
-    <div style={{ height: "100%" }}>
-      <button>das 1</button>
-      <button>das 2</button>
-      <button>das 3</button>
-      <button>das 4</button>
-      <button>das 5</button>
-      <button>das 6</button>
-      <button>das 7</button>
-      <button>das 8</button>
-      <p>fmkasfkas dksa lk aslkd lkasm dlkam l</p>
-      <p>dnasjknd jdasnkdjd jnasj dnask jk dans</p>
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+      }}
+    >
+      <h2>
+        <b>Kunde navn</b>
+      </h2>
+      <SidebarButton text="Mail" />
+      <SidebarButton text="Informasjon" />
+      <SidebarButton text="Send Mail" />
+      <SidebarButton text="div 1" />
+      <SidebarButton text="div 2" />
+      <SidebarButton text="div 3" />
+      <SidebarButton text="div 4" />
+    </div>
+  );
+}
+
+function SidebarButton(prop: { text: string }) {
+  return (
+    <div className="knapp">
+      <button className="text">{prop.text}</button>
     </div>
   );
 }
