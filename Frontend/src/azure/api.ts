@@ -7,6 +7,7 @@ let username = null;
 function callApi(endpoint, token, data) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
+  data = data ? JSON.stringify(data) : {};
 
   headers.append('Authorization', bearer);
 
@@ -21,14 +22,8 @@ function callApi(endpoint, token, data) {
   console.log('Calling Web API...');
 
   return fetch(endpoint, options)
+    .then((response) => response.json)
     .then((response) => {
-      //temp, originalt: .then((response) => response.json();)
-      const x = response.json();
-      console.log(x);
-      return x;
-    })
-    .then((response) => {
-      console.log('Response', response);
       if (response) {
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
         return response;
@@ -39,7 +34,7 @@ function callApi(endpoint, token, data) {
     });
 }
 
-function prepareCall(apiName, data = {}) {
+function prepareCall(apiName, data = null) {
   return getTokenRedirect(tokenRequest)
     .then((response) => {
       if (response) {
@@ -74,12 +69,10 @@ export function getCustomer(id: string) {
   return prepareCall('GetCustomerData', customerId);
 }
 
-export function getEmployee(tag = {}) {
-  if (tag) {
-    tag = {
-      'tag': tag,
-    };
-  }
+export function getEmployee(tag = null) {
+  tag = {
+    'tag': tag,
+  };
   return prepareCall('GetCustomers', tag);
 }
 
@@ -98,7 +91,6 @@ export function modifyEmployeeData(
     'isCustomer': isCustomer,
     'customers': customers,
   };
-  console.log(data);
 
   return prepareCall('ModifyEmployeeData', data);
 }

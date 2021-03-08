@@ -8,17 +8,17 @@ export const msalConfig = {
   auth: {
     clientId: 'c0907c6a-3b8f-4eb3-9345-5a1a1b5f6ea8',
     authority: 'https://login.microsoftonline.com/301091f0-e24f-43fa-bd87-59350cc3fbb6',
-    //redirectUri: "http://localhost:3000",
-    redirectUri: 'https://kundebossblobstorage.z6.web.core.windows.net/',
+    redirectUri: 'http://localhost:3000'
+    //redirectUri: 'https://kundebossblobstorage.z6.web.core.windows.net/',
   },
   cache: {
     cacheLocation: 'localStorage', // This configures where your cache will be stored
-    storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
-  },
+    storeAuthStateInCookie: false // Set this to "true" if you are having issues on IE11 or Edge
+  }
 };
 
 export const loginRequest = {
-  scopes: ['openid', 'profile'],
+  scopes: ['openid', 'profile']
 };
 
 /**
@@ -27,5 +27,5 @@ export const loginRequest = {
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/resources-and-scopes.md
  */
 export const tokenRequest = {
-  scopes: apiConfig.scopes,
+  scopes: apiConfig.scopes
 };

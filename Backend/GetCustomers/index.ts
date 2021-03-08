@@ -2,10 +2,12 @@ import { Context, HttpRequest } from '@azure/functions';
 import { returnResult } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead } from '../SharedFiles/dataBase';
+import { checkDbConnection, clientRead, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
 module.exports = (context: Context, req: HttpRequest): any => {
+  checkDbConnection(context, clientRead);
+
   let employeeId: any;
 
   let token = prepToken(context, req.headers.authorization);
