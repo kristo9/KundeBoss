@@ -5,3 +5,18 @@
 .h1-color {
   color: antiquewhite;
 }
+
+.add-margins {
+  margin-left: 1%;
+  margin-right: 1%;
+  width: '86%';
+}
+
+.margin-right {
+  margin-right: 7%;
+  width: 93%;
+}
+
+.H100 {
+  height: 100%;
+}

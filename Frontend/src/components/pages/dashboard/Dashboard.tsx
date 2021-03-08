@@ -3,6 +3,7 @@ import './Dashboard.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Inputfield from '../../../components/basicComp/searchfield';
+import { type } from 'os';
 
 let customers = getEmployee();
 
@@ -17,7 +18,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   constructor(props) {
     super(props);
     this.state = {
-      customers: null
+      customers: null,
     };
   }
 
@@ -28,12 +29,12 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   componentDidMount() {
     const fetchName = async () => {
       customers = await customers;
-
+      console.log(customers);
       if (typeof customers !== 'object') {
         customers = await getEmployee();
       }
       this.setState({
-        customers
+        customers,
       });
     };
     fetchName();
@@ -48,7 +49,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
     }
 
     return (
-      <div>
+      <div className='add-margins'>
         <div className='page'>
           {this.displayGreeting()}
           <div style={{ float: 'right' }}>
@@ -65,7 +66,8 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   private displayGreeting() {
     if (this.state.customers && this.state.customers.name) {
-      return <h1>Velkommen {this.state.customers.name.split(" ")[0]}</h1>;
+      modifyEmployeeData('per.aasrud@kundeboss.onmicrosoft.com', 'Por Arild R Johkfannesen', 'write', false, null);
+      return <h1>Velkommen {this.state.customers.name.split(' ')[0]}</h1>;
     } else {
       return <h1>Velkommen</h1>;
     }
@@ -76,19 +78,25 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   private displayCustomers() {
     if (this.state.customers) {
+      console.log('cust');
+      console.log(this.state.customers.name);
       return (
         <table className='diasplayTable'>
-          {
-            //Creates a table entry for each customer returned from the database.
-            this.state.customers.customerInformation.map((customer) => (
-              <InfoBox
-                customerName={customer.name}
-                contactName={customer.contact.name}
-                mail={customer.contact.mail}
-                id={customer._id}
-              />
-            ))
-          }
+          <tbody>
+            {
+              //Creates a table entry for each customer returned from the database.
+
+              this.state.customers.customerInformation.map((customer) => (
+                <InfoBox
+                  customerName={customer.name}
+                  contactName={customer.contact.name}
+                  mail={customer.contact.mail}
+                  key={customer._id}
+                  id={customer._id}
+                />
+              ))
+            }
+          </tbody>
         </table>
       );
     } else {
@@ -123,8 +131,8 @@ function InfoBox(prop: customerProp) {
             pathname: '/customerpage/' + prop.customerName,
             state: {
               id: 37,
-              name: prop.customerName
-            }
+              name: prop.customerName,
+            },
           }}
         ></Link>;
         console.log('trykk ' + prop.customerName);
@@ -136,8 +144,8 @@ function InfoBox(prop: customerProp) {
             pathname: '/customerpage/' + prop.id,
             state: {
               id: 37,
-              name: prop.customerName
-            }
+              name: prop.customerName,
+            },
           }}
         >
           <b>{prop.customerName}</b>

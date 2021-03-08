@@ -22,7 +22,7 @@ function callApi(endpoint, token, data) {
   console.log('Calling Web API...');
 
   return fetch(endpoint, options)
-    .then((response) => response.json)
+    .then((response) => response.json())
     .then((response) => {
       if (response) {
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
@@ -69,7 +69,7 @@ export function getCustomer(id: string) {
   return prepareCall('GetCustomerData', customerId);
 }
 
-export function getEmployee(tag = null) {
+export function getEmployee(tag = null):Promise<any> {
   tag = {
     'tag': tag,
   };

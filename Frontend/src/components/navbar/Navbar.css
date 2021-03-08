@@ -1,79 +1,81 @@
 /* Add background color to the top navigation */
 .topnav {
-    background-color: #ffffff;
-    overflow: hidden;
-    position: fixed;
-    top: 0px;
-    width: 86%;
-    height: 45px;
+  background-color: #ffffff;
+  overflow: hidden;
+  position: fixed;
+  top: 0px;
+  width: 86%;
+  height: 45px;
 
-    padding-left: 7%;
-    padding-right: 7%;
-  }
-  
-  /* Style the links inside the navigation bar */
-  .Link, .Logo, .login {
-    float: left;
-    color: black;
-    text-align: center;
-    text-decoration: none;
-    padding: 14px 16px;
-    font-size: 17px;
-  }
+  padding-left: 7%;
+  padding-right: 7%;
+}
 
-  /* Change the color of links on hover */
-  .topnav .Link:hover {
-    background-color: #cccccc;
-    color: black;
-  }
-  
-  /* Add a color to the active/current link */
-  .topnav .Link.active {
-    background-color: white;
-    color: black;
-  }
+/* Style the links inside the navigation bar */
+.Link,
+.Logo,
+.login {
+  float: left;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  padding: 14px 16px;
+  font-size: 17px;
+}
 
-  /* Adjust positioning and move right-section to the right*/
-  .right {
-    display: flex;
-    flex-direction: row;
-    float:right;
-  }
+/* Change the color of links on hover */
+.topnav .Link:hover {
+  background-color: #cccccc;
+  color: black;
+}
 
-  /* Adjust positioning and move left-section to the left*/
-  .left {
-    display: flex;
-    flex-direction: row;
-    float: left;
-  }
+/* Add a color to the active/current link */
+.topnav .Link.active {
+  background-color: white;
+  color: black;
+}
 
-  /*makes the buttons transparent*/
-  button {
-    background: transparent;
-    box-shadow: 0px 0px 0px transparent;
-    border: 0px solid transparent;
-    text-shadow: 0px 0px 0px transparent;
-  }
+/* Adjust positioning and move right-section to the right*/
+.right {
+  display: flex;
+  flex-direction: row;
+  float: right;
+}
 
-  /* Change the style of buttons on hover */
-  button:hover {
-    background: transparent;
-    box-shadow: 0px 0px 0px transparent;
-    border: 0px solid transparent;
-    text-shadow: 0px 0px 0px transparent;
-  }
-  
-  /* Change the syle of buttons when active*/
-  button:active {
-    outline: none;
-    border: none;
-  }
-  /* Change the style of buttons when focused*/
-  button:focus {
-    outline: 0;
-  }
+/* Adjust positioning and move left-section to the left*/
+.left {
+  display: flex;
+  flex-direction: row;
+  float: left;
+}
 
-  /* Removes the list tyle*/
-  li {
-    list-style-type: none;
+/*makes the buttons transparent*/
+button {
+  background: transparent;
+  box-shadow: 0px 0px 0px transparent;
+  border: 0px solid transparent;
+  text-shadow: 0px 0px 0px transparent;
+}
+
+/* Change the style of buttons on hover */
+button:hover {
+  background: transparent;
+  box-shadow: 0px 0px 0px transparent;
+  border: 0px solid transparent;
+  text-shadow: 0px 0px 0px transparent;
+}
+
+/* Change the syle of buttons when active*/
+button:active {
+  outline: none;
+  border: none;
+}
+/* Change the style of buttons when focused*/
+button:focus {
+  outline: 0;
+}
+
+/* Removes the list tyle*/
+li {
+  list-style-type: none;
 }
