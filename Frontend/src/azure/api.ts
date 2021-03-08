@@ -77,7 +77,7 @@ export function getCustomer(id: string) {
 
 export function getEmployee(tag = null) {
   tag = {
-    'tag': tag
+    'tag': tag,
   };
   return prepareCall('GetCustomers', tag);
 }
