@@ -1,8 +1,8 @@
-import { getEmployee, modifyEmployeeData } from '../../../azure/api';
-import './Dashboard.css';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Inputfield from '../../../components/basicComp/searchfield';
+import { getEmployee, modifyEmployeeData } from "../../../azure/api";
+import "./Dashboard.css";
+import React from "react";
+import { Link } from "react-router-dom";
+import Inputfield from "../../../components/basicComp/searchfield";
 
 let customers = getEmployee();
 
@@ -17,7 +17,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   constructor(props) {
     super(props);
     this.state = {
-      customers: null
+      customers: null,
     };
   }
 
@@ -29,11 +29,11 @@ class Dashboard extends React.Component<{}, { customers: any }> {
     const fetchName = async () => {
       customers = await customers;
 
-      if (typeof customers !== 'object') {
+      if (typeof customers !== "object") {
         customers = await getEmployee();
       }
       this.setState({
-        customers
+        customers,
       });
     };
     fetchName();
@@ -48,10 +48,10 @@ class Dashboard extends React.Component<{}, { customers: any }> {
     }
 
     return (
-      <div>
-        <div className='page'>
+      <div className="add-margins">
+        <div className="page">
           {this.displayGreeting()}
-          <div style={{ float: 'right' }}>
+          <div style={{ float: "right" }}>
             <Inputfield />
           </div>
           <div>{this.displayCustomers()}</div>
@@ -78,18 +78,21 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   private displayCustomers() {
     if (this.state.customers) {
       return (
-        <table className='diasplayTable'>
-          {
-            //Creates a table entry for each customer returned from the database.
-            this.state.customers.customerInformation.map((customer) => (
-              <InfoBox
-                customerName={customer.name}
-                contactName={customer.contact.name}
-                mail={customer.contact.mail}
-                id={customer._id}
-              />
-            ))
-          }
+        <table className="diasplayTable">
+          <tbody>
+            {
+              //Creates a table entry for each customer returned from the database.
+              this.state.customers.customerInformation.map((customer) => (
+                <InfoBox
+                  customerName={customer.name}
+                  contactName={customer.contact.name}
+                  mail={customer.contact.mail}
+                  key={customer._id}
+                  id={customer._id}
+                />
+              ))
+            }
+          </tbody>
         </table>
       );
     } else {
@@ -117,28 +120,28 @@ interface customerProp {
 function InfoBox(prop: customerProp) {
   return (
     <tr
-      className='rad'
+      className="rad"
       onClick={() => {
         <Link
           to={{
-            pathname: '/customerpage/' + prop.customerName,
+            pathname: "/customerpage/" + prop.customerName,
             state: {
               id: 37,
-              name: prop.customerName
-            }
+              name: prop.customerName,
+            },
           }}
         ></Link>;
-        console.log('trykk ' + prop.customerName);
+        console.log("trykk " + prop.customerName);
       }}
     >
       <td>
         <Link
           to={{
-            pathname: '/customerpage/' + prop.id,
+            pathname: "/customerpage/" + prop.id,
             state: {
               id: 37,
-              name: prop.customerName
-            }
+              name: prop.customerName,
+            },
           }}
         >
           <b>{prop.customerName}</b>

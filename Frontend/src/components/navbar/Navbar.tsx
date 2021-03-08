@@ -1,48 +1,65 @@
 // Liberaries
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import  updateAuth  from '../../redux/action/Actions'
-import { signIn, signOut } from '../../azure/authRedirect';
+import updateAuth from "../../redux/action/Actions";
+import { signIn, signOut } from "../../azure/authRedirect";
 
 // CSS style
 import "./Navbar.css";
 
-
 function Navbar(props) {
-    
-    return (
-      <div className="topnav">
-        <div className="left">
-          <Link to='/' className='Logo'>"Logo"</Link>
-        </div>
-        <div className="right">
-          <Link to='/contact' className='Link'>Contact</Link>
-          <Link to='/help' className='Link'>Help</Link>
-          <Link to='/about' className='Link'>About</Link>
-          { console.log(props.islogged)}
-          {  (props.islogged !== 'AUTH') ?
-            (<div>
-              <button id="nt" className="Link" onClick={signIn} >Log in</button>
-            </div> ): 
-            (<div>
-              <button id="nt" className="Link" onClick={signOut} >Log Out</button>
-            </div>)}
-            
-            <button id="nt" className="Link" onClick={props.updateAuth}> Bytt Log </button>
-        </div>
+  return (
+    <div className="topnav">
+      <div className="left">
+        <Link to="/" className="Logo">
+          "Logo"
+        </Link>
       </div>
-    );
+      <div className="right">
+        <Link to="/contact" className="Link">
+          Contact
+        </Link>
+        <Link to="/help" className="Link">
+          Help
+        </Link>
+        <Link to="/about" className="Link">
+          About
+        </Link>
+        {console.log(props.islogged)}
+        {props.islogged !== "AUTH" ? (
+          <div>
+            <button id="nt" className="Link" onClick={signIn}>
+              Log in
+            </button>
+          </div>
+        ) : (
+          <div>
+            <button id="nt" className="Link" onClick={signOut}>
+              Log Out
+            </button>
+          </div>
+        )}
+
+        <button id="nt" className="Link" onClick={props.updateAuth}>
+          {" "}
+          Bytt Log{" "}
+        </button>
+      </div>
+    </div>
+  );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return state;
-}
+};
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    updateAuth: () => {dispatch(updateAuth)}
-  }
-}
+    updateAuth: () => {
+      dispatch(updateAuth);
+    },
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
 
@@ -81,11 +98,11 @@ const PrettyPrintJson = ({ data }: any) => {
       console.log("Not authenticated1")
     }*/
 
-    //const logged = isLogedIn();
+//const logged = isLogedIn();
 
-    //const loggedIn = useSelector(state => state.islogged);
+//const loggedIn = useSelector(state => state.islogged);
 
-    //import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
+//import { signIn, signOut, authenticated } from "../../azure/authPopup"; // For popup
 // For redirect
 
 /*function AuthText(){ //Funker ikke
@@ -101,4 +118,3 @@ const PrettyPrintJson = ({ data }: any) => {
     )
   }
 }*/
-

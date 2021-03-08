@@ -5,7 +5,7 @@ import "./Contact.css";
  */
 function Contact() {
   return (
-    <div className="Contact">
+    <div className="Contact add-margins">
       <div className="page">
         <h1>Velkommen</h1>
         <h1>Her er kontaktsiden</h1>

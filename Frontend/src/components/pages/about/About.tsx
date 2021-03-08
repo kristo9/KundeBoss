@@ -5,7 +5,7 @@ import "./About.css";
  */
 function About() {
   return (
-    <div className="About">
+    <div className="About add-margins">
       <div className="page">
         <h1>Her er about siden</h1>
       </div>

@@ -4,6 +4,7 @@
 function PageNotFound() {
   return (
     <div
+      className="add-margins"
       style={{
         fontSize: "50px",
       }}

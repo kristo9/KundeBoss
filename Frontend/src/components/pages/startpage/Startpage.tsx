@@ -8,7 +8,7 @@ import "../../basicComp/basic.css";
  */
 function Startpage() {
   return (
-    <div>
+    <div className="add-margins">
       <div className="page">
         <h1 className="h1-style h1-color">Velkommen</h1>
       </div>

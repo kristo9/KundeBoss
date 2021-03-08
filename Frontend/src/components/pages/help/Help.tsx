@@ -5,7 +5,7 @@ import "./Help.css";
  */
 function Help() {
   return (
-    <div className="Help">
+    <div className="Help add-margins">
       <div className="page">
         <h1>Velkommen</h1>
         <h1>Her er helpsiden</h1>
