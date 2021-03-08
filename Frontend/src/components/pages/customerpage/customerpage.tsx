@@ -18,7 +18,7 @@ class CustomerPage extends React.Component<RouteComponentProps> {
   render() {
     return (
       <div className="margin-right H100">
-        <div style={{ float: "left", background: "gray", height: "100%", width: "10%" }}>
+        <div style={{ float: "left", background: "gray", height: "100%", width: "20%" }}>
           <Sidebar />
         </div>
         <div>

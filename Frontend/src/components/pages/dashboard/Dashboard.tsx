@@ -3,6 +3,7 @@ import "./Dashboard.css";
 import React from "react";
 import { Link } from "react-router-dom";
 import Inputfield from "../../../components/basicComp/searchfield";
+import { type } from "os";
 
 let customers = getEmployee();
 
@@ -28,7 +29,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   componentDidMount() {
     const fetchName = async () => {
       customers = await customers;
-
+      console.log(customers);
       if (typeof customers !== "object") {
         customers = await getEmployee();
       }
@@ -77,11 +78,14 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   private displayCustomers() {
     if (this.state.customers) {
+      console.log("cust");
+      console.log(this.state.customers.name);
       return (
         <table className="diasplayTable">
           <tbody>
             {
               //Creates a table entry for each customer returned from the database.
+
               this.state.customers.customerInformation.map((customer) => (
                 <InfoBox
                   customerName={customer.name}
