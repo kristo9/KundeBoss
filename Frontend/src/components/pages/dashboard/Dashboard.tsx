@@ -65,6 +65,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   private displayGreeting() {
     if (this.state.customers && this.state.customers.name) {
+      modifyEmployeeData("per.aasrud@kundeboss.onmicrosoft.com", "Por Arild R Johkfannesen", "write", false, null);
       return <h1>Velkommen {this.state.customers.name.split(" ")[0]}</h1>;
     } else {
       return <h1>Velkommen</h1>;

@@ -69,7 +69,7 @@ export function getCustomer(id: string) {
   return prepareCall('GetCustomerData', customerId);
 }
 
-export function getEmployee(tag = null) {
+export function getEmployee(tag = null):Promise<any> {
   tag = {
     'tag': tag,
   };
