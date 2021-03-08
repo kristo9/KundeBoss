@@ -14,7 +14,7 @@ function callApi(endpoint, token, data) {
   const options = {
     method: 'POST',
     headers: headers,
-    body: data
+    body: data,
   };
 
   console.log(options);
@@ -22,14 +22,8 @@ function callApi(endpoint, token, data) {
   console.log('Calling Web API...');
 
   return fetch(endpoint, options)
+    .then((response) => response.json)
     .then((response) => {
-      //temp, originalt: .then((response) => response.json();)
-      const x = response.json();
-      console.log(x);
-      return x;
-    })
-    .then((response) => {
-      console.log('Response', response);
       if (response) {
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
         return response;
@@ -70,14 +64,14 @@ export function callLogin() {
 
 export function getCustomer(id: string) {
   let customerId = {
-    'id': id
+    'id': id,
   };
   return prepareCall('GetCustomerData', customerId);
 }
 
 export function getEmployee(tag = null) {
   tag = {
-    'tag': tag
+    'tag': tag,
   };
   return prepareCall('GetCustomers', tag);
 }
@@ -95,9 +89,8 @@ export function modifyEmployeeData(
     'name': name,
     'admin': admin,
     'isCustomer': isCustomer,
-    'customers': customers
+    'customers': customers,
   };
-  console.log(data);
 
   return prepareCall('ModifyEmployeeData', data);
 }
