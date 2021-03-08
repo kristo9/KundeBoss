@@ -39,7 +39,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
       .project({
         '_id': 0,
         'employeeId': 1,
-        'isCustomer': 1
+        'isCustomer': 1,
+        'admin': 1
       })
       .toArray((error: any, docs: string | any[]) => {
         if (error) {

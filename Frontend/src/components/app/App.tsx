@@ -1,17 +1,20 @@
-import "./App.css";
+// Libaries
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+// Components
 import Navbar from "../navbar/Navbar";
 import StartPage from "../pages/startpage/Startpage";
 import Contact from "../pages/contact/Contact";
 import Help from "../pages/help/Help";
 import About from "../pages/about/About";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import PageNotFound from "../pages/pageNotFound/pageNotFound";
 import Dashboard from "../pages/dashboard/Dashboard";
-import Customerpage from "../pages/customerpage/customerpage";
+import CustomerPage from "../pages/customerpage/customerpage";
+import PageNotFound from "../pages/pageNotFound/pageNotFound";
 
-/**
- * @returns HTML for the entire website
- */
+// CSS Styling
+import "./App.css";
+
 function App() {
   return (
     <Router>
@@ -24,7 +27,7 @@ function App() {
             <Route path="/help" component={Help} />
             <Route path="/about" component={About} />
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/customerpage" component={Customerpage} />
+            <Route path="/customerpage" component={CustomerPage} />
             <Route path="*" exact={true} component={PageNotFound} />
           </Switch>
         </div>

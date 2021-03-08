@@ -1,11 +1,10 @@
 import { apiConfig } from './apiConfig';
 import { getTokenRedirect } from './authRedirect';
 import { tokenRequest } from './authConfig';
-import { useDispatch } from 'react-redux';
 
 let username = null;
 
-export function callApi(endpoint, token, data) {
+function callApi(endpoint, token, data) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
 
@@ -14,14 +13,22 @@ export function callApi(endpoint, token, data) {
   const options = {
     method: 'POST',
     headers: headers,
-    body: data
+    body: data,
   };
+
+  console.log(options);
 
   console.log('Calling Web API...');
 
   return fetch(endpoint, options)
-    .then((response) => response.json())
     .then((response) => {
+      //temp, originalt: .then((response) => response.json();)
+      const x = response.json();
+      console.log(x);
+      return x;
+    })
+    .then((response) => {
+      console.log('Response', response);
       if (response) {
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
         return response;
@@ -60,13 +67,40 @@ export function callLogin() {
   }
 }
 
+export function getCustomer(id: string) {
+  let customerId = {
+    'id': id,
+  };
+  return prepareCall('GetCustomerData', customerId);
+}
+
 export function getEmployee(tag = {}) {
   if (tag) {
     tag = {
-      'tag': tag
+      'tag': tag,
     };
   }
   return prepareCall('GetCustomers', tag);
+}
+
+export function modifyEmployeeData(
+  employeeId: string = null,
+  name: string = null,
+  admin: string = null,
+  isCustomer: boolean = null,
+  customers: any
+) {
+  console.log('Calling ModifyEmployeeData function');
+  const data = {
+    'employeeId': employeeId,
+    'name': name,
+    'admin': admin,
+    'isCustomer': isCustomer,
+    'customers': customers,
+  };
+  console.log(data);
+
+  return prepareCall('ModifyEmployeeData', data);
 }
 
 export function setUsername(user) {
@@ -74,13 +108,19 @@ export function setUsername(user) {
 }
 
 export function isLogedIn() {
-  return username;
+  let validate = null;
+  if (username != null) {
+    validate = username;
+    console.log(validate);
+    return validate;
+  } else {
+    console.log(validate);
+    return validate;
+  }
 }
 
 export function logToken() {
   getTokenRedirect(tokenRequest).then((response) => {
     if (response) console.log(response.accessToken);
-    const dispatch = useDispatch();
-    dispatch('AUTH');
   });
 }

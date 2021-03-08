@@ -1,5 +1,3 @@
-export const isLoggedIn = () => {
-    return{
-        type: 'IS_LOGGED_IN'
-    };
-};
+const updateAuth = {type:'AUTH' };
+
+export default updateAuth;

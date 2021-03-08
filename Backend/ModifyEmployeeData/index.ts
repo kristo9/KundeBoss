@@ -1,5 +1,5 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, nameVal, mailVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
+import { prepInput, nameVal, mailVal, _idVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
@@ -13,6 +13,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   }
 
   let token = prepToken(context, req.headers.authorization);
+  let newVals = JSON.parse('{}'); // Makes new JSON object to store potential changes in employee
 
   if (token === null) {
     return context.done();
@@ -22,30 +23,71 @@ module.exports = (context: Context, req: HttpRequest): any => {
     let errMsg = req.body;
     let validInput = true;
 
-    if (!req.body.name) {
-      errorWrongInput(context);
+    const setError = (errorMsg: string = 'Wrong input') => {
+      errMsg = errorMsg;
+      validInput = false;
+    };
+
+    if (!req.body.employeeId) {
+      errorWrongInput(context, 'Invalid employeeId.');
       return context.done();
     }
-    if (!nameVal(req.body.name)) {
-      errMsg.name = 'false';
-      validInput = false;
+
+    if (req.body.name) {
+      if (!nameVal(req.body.name)) {
+        setError('Invalid name');
+      }
+      newVals['name'] = req.body.name;
     }
+
+    if (req.body.employeeId) {
+      if (!mailVal(req.body.employeeId)) {
+        setError('Invalid mail/employeeId');
+      }
+      newVals['employeeId'] = req.body.employeeId;
+    }
+
+    if (req.body.customers) {
+      req.body.customers.forEach((customer) => {
+        console.log(customer['id']);
+        if (!_idVal(customer['id']) || (customer['permission'] != 'read' && customer['permission'] != 'write')) {
+          setError('Invalid id or permission');
+        }
+      });
+      newVals['customers'] = req.body.customers;
+    }
+
+    if (req.body.admin) {
+      if (req.body.admin != 'write' && req.body.admin != 'read') {
+        setError('Invalid admin permission');
+      }
+      newVals['admin'] = req.body.admin;
+    }
+
+    if (req.body.isCustomer) {
+      if (req.body.isCustomer != true && req.body.isCustomer != false) {
+        setError('Invalid customer role');
+      }
+      newVals['isCustomer'] = req.body.isCustomer;
+    }
+
+    newVals = { $set: newVals }; // Adds the changes to the object
+
     if (validInput) {
       connectRead(context, authorize);
     } else {
-      errorWrongInput(context);
+      errorWrongInput(context, errMsg);
       return context.done();
     }
   };
 
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
-      // verified and decoded token
       if (err) {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        db.collection('employee')
+        db.collection('employee') // Check if user has access to the function
           .find({ employeeId: decoded.preferred_username })
           .project({ admin: 1 })
           .toArray((error: any, docs: { admin: string }[]) => {
@@ -57,7 +99,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 connectWrite(context, functionQuery);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
-                console.log(docs[0].admin);
                 return context.done();
               }
             }
@@ -67,30 +108,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    const query = { 'name': req.body.origName };
-    console.log('0');
-
-    let newVals = JSON.parse('{}');
-
-    if (req.body.name) {
-      newVals['name'] = req.body.name;
-    }
-    if (req.body.employeeId) {
-      newVals['employeeId'] = req.body.employeeId;
-    }
-    if (req.body.customers) {
-      newVals['customers'] = req.body.customers;
-    }
-    if (req.body.admin) {
-      newVals['admin'] = req.body.admin;
-    }
-    if (req.body.customer) {
-      newVals['customer'] = req.body.customer;
-    }
-
-    newVals = { $set: newVals };
+    const query = { 'employeeId': req.body.employeeId };
 
     db.collection('employee').updateOne(query, newVals, (error: any, docs: JSON) => {
+      // Updates employee
       if (error) {
         console.log(error);
         errorQuery(context);

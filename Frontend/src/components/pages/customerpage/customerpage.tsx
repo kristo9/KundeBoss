@@ -1,33 +1,40 @@
+import React from "react";
+import { RouteComponentProps } from "react-router";
 import "./customerpage.css";
 import "../../basicComp/basic.css";
 
 /**
  * @returns A react component with the customer page
  */
-function Customerpage() {
-  return (
-    <div className="margin-right H100">
-      <div style={{ float: "left", background: "gray", height: "100%", width: "10%" }}>
-        <Sidebar />
-      </div>
-      <div>
-        <h1>Velkommen</h1>
-        <h1>Her er kundesiden</h1>
-      </div>
-    </div>
-  );
-}
+class CustomerPage extends React.Component<RouteComponentProps> {
+  /**
+   * @constructor
+   * @param {props} props contains infomation about the class
+   */
+  constructor(props) {
+    super(props);
+  }
 
-function Sidebar(params: any) {
+  render() {
+    return (
+      <div className="margin-right H100">
+        <div style={{ float: "left", background: "gray", height: "100%", width: "10%" }}>
+          <Sidebar />
+        </div>
+        <div>
+          <h1>Velkommen</h1>
+          <h1>Her er kundesiden for {this.props.match.params.name}</h1>
+        </div>
+      </div>
+    );
+  }
+}
+/**
+ * @returns A react component with the sidebar for the customer page
+ */
+function Sidebar() {
   return (
-    <div
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-      }}
-    >
+    <div className="test">
       <h2>
         <b>Kunde navn</b>
       </h2>
@@ -41,7 +48,10 @@ function Sidebar(params: any) {
     </div>
   );
 }
-
+/**
+ * @returns A react component with buttons for the sidebar
+ * @param {string} text contains button text
+ */
 function SidebarButton(prop: { text: string }) {
   return (
     <div className="knapp">
@@ -50,4 +60,4 @@ function SidebarButton(prop: { text: string }) {
   );
 }
 
-export default Customerpage;
+export default CustomerPage;
