@@ -29,6 +29,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
+  // What information is to be recieved
   const projection = {
     'name': 1,
     'employeeId': 1,
@@ -36,26 +37,26 @@ module.exports = (context: Context, req: HttpRequest): any => {
     'customerInformation.name': 1,
     'customerInformation.contact.name': 1,
     'customerInformation.contact.mail': 1,
-    'customerInformation.tags': 1
+    'customerInformation.tags': 1,
   };
 
   const functionQuery = (db: Db) => {
-    db.collection('employee')
+    db.collection('employee') // Query to recieve information about one employee and his customers
       .aggregate([
         {
           '$match': {
-            'employeeId': employeeId
-          }
+            'employeeId': employeeId,
+          },
         },
         {
           '$lookup': {
             'from': 'customer',
             'localField': 'customers.id',
             'foreignField': '_id',
-            'as': 'customerInformation'
-          }
+            'as': 'customerInformation',
+          },
         },
-        { '$project': projection }
+        { '$project': projection },
       ])
       .toArray((error: any, docs: JSON) => {
         if (error) {

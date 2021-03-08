@@ -7,10 +7,11 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 
 module.exports = (context: Context, req: HttpRequest): any => {
   let employeeId: any;
-  //console.log(token);
+
   let token = prepToken(context, req.headers.authorization);
 
   if (token === null) {
+    //no token
     return context.done();
   }
 
@@ -22,9 +23,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
         return context.done();
       } else {
         employeeId = decoded.preferred_username;
-        console.log(employeeId);
 
-        db.collection('employee')
+        db.collection('employee') // query to find users permission level
           .find({ 'employeeId': employeeId })
           .project({ 'admin': 1 })
           .toArray((error: any, docs: JSON | JSON[]) => {
@@ -44,7 +44,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  // TODO: Projection,  Only for retrieving data
+  // What information is to be recieved
   const projection = {
     '_id': 0,
     'name': 1,
@@ -54,7 +54,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    db.collection('employee')
+    db.collection('employee') // Query that asks for all employees
       .find()
       .project(projection)
       .toArray((error: any, docs: JSON) => {
