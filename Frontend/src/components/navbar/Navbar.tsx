@@ -1,48 +1,48 @@
 // Liberaries
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import updateAuth from "../../redux/action/Actions";
-import { signIn, signOut } from "../../azure/authRedirect";
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import updateAuth from '../../redux/action/Actions';
+import { signIn, signOut } from '../../azure/authRedirect';
 
 // CSS style
-import "./Navbar.css";
+import './Navbar.css';
 
 function Navbar(props) {
   return (
-    <div className="topnav">
-      <div className="left">
-        <Link to="/" className="Logo">
+    <div className='topnav'>
+      <div className='left'>
+        <Link to='/' className='Logo'>
           "Logo"
         </Link>
       </div>
-      <div className="right">
-        <Link to="/contact" className="Link">
+      <div className='right'>
+        <Link to='/contact' className='Link'>
           Contact
         </Link>
-        <Link to="/help" className="Link">
+        <Link to='/help' className='Link'>
           Help
         </Link>
-        <Link to="/about" className="Link">
+        <Link to='/about' className='Link'>
           About
         </Link>
         {console.log(props.islogged)}
-        {props.islogged !== "AUTH" ? (
+        {props.islogged !== 'AUTH' ? (
           <div>
-            <button id="nt" className="Link" onClick={signIn}>
+            <button id='nt' className='Link' onClick={signIn}>
               Log in
             </button>
           </div>
         ) : (
           <div>
-            <button id="nt" className="Link" onClick={signOut}>
+            <button id='nt' className='Link' onClick={signOut}>
               Log Out
             </button>
           </div>
         )}
 
-        <button id="nt" className="Link" onClick={props.updateAuth}>
-          {" "}
-          Bytt Log{" "}
+        <button id='nt' className='Link' onClick={props.updateAuth}>
+          {' '}
+          Bytt Log{' '}
         </button>
       </div>
     </div>

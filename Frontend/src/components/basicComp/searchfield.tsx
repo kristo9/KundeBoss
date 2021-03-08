@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
 class Searchfield extends React.Component<{}, { value: any; func: any }> {
   constructor(props) {
     super(props);
-    this.state = { value: "", func: undefined };
+    this.state = { value: '', func: undefined };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -14,7 +14,7 @@ class Searchfield extends React.Component<{}, { value: any; func: any }> {
   }
 
   handleSubmit(event) {
-    alert("A name was submitted: " + this.state.value);
+    alert('A name was submitted: ' + this.state.value);
     event.preventDefault();
   }
 
@@ -22,9 +22,9 @@ class Searchfield extends React.Component<{}, { value: any; func: any }> {
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
+          <input type='text' value={this.state.value} onChange={this.handleChange} />
         </label>
-        <input type="submit" value="søk" />
+        <input type='submit' value='søk' />
       </form>
     );
   }

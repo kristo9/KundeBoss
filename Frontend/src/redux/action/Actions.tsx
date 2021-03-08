@@ -1,3 +1,3 @@
-const updateAuth = {type:'AUTH' };
+const updateAuth = { type: 'AUTH' };
 
 export default updateAuth;
