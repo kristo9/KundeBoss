@@ -4,6 +4,7 @@ import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../Sh
 import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
+import { ObjectId } from 'mongodb';
 
 module.exports = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
@@ -47,10 +48,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
       } else {
         db.collection('employee').findOne(
           {
-            'employeeId': decoded.preferred_username
+            'employeeId': decoded.preferred_username,
           },
           {
-            'admin': 1
+            'admin': 1,
           },
           (error: any, docs: { admin: string }) => {
             if (error) {
@@ -70,32 +71,45 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  const query = {
+  let query = {
     'name': req.body.name,
     'contact': {
-      'phone': req.body.phone || 'null',
+      'phone': req.body.phone || null,
       'mail': req.body.mail,
-      'name': req.body.contactName || 'null'
+      'name': req.body.contactName || null,
     },
     'suppliers': req.body.suppliers || [],
     'tags': req.body.tags || [],
-    'comment': req.body.comment || 'null',
+    'comment': req.body.comment || null,
     'types': [],
     'typeValues': [],
     'customerAgreements': [],
-    'infoReference': req.body.infoReference || 'null'
+    'infoReference': req.body.infoReference || null,
+    'mailGroup': null,
   };
 
   const functionQuery = (db: Db) => {
-    db.collection('customer').insertOne(query, (error: any, docs: JSON) => {
+    db.collection('mailGroup').insertOne({ 'mails': [] }, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
         return context.done();
       }
-      returnResult(context, docs);
-      context.done();
+      query.mailGroup = ObjectId(docs.insertedId);
+      db.collection('customer').insertOne(query, (error: any, docs: JSON) => {
+        if (error) {
+          errorQuery(context);
+          return context.done();
+        }
+        returnResult(context, docs);
+        context.done();
+      });
     });
   };
 
   inputValidation();
 };
+
+/* {
+  "name":"",
+  "mail":"",
+} */

@@ -36,7 +36,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     'customerInformation.name': 1,
     'customerInformation.contact.name': 1,
     'customerInformation.contact.mail': 1,
-    'customerInformation.tags': 1
+    'customerInformation.tags': 1,
   };
 
   const functionQuery = (db: Db) => {
@@ -44,18 +44,18 @@ module.exports = (context: Context, req: HttpRequest): any => {
       .aggregate([
         {
           '$match': {
-            'employeeId': employeeId
-          }
+            'employeeId': employeeId,
+          },
         },
         {
           '$lookup': {
             'from': 'customer',
             'localField': 'customers.id',
             'foreignField': '_id',
-            'as': 'customerInformation'
-          }
+            'as': 'customerInformation',
+          },
         },
-        { '$project': projection }
+        { '$project': projection },
       ])
       .toArray((error: any, docs: JSON) => {
         if (error) {

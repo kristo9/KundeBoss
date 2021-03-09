@@ -6,7 +6,7 @@ import { connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
-module.exports = (context: Context, req: HttpRequest): any => {
+export = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
   if (req.body === null) {
@@ -36,10 +36,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
       } else {
         db.collection('employee').findOne(
           {
-            'employeeId': decoded.preferred_username
+            'employeeId': decoded.preferred_username,
           },
           {
-            'customers': 1
+            'customers': 1,
           },
           (error: any, docs) => {
             if (error) {
@@ -72,7 +72,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   };
 
   const query = {
-    '_id': ObjectId(req.body.id)
+    '_id': ObjectId(req.body.id),
   };
 
   console.log('query');
