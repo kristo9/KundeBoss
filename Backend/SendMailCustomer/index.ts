@@ -140,6 +140,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
       };
 
       if (receiverMail.length > 0) {
+        context.log('Sent mail to:' + JSON.stringify(receiverMail));
         context.bindings.resMail = message;
         mailGroup = docs.mailGroup;
         connectWrite(context, functionQuery);
