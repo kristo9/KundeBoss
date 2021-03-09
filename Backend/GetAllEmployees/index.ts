@@ -11,13 +11,12 @@ module.exports = (context: Context, req: HttpRequest): any => {
   let token = prepToken(context, req.headers.authorization);
 
   if (token === null) {
-    //no token
     return context.done();
   }
 
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
-      // verified and decoded token
+      // Verified and decoded token
       if (err) {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
