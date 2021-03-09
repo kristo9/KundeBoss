@@ -14,9 +14,9 @@ body {
 
 /*Uses the Manrope font (manropefont.com)*/
 @font-face {
-  font-family: "Manrope";
-  src: url("../../fonts/web/Manrope-Regular.woff2") format("woff2"),
-    url("../../fonts/web/Manrope-Regular.woff") format("woff");
+  font-family: 'Manrope';
+  src: url('../../fonts/web/Manrope-Regular.woff2') format('woff2'),
+    url('../../fonts/web/Manrope-Regular.woff') format('woff');
 }
 * {
   font-family: Manrope;

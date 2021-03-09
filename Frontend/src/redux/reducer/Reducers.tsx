@@ -1,16 +1,15 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import islogged from './isLogged'
+import islogged from './isLogged';
 
 const InitialStates = {
-    islogged:{name: null}
-}
+  islogged: { name: null },
+};
 
 const allReducers = combineReducers({
-    islogged
+  islogged,
 });
 
-const store = createStore(allReducers, InitialStates, applyMiddleware(thunk))
-
+const store = createStore(allReducers, InitialStates, applyMiddleware(thunk));
 
 export default store;

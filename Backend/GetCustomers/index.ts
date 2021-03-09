@@ -29,6 +29,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
+  // What information is to be recieved
   const projection = {
     'name': 1,
     'employeeId': 1,
@@ -40,7 +41,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    db.collection('employee')
+    db.collection('employee') // Query to recieve information about one employee and his customers
       .aggregate([
         {
           '$match': {

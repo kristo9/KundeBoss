@@ -1,7 +1,7 @@
-import React from "react";
-import { RouteComponentProps } from "react-router";
-import "./customerpage.css";
-import "../../basicComp/basic.css";
+import React from 'react';
+import { RouteComponentProps } from 'react-router';
+import './customerpage.css';
+import '../../basicComp/basic.css';
 
 /**
  * @returns A react component with the customer page
@@ -17,8 +17,8 @@ class CustomerPage extends React.Component<RouteComponentProps> {
 
   render() {
     return (
-      <div className="margin-right H100">
-        <div style={{ float: "left", background: "gray", height: "100%", width: "10%" }}>
+      <div className='margin-right H100'>
+        <div style={{ float: 'left', background: 'gray', height: '100%', width: '20%' }}>
           <Sidebar />
         </div>
         <div>
@@ -34,17 +34,17 @@ class CustomerPage extends React.Component<RouteComponentProps> {
  */
 function Sidebar() {
   return (
-    <div className="test">
+    <div className='test'>
       <h2>
         <b>Kunde navn</b>
       </h2>
-      <SidebarButton text="Mail" />
-      <SidebarButton text="Informasjon" />
-      <SidebarButton text="Send Mail" />
-      <SidebarButton text="div 1" />
-      <SidebarButton text="div 2" />
-      <SidebarButton text="div 3" />
-      <SidebarButton text="div 4" />
+      <SidebarButton text='Mail' />
+      <SidebarButton text='Informasjon' />
+      <SidebarButton text='Send Mail' />
+      <SidebarButton text='div 1' />
+      <SidebarButton text='div 2' />
+      <SidebarButton text='div 3' />
+      <SidebarButton text='div 4' />
     </div>
   );
 }
@@ -54,8 +54,8 @@ function Sidebar() {
  */
 function SidebarButton(prop: { text: string }) {
   return (
-    <div className="knapp">
-      <button className="text">{prop.text}</button>
+    <div className='knapp'>
+      <button className='text'>{prop.text}</button>
     </div>
   );
 }
