@@ -1,5 +1,5 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
+import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
@@ -21,13 +21,30 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
   const inputValidation = () => {
     let validInput = true;
+    let errMsg = 'Error: ';
 
-    /*TODO: Create cheks */
+    if (!_idVal(req.body?.customerId?.id) || !req.body?.customerId?.include) {
+      validInput = false;
+      errMsg += 'CustomerId not found or invalid. \n';
+    }
+    if (req.body?.supplierIds?.length > 0) {
+      for (let i = 0; i < req.body.supplierIds.length; ++i) {
+        if (!_idVal(req.body.supplierIds[i])) {
+          validInput = false;
+          errMsg += 'Check supplierIds for error. \n';
+          break;
+        }
+      }
+    }
+    if (!req.body?.from || !req.body?.text || !req.body?.subject) {
+      validInput = false;
+      errMsg += 'From, text or subject not received.';
+    }
 
     if (validInput) {
       connectRead(context, authorize);
     } else {
-      errorWrongInput(context); /*TODO: appropriate error message, optional */
+      errorWrongInput(context, errMsg); /*TODO: appropriate error message, optional */
       return context.done();
     }
   };
