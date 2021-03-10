@@ -2,10 +2,19 @@ import { Context } from '@azure/functions';
 
 const sanitize = require('sanitize-html');
 
-const sanitizeHtml = (input: string) => sanitize(input);
-
+//const sanitizeHtml = (input: string) => sanitize(input);
+/**
+ * @description Sanitize JSON and JSON[] objects
+ * @param input: JSON | JSON[]
+ * @returns JSON | JSON[]
+ */
 const sanitizeHtmlJson = (input: JSON | JSON[]) => JSON.parse(sanitize(JSON.stringify(input)));
 
+/**
+ * @description Return true if name has passes regex test
+ * @param name: strig
+ * @returns bool
+ */
 export const nameVal = (name: string) =>
   typeof name === 'string'
     ? name.match(
@@ -13,16 +22,24 @@ export const nameVal = (name: string) =>
       ) != null
     : false;
 
+/**
+ * @description Return true if phoneVal has passes regex test
+ * @param number: any
+ * @returns bool
+ */
 export const phoneVal = (number: any) => number.toString().match(/^[+]{1}[0-9]{10}$|^[0-9]{8}$|^[0-9]{12}$/) != null;
 
+/**
+ * @description Return true if mail has passes regex test
+ * @param mail: strig
+ * @returns bool
+ */
 export const mailVal = (mail: string) =>
   typeof mail === 'string'
     ? mail.match(
         /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
       ) != null
     : false;
-
-export const ageVal = (age: string) => age.match(/^[1]?[0-9]{1,2}$/) != null;
 
 export const dateVal = (date: string) =>
   date.match(
