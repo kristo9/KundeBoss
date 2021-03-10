@@ -49,10 +49,11 @@ export const dateVal = (date: string) =>
 export const _idVal = (_id: string) => (typeof _id === 'string' ? _id.match(/^[0-9a-f]{24}$/) != null : false);
 
 export const returnResult = (context: Context, data: JSON | JSON[]) => {
-  //data = sanitizeHtmlJson(data);
+  data = sanitizeHtmlJson(data);
 
   context.log('Success!');
   context.res = {
+    'status': 200,
     'headers': {
       'Content-Type': 'application/json',
     },

@@ -52,8 +52,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
     'customer': 1,
   };
 
+  // Query that asks for all employees in the database
   const functionQuery = (db: Db) => {
-    db.collection('employee') // Query that asks for all employees
+    db.collection('employee')
       .find()
       .project(projection)
       .toArray((error: any, docs: JSON) => {
