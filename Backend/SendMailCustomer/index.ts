@@ -124,7 +124,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             }
 
             if (excpectedReceiverCount === receiverMail.length) {
-              connectRead(context, sendMail);
+              sendMail(db);
             } else {
               errorQuery(context, 'User dont have access to given receivers');
               return context.done();

@@ -20,7 +20,7 @@ export = (context: Context, req: HttpRequest): any => {
   }
 
   const inputValidation = () => {
-    if (_idVal(req.body.id)) {
+    if (_idVal(req.body?.id)) {
       connectRead(context, authorize);
     } else {
       errorWrongInput(context, 'id recieved not valid format');
@@ -46,7 +46,6 @@ export = (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              console.log(docs);
               if (docs.admin === 'write' || docs.admin === 'read') {
                 connectRead(context, functionQuery);
                 return;
@@ -54,8 +53,8 @@ export = (context: Context, req: HttpRequest): any => {
 
               for (let i = 0; i < docs.customers.length; ++i) {
                 if (
-                  docs.customers[i].id === req.body.id &&
-                  (docs.customers[i].permission === 'read ' || docs.customers[i].permission === 'write ')
+                  docs.customers[i].id == req.body.id &&
+                  (docs.customers[i].permission === 'read' || docs.customers[i].permission === 'write')
                 ) {
                   connectRead(context, functionQuery);
                   return;
@@ -75,9 +74,6 @@ export = (context: Context, req: HttpRequest): any => {
     '_id': ObjectId(req.body.id),
   };
 
-  console.log('query');
-  console.log(query);
-
   const projection = {};
 
   const functionQuery = (db: Db) => {
@@ -86,7 +82,6 @@ export = (context: Context, req: HttpRequest): any => {
         errorQuery(context);
         return context.done();
       }
-      console.log(docs);
       returnResult(context, docs);
       context.done();
     });
