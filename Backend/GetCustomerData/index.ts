@@ -6,7 +6,7 @@ import { connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
-module.exports = (context: Context, req: HttpRequest): any => {
+export = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
   if (req.body === null) {
@@ -20,7 +20,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   }
 
   const inputValidation = () => {
-    if (_idVal(req.body.id)) {
+    if (_idVal(req.body?.id)) {
       connectRead(context, authorize);
     } else {
       errorWrongInput(context, 'id recieved not valid format');
@@ -36,17 +36,16 @@ module.exports = (context: Context, req: HttpRequest): any => {
       } else {
         db.collection('employee').findOne(
           {
-            'employeeId': decoded.preferred_username
+            'employeeId': decoded.preferred_username,
           },
           {
-            'customers': 1
+            'customers': 1,
           },
           (error: any, docs) => {
             if (error) {
               errorQuery(context);
               return context.done();
             } else {
-              console.log(docs);
               if (docs.admin === 'write' || docs.admin === 'read') {
                 connectRead(context, functionQuery);
                 return;
@@ -54,8 +53,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
               for (let i = 0; i < docs.customers.length; ++i) {
                 if (
-                  docs.customers[i].id === req.body.id &&
-                  (docs.customers[i].permission === 'read ' || docs.customers[i].permission === 'write ')
+                  docs.customers[i].id == req.body.id &&
+                  (docs.customers[i].permission === 'read' || docs.customers[i].permission === 'write')
                 ) {
                   connectRead(context, functionQuery);
                   return;
@@ -72,11 +71,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
   };
 
   const query = {
-    '_id': ObjectId(req.body.id)
+    '_id': ObjectId(req.body.id),
   };
-
-  console.log('query');
-  console.log(query);
 
   const projection = {};
 
@@ -86,7 +82,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
         errorQuery(context);
         return context.done();
       }
-      console.log(docs);
       returnResult(context, docs);
       context.done();
     });

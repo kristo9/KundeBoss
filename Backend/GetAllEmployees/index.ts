@@ -7,7 +7,7 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 
 module.exports = (context: Context, req: HttpRequest): any => {
   let employeeId: any;
-  //console.log(token);
+
   let token = prepToken(context, req.headers.authorization);
 
   if (token === null) {
@@ -16,15 +16,14 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
-      // verified and decoded token
+      // Verified and decoded token
       if (err) {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
         employeeId = decoded.preferred_username;
-        console.log(employeeId);
 
-        db.collection('employee')
+        db.collection('employee') // query to find users permission level
           .find({ 'employeeId': employeeId })
           .project({ 'admin': 1 })
           .toArray((error: any, docs: JSON | JSON[]) => {
@@ -44,7 +43,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  // TODO: Projection,  Only for retrieving data
+  // What information is to be recieved
   const projection = {
     '_id': 0,
     'name': 1,
@@ -53,6 +52,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     'customer': 1,
   };
 
+  // Query that asks for all employees in the database
   const functionQuery = (db: Db) => {
     db.collection('employee')
       .find()

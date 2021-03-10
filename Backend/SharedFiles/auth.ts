@@ -11,14 +11,14 @@ const audience = '6bb502c3-c416-44f7-97cb-705b2b1a50ba'; // TODO Kundeboss
 let jwksClient = require('jwks-rsa');
 
 let client = jwksClient({
-  jwksUri: jwksUri
+  jwksUri: jwksUri,
 });
 
 let signingKey = null;
 
 export const options = {
   audience: audience,
-  issuer: issuer
+  issuer: issuer,
 };
 
 export const getKey = (header: any, callback: (arg0: any, arg1: any) => void) => {
@@ -37,7 +37,7 @@ export const prepToken = (context: Context, token: string) => {
   else {
     context.res = {
       status: 400,
-      body: 'no token'
+      body: 'no token',
     };
     return null;
   }
@@ -47,7 +47,10 @@ export const errorQuery = (context: Context, errorMsg: string = 'Error running q
   context.log(errorMsg);
   context.res = {
     status: 500,
-    body: errorMsg
+    'headers': {
+      'Content-Type': 'application/json',
+    },
+    body: errorMsg,
   };
 };
 
@@ -55,8 +58,11 @@ export const errorUnauthorized = (context: Context, errorMsg: string = 'Unauthor
   signingKey = null;
 
   context.res = {
+    'headers': {
+      'Content-Type': 'application/json',
+    },
     status: 401,
-    body: errorMsg
+    body: errorMsg,
   };
   context.log(errorMsg);
 };
