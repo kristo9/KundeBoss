@@ -3,7 +3,7 @@ import { checkDbConnection, clientRead, connectRead } from '../SharedFiles/dataB
 
 export default (context: Context, myTimer: any) => {
   checkDbConnection(context, clientRead);
-  // Connecting du db to prevent cold start
+  // Connecting db to prevent cold start
   const timeStamp = new Date().toISOString();
 
   if (myTimer.isPastDue) {
