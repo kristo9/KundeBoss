@@ -15,6 +15,12 @@ const DBName = 'KundeBossDB';
 export let clientRead = null;
 export let clientWrite = null;
 
+/**
+ * @description If function succesfully connects to db, or db connection is already availible, function calls callback function with db connection as parameter. Only used for reading
+ * @param context: Context
+ * @param callback: (any) => void
+ * @param overrideTest: bool = false. Makes function create new connection when a connection is availible
+ */
 export function connectRead(context: Context, callback: (arg0: any) => void, overrideTest = false) {
   context.log('Connecting read client');
 
@@ -38,6 +44,12 @@ export function connectRead(context: Context, callback: (arg0: any) => void, ove
   }
 }
 
+/**
+ * @description If function succesfully connects to db, or db connection is already availible, function calls callback function with db connection as parameter
+ * @param context: Context
+ * @param callback: (any) => void
+ * @param overrideTest: bool = false. Makes function create new connection when a connection is availible
+ */
 export function connectWrite(context: Context, callback: (arg0: any) => void, overrideTest = false) {
   context.log('Connecting write client');
 

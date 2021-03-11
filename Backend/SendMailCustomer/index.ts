@@ -36,9 +36,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
         }
       }
     }
-    if (!req.body?.from || !req.body?.text || !req.body?.subject) {
+    if (!req.body?.text || !req.body?.subject) {
       validInput = false;
-      errMsg += 'From, text or subject not received.';
+      errMsg += 'Text or subject not received.';
     }
 
     if (validInput) {
@@ -109,10 +109,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
               for (let i = 0; i < customer.suppliers.length; ++i) {
                 for (let j = 0; j < req.body.supplierIds.length; ++j) {
                   if (req.body.supplierIds[j] == customer.suppliers[i].id) {
-                    receiverMail.push({ 'email': customer.suppliers[i].contactPerson.mail });
+                    receiverMail.push({ 'email': customer.suppliers[i].contact.mail });
                     receiverInformation.push({
                       'id': customer.suppliers[i].id,
-                      'name': customer.suppliers[i].contactPerson.name,
+                      'name': customer.suppliers[i].contact.name,
                       'response': null,
                       'type': 'supplier',
                     });
@@ -143,10 +143,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
         errorQuery(context);
         return context.done();
       }
-
+      console.log(process.env['EmailAddress']);
       message = {
         'personalizations': [{ 'to': receiverMail }],
-        from: { email: req.body.from /*decodedToken.preferred_username*/ },
+        from: { email: process.env['EmailAddress'] /*decodedToken.preferred_username*/ },
         subject: req.body.subject,
         content: [
           {
@@ -176,22 +176,32 @@ module.exports = (context: Context, req: HttpRequest): any => {
       'text': message.content[0].value,
     };
 
-    db.collection('mailGroup').updateOne(
-      { '_id': mailGroup },
-      {
-        $push: {
-          'mails': newMail,
-        },
-      },
-      (error: any, docs: any) => {
-        if (error) {
-          context.bindings.resMail = null;
-          return context.done();
-        }
-        returnResult(context, docs);
-        context.done();
+    db.collection('mail').insertOne(newMail, (error: any, docs: any) => {
+      context.bindings.resMail = null;
+      if (error) {
+        context.bindings.resMail = null;
+        errorQuery(context);
+        return context.done();
       }
-    );
+
+      db.collection('mailGroup').updateOne(
+        { '_id': mailGroup },
+        {
+          $push: {
+            'mails': docs.insertedId,
+          },
+        },
+        (error: any, docs: any) => {
+          if (error) {
+            context.bindings.resMail = null;
+            errorQuery(context);
+            return context.done();
+          }
+          returnResult(context, docs);
+          context.done();
+        }
+      );
+    });
   };
 
   inputValidation();
@@ -201,7 +211,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
 {
   "customerId": {"id":"","include":"true"/"false"},
   "supplierIds":[], Optional
-  "from":"",
   "text": "",
   "subject": ""
 }
