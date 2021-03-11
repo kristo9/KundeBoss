@@ -14,7 +14,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   }
 
   let token = prepToken(context, req.headers.authorization);
-  let decodedToken = null;
+
   if (token === null) {
     return context.done();
   }
@@ -60,7 +60,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
       } else {
         /* TODO: Verify that user has permission to do what is asked
                     example for checking if user have admin-write permission */
-        decodedToken = decoded;
         db.collection('employee')
           .aggregate([
             {
@@ -176,7 +175,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
     };
 
     db.collection('mail').insertOne(newMail, (error: any, docs: any) => {
-      context.bindings.resMail = null;
       if (error) {
         context.bindings.resMail = null;
         errorQuery(context, 'Not able to insert new mail in db');

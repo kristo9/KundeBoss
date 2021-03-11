@@ -10,7 +10,7 @@ const uriRead = process.env['UriRead'];
 const uriWrite = process.env['UriWrite'];
 //module.exports.uriRead = "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false";
 //module.exports.clientRead = () => this.MongoClient(this.uriRead).connect(); //serverSelectionTimeoutMS: 10000, useUnifiedTopology: true, useNewUriParser: true
-const DBName = 'KundeBossDB';
+const DBName = 'KundebossDB';
 
 export let clientRead = null;
 export let clientWrite = null;
