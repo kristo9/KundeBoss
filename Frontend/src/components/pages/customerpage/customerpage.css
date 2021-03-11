@@ -1,24 +1,52 @@
-.knapp {
-  width: 100%;
-  background-color: aqua;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
+.sidebar {
+  height: 100%;
+  /* display: 'flex'; */
+  /* flex-direction: 'colum'; */
+  /* align-items: 'stretch'; */
+  background-color: white;
+  width: 15vw;
+  float: left;
+  align-items: center;
+
+  padding-left: 1vw;
+  padding-right: 1vw;
+  margin-right: 3vw;
 }
 
-.text {
+/*Styling*/
+.sidebar .b {
+  margin-bottom: 0.5vw;
+  padding: 0.5vw 1vw;
+  border-radius: 0.5vw;
+}
+
+.sidebar h2 {
+  text-align: center;
+}
+.sidebar button {
   font-size: 1em;
 }
 
-.knapp :hover {
-  font-size: 2em;
-  color: pink;
+/*Button active*/
+.buttonActive {
+  background-color: gray;
+  color: white;
+  align-items: center;
 }
 
-.test {
-  height: 100%;
-  display: 'flex';
-  flex-direction: 'column';
-  align-items: 'stretch';
+.buttonActive button {
+  color: lightgreen;
+}
+
+/*Button not active*/
+.buttonNotActive {
+  background-color: lightgray;
+}
+
+.buttonNotActive button {
+  color: black;
+}
+
+.buttonNotActive:hover {
+  background-color: gray;
 }
