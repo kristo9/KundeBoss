@@ -143,7 +143,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
         errorQuery(context);
         return context.done();
       }
-      console.log(process.env['EmailAddress']);
       message = {
         'personalizations': [{ 'to': receiverMail }],
         from: { email: process.env['EmailAddress'] /*decodedToken.preferred_username*/ },
@@ -180,7 +179,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
       context.bindings.resMail = null;
       if (error) {
         context.bindings.resMail = null;
-        errorQuery(context);
+        errorQuery(context, 'Not able to insert new mail in db');
         return context.done();
       }
 
@@ -194,7 +193,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
         (error: any, docs: any) => {
           if (error) {
             context.bindings.resMail = null;
-            errorQuery(context);
+            errorQuery(context, 'Not able to update mailGroup in db');
             return context.done();
           }
           returnResult(context, docs);

@@ -59,7 +59,6 @@ export = (context: Context, req: HttpRequest): any => {
                   docs.customers[i].id == req.body.id &&
                   (docs.customers[i].permission === 'read' || docs.customers[i].permission === 'write')
                 ) {
-                  console.log(docs.isCustomer);
                   if (docs.isCustomer === false) {
                     isCustomer = false;
                   }
