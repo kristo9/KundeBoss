@@ -74,7 +74,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
       'mail': req.body.mail,
       'name': req.body.contactName || null,
     },
-    'customers': [],
     'comment': req.body.comment || null,
     'mailGroup': null,
   };

@@ -64,14 +64,14 @@ export function callLogin() {
 
 export function getCustomer(id: string) {
   let customerId = {
-    'id': id,
+    id: id,
   };
   return prepareCall('GetCustomerData', customerId);
 }
 
-export function getEmployee(tag = null):Promise<any> {
+export function getEmployee(tag = null): Promise<any> {
   tag = {
-    'tag': tag,
+    tag: tag,
   };
   return prepareCall('GetCustomers', tag);
 }
@@ -85,11 +85,11 @@ export function modifyEmployeeData(
 ) {
   console.log('Calling ModifyEmployeeData function');
   const data = {
-    'employeeId': employeeId,
-    'name': name,
-    'admin': admin,
-    'isCustomer': isCustomer,
-    'customers': customers,
+    employeeId: employeeId,
+    name: name,
+    admin: admin,
+    isCustomer: isCustomer,
+    customers: customers,
   };
 
   return prepareCall('ModifyEmployeeData', data);

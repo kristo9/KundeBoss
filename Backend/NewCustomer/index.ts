@@ -16,19 +16,15 @@ module.exports = (context: Context, req: HttpRequest): any => {
   if (token === null) return context.done();
 
   const inputValidation = () => {
-    let errMsg = req.body;
+    let errMsg = 'Error: ';
     let validInput = true;
 
-    if (!(req.body.name && req.body.mail)) {
-      errorWrongInput(context);
-      return context.done();
-    }
-    if (!nameVal(req.body.name)) {
-      errMsg.name = 'false';
+    if (!nameVal(req.body?.name)) {
+      errMsg += 'Not valid name. ';
       validInput = false;
     }
-    if (!mailVal(req.body.mail)) {
-      errMsg.mail = 'false';
+    if (!mailVal(req.body?.mail)) {
+      errMsg += 'Not valid mail.';
       validInput = false;
     }
     if (validInput) {

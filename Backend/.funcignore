@@ -5,3 +5,7 @@
 local.settings.json
 test
 tsconfig.json
+tests/
+babel.config.js
+test.config.ts
+testFunction/

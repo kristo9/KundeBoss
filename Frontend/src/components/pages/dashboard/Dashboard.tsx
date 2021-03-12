@@ -44,10 +44,6 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    * Rendre the dashboard page
    */
   render() {
-    {
-      console.log(this.state.customers);
-    }
-
     return (
       <div className='add-margins'>
         <div className='page'>
@@ -66,7 +62,6 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   private displayGreeting() {
     if (this.state.customers && this.state.customers.name) {
-      modifyEmployeeData('per.aasrud@kundeboss.onmicrosoft.com', 'Por Arild R Johkfannesen', 'write', false, null);
       return <h1>Velkommen {this.state.customers.name.split(' ')[0]}</h1>;
     } else {
       return <h1>Velkommen</h1>;
@@ -85,7 +80,6 @@ class Dashboard extends React.Component<{}, { customers: any }> {
           <tbody>
             {
               //Creates a table entry for each customer returned from the database.
-
               this.state.customers.customerInformation.map((customer) => (
                 <InfoBox
                   customerName={customer.name}
@@ -128,14 +122,14 @@ function InfoBox(prop: customerProp) {
       onClick={() => {
         <Link
           to={{
-            pathname: '/customerpage/' + prop.customerName,
+            pathname: '/customerpage/' + prop.id,
             state: {
               id: 37,
-              name: prop.customerName,
+              name: prop.id,
             },
           }}
         ></Link>;
-        console.log('trykk ' + prop.customerName);
+        console.log('trykk ' + prop.id);
       }}
     >
       <td>
