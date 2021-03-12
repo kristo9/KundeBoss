@@ -15,21 +15,27 @@ import PageNotFound from '../pages/pageNotFound/pageNotFound';
 // CSS Styling
 import './App.css';
 
-function App() {
+const Routes = () => {
+  return(
+    <Switch className='Component'>
+      <Route path='/' exact component={StartPage} />
+      <Route path='/contact' component={Contact} />
+      <Route path='/help' component={Help} />
+      <Route path='/about' component={About} />
+      <Route path='/dashboard' component={Dashboard} />
+      <Route path='/customerpage' component={CustomerPage} />
+      <Route path='*' exact={true} component={PageNotFound} />
+    </Switch>
+  )
+}
+
+const App = () => {
   return (
     <Router>
       <div className='app' style={{ height: '100vh' }}>
-        <Navbar />
+        <Navbar/>
         <div style={{ marginTop: '23px', width: '100%' }}>
-          <Switch className='Component'>
-            <Route path='/' exact component={StartPage} />
-            <Route path='/contact' component={Contact} />
-            <Route path='/help' component={Help} />
-            <Route path='/about' component={About} />
-            <Route path='/dashboard' component={Dashboard} />
-            <Route path='/customerpage' component={CustomerPage} />
-            <Route path='*' exact={true} component={PageNotFound} />
-          </Switch>
+          <Routes/>
         </div>
       </div>
     </Router>

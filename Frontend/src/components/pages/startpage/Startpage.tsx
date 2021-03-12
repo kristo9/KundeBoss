@@ -1,5 +1,5 @@
 import './Startpage.css';
-import { signIn } from '../../../azure/authRedirect'; // For popup
+import { SignIn } from '../../../azure/authRedirect'; // For popup
 import { Link } from 'react-router-dom';
 import '../../basicComp/basic.css';
 
@@ -13,7 +13,7 @@ function Startpage() {
         <h1 className='h1-style h1-color'>Velkommen</h1>
       </div>
       <div className='loginDiv'>
-        <button className='login' onClick={signIn}>
+        <button className='login' onClick={SignIn}>
           Log in
         </button>
         <div className='loginText'>

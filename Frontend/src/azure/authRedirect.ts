@@ -4,6 +4,10 @@ import { PublicClientApplication, InteractionRequiredAuthError } from '@azure/ms
 import { loginRequest, msalConfig } from './authConfig';
 import { setUsername, callLogin } from './api';
 
+import { AuthContext, LogOut, LogIn } from "../Context";
+import react, { useReducer } from "react";
+
+
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
@@ -11,7 +15,7 @@ let username = null;
 
 myMSALObj
   .handleRedirectPromise()
-  .then(handleResponse)
+  .then(HandleResponse)
   .then(callLogin)
   .catch((error) => {
     console.error(error);
@@ -35,7 +39,7 @@ function selectAccount() {
   }
 }
 
-function handleResponse(response) {
+function HandleResponse(response) {
   /**
    * To see the full list of response object properties, visit:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#response
@@ -47,12 +51,13 @@ function handleResponse(response) {
     selectAccount();
   }
   if (username) {
+    LogIn();
     setUsername(username);
     console.log(username);
   }
 }
 
-export function signIn() {
+export function SignIn() {
   /**
    * You can pass a custom request object below. This will override the initial configuration. For more information, visit:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
@@ -61,7 +66,8 @@ export function signIn() {
   myMSALObj.loginRedirect(loginRequest);
 }
 
-export function signOut() {
+export const SignOut = () => {
+  
   username = null;
   setUsername(username);
   /**
@@ -73,8 +79,9 @@ export function signOut() {
   const logoutRequest = {
     account: myMSALObj.getAccountByUsername(username)
   };
-
+  
   myMSALObj.logout(logoutRequest);
+  LogOut();
 }
 
 selectAccount();
