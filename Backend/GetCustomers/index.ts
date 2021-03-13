@@ -65,31 +65,17 @@ module.exports = (context: Context, req: HttpRequest): any => {
         } else {
           let result = docs[0];
           let customers = result.customerInformation;
-          let allTags = JSON.parse('[]');
+          let allTags = [];
 
-          for (let i = 0; i < customers.length; ++i) {
-            for (let j = 0; j < customers[i].tags.length; ++j) {
-              if (!allTags.includes(customers[i].tags[j])) {
-                allTags.push(customers[i].tags[j]);
-              }
-            }
-          }
-          result['allTags'] = allTags;
+          customers.forEach((customer) => (allTags = allTags.concat(customer.tags)));
+
+          result['allTags'] = allTags.filter((tag, index) => allTags.indexOf(tag) === index);
 
           if (req.body && req.body.tag) {
             // Search for custoemrs that matches tag search
-
-            let customerTagMatch = JSON.parse('[]');
-
-            for (let i = 0; i < customers.length; ++i) {
-              for (let j = 0; j < customers[i].tags.length; ++j) {
-                if (customers[i].tags[j].toLowerCase().includes(req.body.tag.toLowerCase())) {
-                  customerTagMatch.push(customers[i]);
-                  break;
-                }
-              }
-            }
-            result.customerInformation = customerTagMatch;
+            result.customerInformation = customers.filter((customer) =>
+              customer.tags.map((tag) => tag.toLowerCase().includes(req.body.tag.toLowerCase())).includes(true)
+            );
           }
 
           returnResult(context, result);

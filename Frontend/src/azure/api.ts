@@ -116,3 +116,5 @@ export function logToken() {
     if (response) console.log(response.accessToken);
   });
 }
+
+//logToken();

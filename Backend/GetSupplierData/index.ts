@@ -60,18 +60,12 @@ export = (context: Context, req: HttpRequest): any => {
               errorQuery(context, 'Cant query customer collection');
               return context.done();
             } else {
-              for (let i = 0; i < docs.length; ++i) {
-                for (let j = 0; j < docs[i].suppliers.length; ++j) {
-                  if (docs[i].suppliers[j].id == req.body.id) {
-                    docs[i]['supplier'] = docs[i].suppliers[j];
-                    delete docs[i].suppliers;
-                    break;
-                  }
-                }
-              }
+              docs.forEach((customer, index, customers) => {
+                customers[index]['supplier'] = customer.suppliers.find((element) => element.id == req.body.id);
+                delete customers[index].suppliers;
+              });
 
               supplier['customers'] = docs;
-              context.log(supplier);
               returnResult(context, supplier);
               context.done();
             }

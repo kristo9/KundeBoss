@@ -48,26 +48,21 @@ export = (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs.admin === 'write' || docs.admin === 'read') {
-                isCustomer = false;
+              let cust = docs.customers.find(
+                (customer) =>
+                  customer.id == req.body.id && (customer.permission === 'read' || customer.permission === 'write')
+              );
+
+              if (docs.admin === 'write' || docs.admin === 'read' || cust) {
+                if (docs.isCustomer === false) {
+                  isCustomer = false;
+                }
+
                 functionQuery(db);
                 return;
               }
 
-              for (let i = 0; i < docs.customers.length; ++i) {
-                if (
-                  docs.customers[i].id == req.body.id &&
-                  (docs.customers[i].permission === 'read' || docs.customers[i].permission === 'write')
-                ) {
-                  if (docs.isCustomer === false) {
-                    isCustomer = false;
-                  }
-                  connectRead(context, functionQuery);
-                  return;
-                }
-              }
-
-              errorUnauthorized(context, 'User dont have admin permission');
+              errorUnauthorized(context, 'User dont have permission to see customer, or no customer found');
               return context.done();
             }
           }
@@ -118,15 +113,22 @@ export = (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         }
+        if (docs.length === 0) {
+          errorWrongInput(context, 'No customer found');
+          return context.done();
+        }
+
         docs = docs[0];
-        for (let i = 0; i < docs.suppliers.length; ++i) {
-          for (let j = 0; j < docs.supplierInformation.length; ++j) {
-            if (JSON.stringify(docs.suppliers[i].id) === JSON.stringify(docs.supplierInformation[j]._id)) {
-              docs.suppliers[i].name = docs.supplierInformation[j].name;
+
+        for (let supplier of docs.suppliers) {
+          for (let supplierInformation of docs.supplierInformation) {
+            if (JSON.stringify(supplier.id) === JSON.stringify(supplierInformation._id)) {
+              supplier.name = supplierInformation.name;
               break;
             }
           }
         }
+
         if (isCustomer !== false) {
           delete docs.mails;
         }

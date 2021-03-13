@@ -28,8 +28,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
       errMsg += 'CustomerId not found or invalid. \n';
     }
     if (req.body?.supplierIds?.length > 0) {
-      for (let i = 0; i < req.body.supplierIds.length; ++i) {
-        if (!_idVal(req.body.supplierIds[i])) {
+      for (let supplierId of req.body.supplierIds) {
+        if (!_idVal(supplierId)) {
           validInput = false;
           errMsg += 'Check supplierIds for error. \n';
           break;
@@ -78,48 +78,40 @@ module.exports = (context: Context, req: HttpRequest): any => {
           ])
           .toArray((error: any, docs: any) => {
             docs = docs[0];
-            let customer = null;
             let excpectedReceiverCount = 0;
             if (error) {
               errorQuery(context); /*TODO: appropriate error message, optional */
               return context.done();
             }
 
-            for (let i = 0; i < docs.customerInformation.length; ++i) {
-              if (docs.customerInformation[i]._id == req.body.customerId.id) {
-                customer = docs.customerInformation[i];
-                if (req.body.customerId.include === 'true') {
-                  excpectedReceiverCount = 1;
-                  receiverMail.push({ 'email': customer.contact.mail });
-                  receiverInformation.push({
-                    'id': customer._id.toString(),
-                    'name': customer.contact.name,
-                    'response': null,
-                    'type': 'customer',
-                  });
-                }
-                break;
-              }
+            let customer = docs.customerInformation.find((customer) => customer._id == req.body.customerId.id);
+
+            if (req.body.customerId.include === 'true') {
+              excpectedReceiverCount = 1;
+              receiverMail.push({ 'email': customer.contact.mail });
+              receiverInformation.push({
+                'id': customer._id.toString(),
+                'name': customer.contact.name,
+                'response': null,
+                'type': 'customer',
+              });
             }
 
-            //console.log(JSON.stringify(customer, null, 2));
-
             if (req.body.supplierIds) {
-              for (let i = 0; i < customer.suppliers.length; ++i) {
-                for (let j = 0; j < req.body.supplierIds.length; ++j) {
-                  if (req.body.supplierIds[j] == customer.suppliers[i].id) {
-                    receiverMail.push({ 'email': customer.suppliers[i].contact.mail });
+              excpectedReceiverCount += req.body.supplierIds.length;
+              customer.suppliers
+                .filter((element: any) => JSON.stringify(req.body.supplierIds).includes(element.id))
+                .forEach((supplier: any) => {
+                  {
+                    receiverMail.push({ 'email': supplier.contact.mail });
                     receiverInformation.push({
-                      'id': customer.suppliers[i].id,
-                      'name': customer.suppliers[i].contact.name,
+                      'id': supplier.id,
+                      'name': supplier.contact.name,
                       'response': null,
                       'type': 'supplier',
                     });
-                    excpectedReceiverCount += 1;
-                    break;
                   }
-                }
-              }
+                });
             }
 
             if (excpectedReceiverCount === receiverMail.length) {
@@ -212,3 +204,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   "subject": ""
 }
 */
+/* {
+  'to': [{ 'email': customer.suppliers[i].contact.mail }],
+  'headers': { 'customerId': 'val' },
+} */
