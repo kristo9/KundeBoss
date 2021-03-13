@@ -18,8 +18,8 @@
             "name": "resMail",
             "type": "sendGrid",
             "direction": "out",
-            "apiKey" : "MySendGridKey",
-            "subject": "SendGrid output bindings"
+            "apiKey" : "MySendGridKey"
+           
         }
     ],
     "scriptFile": "../dist/SendMailCustomer/index.js"

@@ -62,7 +62,7 @@ export = (context: Context, req: HttpRequest): any => {
                 return;
               }
 
-              errorUnauthorized(context, 'User dont have permission to see customer, or no customer found');
+              errorUnauthorized(context, 'User dont have permission to see customer or no customer found');
               return context.done();
             }
           }
@@ -120,14 +120,11 @@ export = (context: Context, req: HttpRequest): any => {
 
         docs = docs[0];
 
-        for (let supplier of docs.suppliers) {
-          for (let supplierInformation of docs.supplierInformation) {
-            if (JSON.stringify(supplier.id) === JSON.stringify(supplierInformation._id)) {
-              supplier.name = supplierInformation.name;
-              break;
-            }
+        docs.supplierInformation.forEach((supplierInformation, index) => {
+          if (JSON.stringify(docs.suppliers).includes(supplierInformation._id)) {
+            docs.suppliers[index].name = supplierInformation.name;
           }
-        }
+        });
 
         if (isCustomer !== false) {
           delete docs.mails;

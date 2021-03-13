@@ -5,6 +5,7 @@ import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
+import { encrypt } from '../SharedFiles/crypto';
 
 module.exports = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
@@ -23,30 +24,52 @@ module.exports = (context: Context, req: HttpRequest): any => {
     let validInput = true;
     let errMsg = 'Error: ';
 
+    let errSupId = req.body?.supplierIds?.find((supplierId) => !_idVal(supplierId));
+
+    if (errSupId?.length > 0) {
+      validInput = false;
+      errMsg += 'Check supplierIds for error. \n';
+    }
+
     if (!_idVal(req.body?.customerId?.id) || !req.body?.customerId?.include) {
       validInput = false;
       errMsg += 'CustomerId not found or invalid. \n';
     }
-    if (req.body?.supplierIds?.length > 0) {
-      for (let supplierId of req.body.supplierIds) {
-        if (!_idVal(supplierId)) {
-          validInput = false;
-          errMsg += 'Check supplierIds for error. \n';
-          break;
-        }
-      }
-    }
+
     if (!req.body?.text || !req.body?.subject) {
       validInput = false;
       errMsg += 'Text or subject not received.';
     }
 
     if (validInput) {
-      connectRead(context, authorize);
+      connectWrite(context, getResponseCount);
     } else {
-      errorWrongInput(context, errMsg); /*TODO: appropriate error message, optional */
+      errorWrongInput(context, errMsg);
       return context.done();
     }
+  };
+  let mailId = null;
+
+  const getResponseCount = (db) => {
+    db.collection('mail').findOne({ '_id': 'encodedResponseId' }, { 'counter': 1 }, (error: any, docs: any) => {
+      if (error) {
+        console.log('error');
+        return context.done();
+      }
+      if (docs === null) {
+        mailId = 1000000;
+        db.collection('mail').insertOne({ '_id': 'encodedResponseId', 'counter': mailId }, (error, docs) => {
+          if (error) {
+            console.log('error');
+            return context.done();
+          }
+          connectRead(context, authorize);
+        });
+      } else {
+        mailId = docs.counter;
+        connectRead(context, authorize);
+      }
+    });
   };
 
   let receiverMail = [];
@@ -58,8 +81,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid'); /*TODO: appropriate error message, optional */
         return context.done();
       } else {
-        /* TODO: Verify that user has permission to do what is asked
-                    example for checking if user have admin-write permission */
         db.collection('employee')
           .aggregate([
             {
@@ -88,8 +109,16 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
             if (req.body.customerId.include === 'true') {
               excpectedReceiverCount = 1;
-              receiverMail.push({ 'email': customer.contact.mail });
+              let encodedResponseId = encrypt(mailId++);
+
+              receiverMail.push({
+                'to': [{ 'email': customer.contact.mail }],
+                'headers': {
+                  'responseId': encodedResponseId,
+                },
+              });
               receiverInformation.push({
+                'mailId': mailId,
                 'id': customer._id.toString(),
                 'name': customer.contact.name,
                 'response': null,
@@ -103,8 +132,16 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 .filter((element: any) => JSON.stringify(req.body.supplierIds).includes(element.id))
                 .forEach((supplier: any) => {
                   {
-                    receiverMail.push({ 'email': supplier.contact.mail });
+                    let encodedResponseId = encrypt(mailId++);
+                    receiverMail.push({
+                      'to': [{ 'email': supplier.contact.mail }],
+                      'headers': {
+                        'responseId': encodedResponseId,
+                      },
+                    });
+
                     receiverInformation.push({
+                      'mailId': mailId,
                       'id': supplier.id,
                       'name': supplier.contact.name,
                       'response': null,
@@ -115,7 +152,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             }
 
             if (excpectedReceiverCount === receiverMail.length) {
-              sendMail(db);
+              connectWrite(context, updateResponseCount);
             } else {
               errorQuery(context, 'User dont have access to given receivers');
               return context.done();
@@ -123,6 +160,20 @@ module.exports = (context: Context, req: HttpRequest): any => {
           });
       }
     });
+  };
+
+  const updateResponseCount = (db) => {
+    db.collection('mail').updateOne(
+      { '_id': 'encodedResponseId' },
+      { '$set': { 'counter': mailId } },
+      (error, docs) => {
+        if (error) {
+          console.log('error');
+          return context.done();
+        }
+        connectRead(context, sendMail);
+      }
+    );
   };
 
   let message = null;
@@ -135,8 +186,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
         return context.done();
       }
       message = {
-        'personalizations': [{ 'to': receiverMail }],
-        from: { email: process.env['EmailAddress'] /*decodedToken.preferred_username*/ },
+        'personalizations': receiverMail,
+        from: { email: process.env['EmailAddress'] },
         subject: req.body.subject,
         content: [
           {
