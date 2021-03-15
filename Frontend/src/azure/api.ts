@@ -62,6 +62,51 @@ export function callLogin() {
   }
 }
 
+/*     const suppliers = [
+      {
+        'id' : '604a7ba6fe05bd49dcb6b7a3',
+        'name': "t"
+       },
+       {
+         'id':'604a7e8f4ce34420cc732813',
+         'name': "t"
+       }
+    ];
+    const tags = [
+      "Viktig Kunde",
+      "Gjerrig"
+    ];
+
+    var suppliersObject = JSON.parse(JSON.stringify(suppliers));
+    newCustomer('Timinski Corp.', 'Timain@timinski.gg', 12312312, "Timain", suppliersObject, tags, "CC Corp", "inforRef??" ) */
+
+export function newCustomer(
+  name: string,
+  mail: string,
+  phone: number = null,
+  contactName: string = null,
+  suppliers: [] = null,
+  tags: string[] = null,
+  comment: string = null,
+  //types: [] = null,
+  //typeValues: [] = null,
+  //customerAgreements: [],
+  infoReference: string = null
+  //mailgroup: null
+) {
+  const data = {
+    name: name,
+    phone: phone,
+    mail: mail,
+    contactName: contactName,
+    suppliers: suppliers,
+    tags: tags,
+    comment: comment,
+    infoReference: infoReference,
+  };
+  return prepareCall('NewCustomer', data);
+}
+
 export function getCustomer(id: string) {
   let customerId = {
     id: id,
