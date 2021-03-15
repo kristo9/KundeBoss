@@ -106,6 +106,27 @@ export function newCustomer(
   };
   return prepareCall('NewCustomer', data);
 }
+/*
+newSupplier('Nasjonal catering', 'Padme@NC.com', 74839283, 'Padmé Amidala Naberrie', 'Senator of Naboo, former Queen of Naboo')
+*/
+export function newSupplier(
+  name: string,
+  mail: string,
+  phone: number = null,
+  contactName: string = null,
+  comment: string = null
+  //mailgroup: null
+) {
+  const data = {
+    name: name,
+    phone: phone,
+    mail: mail,
+    contactName: contactName,
+    comment: comment,
+  };
+
+  return prepareCall('NewSupplier', data);
+}
 
 export function getCustomer(id: string) {
   let customerId = {
