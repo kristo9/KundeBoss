@@ -5,6 +5,12 @@ import { verify } from 'jsonwebtoken';
 import { checkDbConnection, clientRead, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
+/**
+ * Function that returns all customers the user has access to
+ * @param context - passed from the Azure function runtime, used to store information about/from the function
+ * @param req - the httpRequest, in this case contains the authentification token
+ * @return context.res.body that contains a JSON object that is an array of JSON objects for each customer
+ */
 module.exports = (context: Context, req: HttpRequest): any => {
   checkDbConnection(context, clientRead);
 
@@ -40,6 +46,11 @@ module.exports = (context: Context, req: HttpRequest): any => {
     'customerInformation.tags': 1,
   };
 
+  /**
+   * Query that asks for customers that a user has access to
+   * @param db read access to database, needed to recieve customers
+   * @return potential new tags and all the customers the user has access to
+   */
   const functionQuery = (db: Db) => {
     db.collection('employee') // Query to recieve information about one employee and his customers
       .aggregate([
@@ -67,6 +78,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
           let customers = result.customerInformation;
           let allTags = JSON.parse('[]');
 
+          // Adds tags if they are not already added
           for (let i = 0; i < customers.length; ++i) {
             for (let j = 0; j < customers[i].tags.length; ++j) {
               if (!allTags.includes(customers[i].tags[j])) {

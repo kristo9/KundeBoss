@@ -5,6 +5,12 @@ import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
+/**
+ * Function that returns all the employees
+ * @param context - passed from the Azure function runtime, used to store information about/from the function
+ * @param req - the httpRequest, in this case contains the authentification token and the info to be modified
+ * @return information about what the query has done, not used for anything
+ */
 module.exports = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
@@ -81,6 +87,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
   };
 
+  /**
+   * Function that checks if user has sufficient permission level. If sufficient, calls connectWrite, else finishes context
+   * @param db read access to database, needed to check permission level
+   */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       if (err) {
@@ -107,6 +117,11 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
+  /**
+   * Query that modifies the data of an employee
+   * @param db write access to the database, needed to update information
+   * @return information about what the query has done, not used for anything
+   */
   const functionQuery = (db: Db) => {
     const query = { 'employeeId': req.body.employeeId };
 
