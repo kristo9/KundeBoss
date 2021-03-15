@@ -13,14 +13,7 @@
             "type": "http",
             "direction": "out",
             "name": "res"
-        },
-        {
-            "name": "resMail",
-            "type": "sendGrid",
-            "direction": "out",
-            "apiKey" : "MySendGridKey"
-           
         }
     ],
-    "scriptFile": "../dist/SendMailCustomer/index.js"
+    "scriptFile": "../dist/GetSupplierData/index.js"
 }

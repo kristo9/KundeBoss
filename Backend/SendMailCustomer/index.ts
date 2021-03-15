@@ -6,6 +6,9 @@ import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
+const mailIdRand = 1000000;
+const mailStartCount = 100000;
+
 module.exports = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
@@ -14,7 +17,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   }
 
   let token = prepToken(context, req.headers.authorization);
-  let decodedToken = null;
+
   if (token === null) {
     return context.done();
   }
@@ -23,30 +26,52 @@ module.exports = (context: Context, req: HttpRequest): any => {
     let validInput = true;
     let errMsg = 'Error: ';
 
+    let errSupId = req.body?.supplierIds?.find((supplierId) => !_idVal(supplierId));
+
+    if (errSupId?.length > 0) {
+      validInput = false;
+      errMsg += 'Check supplierIds for error. \n';
+    }
+
     if (!_idVal(req.body?.customerId?.id) || !req.body?.customerId?.include) {
       validInput = false;
       errMsg += 'CustomerId not found or invalid. \n';
     }
-    if (req.body?.supplierIds?.length > 0) {
-      for (let i = 0; i < req.body.supplierIds.length; ++i) {
-        if (!_idVal(req.body.supplierIds[i])) {
-          validInput = false;
-          errMsg += 'Check supplierIds for error. \n';
-          break;
-        }
-      }
-    }
-    if (!req.body?.from || !req.body?.text || !req.body?.subject) {
+
+    if (!req.body?.text || !req.body?.subject) {
       validInput = false;
-      errMsg += 'From, text or subject not received.';
+      errMsg += 'Text or subject not received.';
     }
 
     if (validInput) {
-      connectRead(context, authorize);
+      connectWrite(context, getResponseCount);
     } else {
-      errorWrongInput(context, errMsg); /*TODO: appropriate error message, optional */
+      errorWrongInput(context, errMsg);
       return context.done();
     }
+  };
+  let mailCount = null;
+
+  const getResponseCount = (db) => {
+    db.collection('mail').findOne({ '_id': 'responseCounter' }, { 'counter': 1 }, (error: any, docs: any) => {
+      if (error) {
+        errorQuery(context);
+        return context.done();
+      }
+      if (docs === null) {
+        mailCount = mailStartCount;
+        db.collection('mail').insertOne({ '_id': 'responseCounter', 'counter': mailCount }, (error, docs) => {
+          if (error) {
+            errorQuery(context);
+            return context.done();
+          }
+          connectRead(context, authorize);
+        });
+      } else {
+        mailCount = docs.counter;
+        connectRead(context, authorize);
+      }
+    });
   };
 
   let receiverMail = [];
@@ -58,9 +83,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid'); /*TODO: appropriate error message, optional */
         return context.done();
       } else {
-        /* TODO: Verify that user has permission to do what is asked
-                    example for checking if user have admin-write permission */
-        decodedToken = decoded;
         db.collection('employee')
           .aggregate([
             {
@@ -79,52 +101,55 @@ module.exports = (context: Context, req: HttpRequest): any => {
           ])
           .toArray((error: any, docs: any) => {
             docs = docs[0];
-            let customer = null;
             let excpectedReceiverCount = 0;
             if (error) {
               errorQuery(context); /*TODO: appropriate error message, optional */
               return context.done();
             }
 
-            for (let i = 0; i < docs.customerInformation.length; ++i) {
-              if (docs.customerInformation[i]._id == req.body.customerId.id) {
-                customer = docs.customerInformation[i];
-                if (req.body.customerId.include === 'true') {
-                  excpectedReceiverCount = 1;
-                  receiverMail.push({ 'email': customer.contact.mail });
-                  receiverInformation.push({
-                    'id': customer._id.toString(),
-                    'name': customer.contact.name,
-                    'response': null,
-                    'type': 'customer',
-                  });
-                }
-                break;
-              }
+            let customer = docs.customerInformation.find((customer) => customer._id == req.body.customerId.id);
+
+            if (req.body.customerId.include === 'true') {
+              excpectedReceiverCount = 1;
+              let responseId = mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand);
+              receiverMail.push({
+                'to': [{ 'email': customer.contact.mail }],
+                'subject': req.body.subject + ' <' + 'responseId: ' + responseId + '>',
+              });
+              receiverInformation.push({
+                'responseId': responseId,
+                'id': customer._id.toString(),
+                'name': customer.contact.name,
+                'response': null,
+                'type': 'customer',
+              });
             }
 
-            //console.log(JSON.stringify(customer, null, 2));
-
             if (req.body.supplierIds) {
-              for (let i = 0; i < customer.suppliers.length; ++i) {
-                for (let j = 0; j < req.body.supplierIds.length; ++j) {
-                  if (req.body.supplierIds[j] == customer.suppliers[i].id) {
-                    receiverMail.push({ 'email': customer.suppliers[i].contactPerson.mail });
+              excpectedReceiverCount += req.body.supplierIds.length;
+              customer.suppliers
+                .filter((element: any) => JSON.stringify(req.body.supplierIds).includes(element.id))
+                .forEach((supplier: any) => {
+                  {
+                    let responseId = mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand);
+                    receiverMail.push({
+                      'to': [{ 'email': supplier.contact.mail }],
+                      'subject': req.body.subject + ' <' + 'responseId: ' + responseId + '>',
+                    });
+
                     receiverInformation.push({
-                      'id': customer.suppliers[i].id,
-                      'name': customer.suppliers[i].contactPerson.name,
+                      'responseId': responseId,
+                      'id': supplier.id,
+                      'name': supplier.contact.name,
                       'response': null,
                       'type': 'supplier',
                     });
-                    excpectedReceiverCount += 1;
-                    break;
                   }
-                }
-              }
+                });
             }
 
             if (excpectedReceiverCount === receiverMail.length) {
-              sendMail(db);
+              connectWrite(context, updateResponseCount);
             } else {
               errorQuery(context, 'User dont have access to given receivers');
               return context.done();
@@ -132,6 +157,20 @@ module.exports = (context: Context, req: HttpRequest): any => {
           });
       }
     });
+  };
+
+  const updateResponseCount = (db) => {
+    db.collection('mail').updateOne(
+      { '_id': 'responseCounter' },
+      { '$set': { 'counter': mailCount } },
+      (error, docs) => {
+        if (error) {
+          console.log('error');
+          return context.done();
+        }
+        connectRead(context, sendMail);
+      }
+    );
   };
 
   let message = null;
@@ -143,11 +182,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
         errorQuery(context);
         return context.done();
       }
-
       message = {
-        'personalizations': [{ 'to': receiverMail }],
-        from: { email: req.body.from /*decodedToken.preferred_username*/ },
-        subject: req.body.subject,
+        'personalizations': receiverMail,
+        from: { email: process.env['EmailAddress'] },
         content: [
           {
             type: 'text/plain',
@@ -176,22 +213,31 @@ module.exports = (context: Context, req: HttpRequest): any => {
       'text': message.content[0].value,
     };
 
-    db.collection('mailGroup').updateOne(
-      { '_id': mailGroup },
-      {
-        $push: {
-          'mails': newMail,
-        },
-      },
-      (error: any, docs: any) => {
-        if (error) {
-          context.bindings.resMail = null;
-          return context.done();
-        }
-        returnResult(context, docs);
-        context.done();
+    db.collection('mail').insertOne(newMail, (error: any, docs: any) => {
+      if (error) {
+        context.bindings.resMail = null;
+        errorQuery(context, 'Not able to insert new mail in db');
+        return context.done();
       }
-    );
+
+      db.collection('mailGroup').updateOne(
+        { '_id': mailGroup },
+        {
+          $push: {
+            'mails': docs.insertedId,
+          },
+        },
+        (error: any, docs: any) => {
+          if (error) {
+            context.bindings.resMail = null;
+            errorQuery(context, 'Not able to update mailGroup in db');
+            return context.done();
+          }
+          returnResult(context, docs);
+          context.done();
+        }
+      );
+    });
   };
 
   inputValidation();
@@ -201,7 +247,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
 {
   "customerId": {"id":"","include":"true"/"false"},
   "supplierIds":[], Optional
-  "from":"",
   "text": "",
   "subject": ""
 }

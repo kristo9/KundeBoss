@@ -10,11 +10,17 @@ const uriRead = process.env['UriRead'];
 const uriWrite = process.env['UriWrite'];
 //module.exports.uriRead = "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false";
 //module.exports.clientRead = () => this.MongoClient(this.uriRead).connect(); //serverSelectionTimeoutMS: 10000, useUnifiedTopology: true, useNewUriParser: true
-const DBName = 'KundeBossDB';
+const DBName = 'KundebossDB';
 
 export let clientRead = null;
 export let clientWrite = null;
 
+/**
+ * @description If function succesfully connects to db, or db connection is already availible, function calls callback function with db connection as parameter. Only used for reading
+ * @param context: Context
+ * @param callback: (any) => void
+ * @param overrideTest: bool = false. Makes function create new connection when a connection is availible
+ */
 export function connectRead(context: Context, callback: (arg0: any) => void, overrideTest = false) {
   context.log('Connecting read client');
   console.log('Inne i connectRead');
@@ -39,6 +45,12 @@ export function connectRead(context: Context, callback: (arg0: any) => void, ove
   }
 }
 
+/**
+ * @description If function succesfully connects to db, or db connection is already availible, function calls callback function with db connection as parameter
+ * @param context: Context
+ * @param callback: (any) => void
+ * @param overrideTest: bool = false. Makes function create new connection when a connection is availible
+ */
 export function connectWrite(context: Context, callback: (arg0: any) => void, overrideTest = false) {
   context.log('Connecting write client');
 

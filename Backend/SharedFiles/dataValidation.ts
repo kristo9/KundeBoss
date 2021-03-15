@@ -2,10 +2,19 @@ import { Context } from '@azure/functions';
 
 const sanitize = require('sanitize-html');
 
-const sanitizeHtml = (input: string) => sanitize(input);
-
+//const sanitizeHtml = (input: string) => sanitize(input);
+/**
+ * @description Sanitizes JSON and JSON[] objects
+ * @param input: JSON | JSON[]
+ * @returns JSON | JSON[]
+ */
 const sanitizeHtmlJson = (input: JSON | JSON[]) => JSON.parse(sanitize(JSON.stringify(input)));
 
+/**
+ * @description Returns true if name has passes regex test
+ * @param name: string
+ * @returns bool
+ */
 export const nameVal = (name: string) =>
   typeof name === 'string'
     ? name.match(
@@ -13,8 +22,18 @@ export const nameVal = (name: string) =>
       ) != null
     : false;
 
+/**
+ * @description Returns true if phoneVal has passes regex test
+ * @param number: any
+ * @returns bool
+ */
 export const phoneVal = (number: any) => number.toString().match(/^[+]{1}[0-9]{10}$|^[0-9]{8}$|^[0-9]{12}$/) != null;
 
+/**
+ * @description Returns true if mail has passes regex test
+ * @param mail: string
+ * @returns bool
+ */
 export const mailVal = (mail: string) =>
   typeof mail === 'string'
     ? mail.match(
@@ -22,15 +41,18 @@ export const mailVal = (mail: string) =>
       ) != null
     : false;
 
-export const ageVal = (age: string) => age.match(/^[1]?[0-9]{1,2}$/) != null;
-
-export const dateVal = (date: string) =>
-  date.match(
-    /^(?:(?:31(-)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(-)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(-)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(-)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/
-  ) != null;
-
+/**
+ * @description Returns true if _id passes regex test. _id is a mongodb ObjectId
+ * @param _id: string
+ * @returns bool
+ */
 export const _idVal = (_id: string) => (typeof _id === 'string' ? _id.match(/^[0-9a-f]{24}$/) != null : false);
 
+/**
+ * @description Sanitizes data, sets context.res.status to 200 and context.res.body to data
+ * @param context: Context
+ * @param data: JSON | JSON[]
+ */
 export const returnResult = (context: Context, data: JSON | JSON[]) => {
   data = sanitizeHtmlJson(data);
 
@@ -44,6 +66,12 @@ export const returnResult = (context: Context, data: JSON | JSON[]) => {
   };
 };
 
+/**
+ * @description Sanitizes input and returns it. If input is null, context.res.status is sett to 400 and function returns null
+ * @param context: Context
+ * @param data: JSON | JSON[]
+ * @returns JSON | JSON[] or null
+ */
 export const prepInput = (context: Context, input: JSON | JSON[]) => {
   if (input) {
     return sanitizeHtmlJson(input);
@@ -56,6 +84,11 @@ export const prepInput = (context: Context, input: JSON | JSON[]) => {
   }
 };
 
+/**
+ * @description Sets context.res.status to 400, and context.res.body errorMsg.
+ * @param context: Context
+ * @param errorMsg: string = 'Wring input'
+ */
 export const errorWrongInput = (context: Context, errorMsg: string = 'Wrong input') => {
   context.res = {
     'status': 400,
