@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { connectRead, connectWrite, encryptReplyId } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -44,7 +44,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
 
     if (validInput) {
-      connectWrite(context, getResponseCount);
+      connectWrite(context, getReplyCount);
     } else {
       errorWrongInput(context, errMsg);
       return context.done();
@@ -52,15 +52,15 @@ module.exports = (context: Context, req: HttpRequest): any => {
   };
   let mailCount = null;
 
-  const getResponseCount = (db) => {
-    db.collection('mail').findOne({ '_id': 'responseCounter' }, { 'counter': 1 }, (error: any, docs: any) => {
+  const getReplyCount = (db) => {
+    db.collection('mail').findOne({ '_id': 'replyCounter' }, { 'counter': 1 }, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
         return context.done();
       }
       if (docs === null) {
         mailCount = mailStartCount;
-        db.collection('mail').insertOne({ '_id': 'responseCounter', 'counter': mailCount }, (error, docs) => {
+        db.collection('mail').insertOne({ '_id': 'replyCounter', 'counter': mailCount }, (error, docs) => {
           if (error) {
             errorQuery(context);
             return context.done();
@@ -111,16 +111,16 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
             if (req.body.customerId.include === 'true') {
               excpectedReceiverCount = 1;
-              let responseId = mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand);
+              let replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
               receiverMail.push({
+                'subject': req.body.subject + ' <' + 'replyId:' + replyId + '>',
                 'to': [{ 'email': customer.contact.mail }],
-                'subject': req.body.subject + ' <' + 'responseId: ' + responseId + '>',
               });
               receiverInformation.push({
-                'responseId': responseId,
-                'id': customer._id.toString(),
+                'replyId': replyId,
+                'id': ObjectId(customer._id.toString()),
                 'name': customer.contact.name,
-                'response': null,
+                'reply': null,
                 'type': 'customer',
               });
             }
@@ -131,17 +131,17 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 .filter((element: any) => JSON.stringify(req.body.supplierIds).includes(element.id))
                 .forEach((supplier: any) => {
                   {
-                    let responseId = mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand);
+                    let replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
                     receiverMail.push({
+                      'subject': req.body.subject + ' <' + 'replyId:' + replyId + '>',
                       'to': [{ 'email': supplier.contact.mail }],
-                      'subject': req.body.subject + ' <' + 'responseId: ' + responseId + '>',
                     });
 
                     receiverInformation.push({
-                      'responseId': responseId,
+                      'replyId': replyId,
                       'id': supplier.id,
                       'name': supplier.contact.name,
-                      'response': null,
+                      'reply': null,
                       'type': 'supplier',
                     });
                   }
@@ -149,7 +149,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
             }
 
             if (excpectedReceiverCount === receiverMail.length) {
-              connectWrite(context, updateResponseCount);
+              connectWrite(context, updateReplyCount);
             } else {
               errorQuery(context, 'User dont have access to given receivers');
               return context.done();
@@ -159,18 +159,14 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  const updateResponseCount = (db) => {
-    db.collection('mail').updateOne(
-      { '_id': 'responseCounter' },
-      { '$set': { 'counter': mailCount } },
-      (error, docs) => {
-        if (error) {
-          console.log('error');
-          return context.done();
-        }
-        connectRead(context, sendMail);
+  const updateReplyCount = (db) => {
+    db.collection('mail').updateOne({ '_id': 'replyCounter' }, { '$set': { 'counter': mailCount } }, (error, docs) => {
+      if (error) {
+        console.log('error');
+        return context.done();
       }
-    );
+      connectRead(context, sendMail);
+    });
   };
 
   let message = null;
@@ -183,12 +179,17 @@ module.exports = (context: Context, req: HttpRequest): any => {
         return context.done();
       }
       message = {
+        'from': {
+          'email': 'post@flyt.cloud',
+        },
+        'reply_to': {
+          'email': 'post@reply.flyt.cloud',
+        },
         'personalizations': receiverMail,
-        from: { email: process.env['EmailAddress'] },
-        content: [
+        'content': [
           {
-            type: 'text/plain',
-            value: req.body.text,
+            'type': 'text/plain',
+            'value': req.body.text,
           },
         ],
       };
@@ -223,7 +224,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
       db.collection('mailGroup').updateOne(
         { '_id': mailGroup },
         {
-          $push: {
+          '$push': {
             'mails': docs.insertedId,
           },
         },
