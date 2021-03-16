@@ -32,7 +32,6 @@ export let clientWrite = null;
  */
 export function connectRead(context: Context, callback: (arg0: any) => void, overrideTest = false) {
   context.log('Connecting read client');
-  console.log('Inne i connectRead');
 
   if (clientRead == null || overrideTest) {
     MongoClient.connect(uriRead, config, (error: any, _client: any) => {
