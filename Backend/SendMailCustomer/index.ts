@@ -180,10 +180,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
       }
       message = {
         'from': {
-          'email': 'post@flyt.cloud',
+          'email': process.env['EmailAddress'],
         },
         'reply_to': {
-          'email': 'post@reply.flyt.cloud',
+          'email': process.env['EmailReplyAddress'],
         },
         'personalizations': receiverMail,
         'content': [
@@ -210,7 +210,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     const newMail = {
       'date': new Date(),
       'receivers': receiverInformation,
-      'subject': message.subject,
+      'subject': req.body.subject,
       'text': message.content[0].value,
     };
 

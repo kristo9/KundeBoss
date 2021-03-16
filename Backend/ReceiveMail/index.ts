@@ -23,8 +23,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
           if (dataArr[i].includes('name="subject"')) {
             replyId = dataArr[i].substring(dataArr[i].lastIndexOf('<replyId:') + 9, dataArr[i].lastIndexOf('>'));
           } else if (dataArr[i].includes('name="text"')) {
-            replyText = dataArr[i].substring(dataArr[i].lastIndexOf('name=') + 14);
-            replyText = replyText.substring(0, replyText.indexOf('post@flyt.cloud wrote:'));
+            replyText = dataArr[i].substring(dataArr[i].indexOf('name=') + 14);
+            replyText = replyText.substring(0, replyText.indexOf(process.env['EmailAddress'] + ' wrote:'));
             replyText = replyText.substring(0, replyText.lastIndexOf('\n'));
             replyText = replyText.replace(/^\s+|\s+$/g, '');
             replyText = prepInput(context, replyText);
