@@ -1,8 +1,9 @@
 import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, errorWrongInput } from '../SharedFiles/dataValidation';
-import { collections, connectWrite } from '../SharedFiles/dataBase';
+import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db } from '../SharedFiles/interfaces';
 import { simpleParser } from 'mailparser';
+import { errorQuery } from '../SharedFiles/auth';
 
 module.exports = (context: Context, req: HttpRequest): any => {
   if (req.body === null) {
@@ -42,12 +43,38 @@ module.exports = (context: Context, req: HttpRequest): any => {
     db.collection(collections.mail).updateOne(
       { 'receivers.replyId': replyId },
       { '$set': { 'receivers.$.reply': { 'text': replyText, 'date': new Date() } } },
-      () => {
-        context.log('Success!');
+      (error: any, docs: any) => {
+        if (error) {
+          errorQuery(context);
+          context.res.body = 'Something went wrong';
+          return context.done();
+        }
+        if (docs.modifiedCount === 1) {
+          context.log('Success!');
+          context.res = {
+            body: '<h2>Registered</h2>',
+            headers: {
+              'Content-Type': 'text/html',
+            },
+          };
+        } else {
+          context.log('No document found');
+          context.res.body = 'Not found';
+        }
         context.done();
       }
     );
   };
 
-  parseMail();
+  if (req.method === 'GET') {
+    if (req.query.replyId) {
+      replyId = req.query.replyId;
+      connectWrite(context, functionQuery);
+    } else {
+      context.res.body = 'No replyId found';
+      context.done();
+    }
+  } else {
+    parseMail();
+  }
 };

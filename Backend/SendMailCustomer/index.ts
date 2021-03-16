@@ -108,13 +108,18 @@ module.exports = (context: Context, req: HttpRequest): any => {
             }
 
             let customer = docs.customerInformation.find((customer) => customer._id == req.body.customerId.id);
+            let replyUrl = process.env['ApiReplyUrl'];
+            let replyId = null;
 
             if (req.body.customerId.include === 'true') {
               excpectedReceiverCount = 1;
-              let replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
+              replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
               receiverMail.push({
-                'subject': req.body.subject + ' <' + 'replyId:' + replyId + '>',
                 'to': [{ 'email': customer.contact.mail }],
+                'subject': req.body.subject + ' <' + 'replyId:' + replyId + '>',
+                'substitutions': {
+                  '%replyUrl%': replyUrl + replyId,
+                },
               });
               receiverInformation.push({
                 'replyId': replyId,
@@ -131,10 +136,13 @@ module.exports = (context: Context, req: HttpRequest): any => {
                 .filter((element: any) => JSON.stringify(req.body.supplierIds).includes(element.id))
                 .forEach((supplier: any) => {
                   {
-                    let replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
+                    replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
                     receiverMail.push({
-                      'subject': req.body.subject + ' <' + 'replyId:' + replyId + '>',
                       'to': [{ 'email': supplier.contact.mail }],
+                      'subject': req.body.subject + ' <' + 'replyId:' + replyId + '>',
+                      'substitutions': {
+                        '%replyUrl%': replyUrl + replyId,
+                      },
                     });
 
                     receiverInformation.push({
@@ -188,8 +196,11 @@ module.exports = (context: Context, req: HttpRequest): any => {
         'personalizations': receiverMail,
         'content': [
           {
-            'type': 'text/plain',
-            'value': req.body.text,
+            'type': 'text/html',
+            'value':
+              '<p>' +
+              req.body.text +
+              '</p><p>Følg linken eller svar på emailen for godkjenne.</p><a href=%replyUrl%>Acknowledge</a>',
           },
         ],
       };
@@ -211,7 +222,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
       'date': new Date(),
       'receivers': receiverInformation,
       'subject': req.body.subject,
-      'text': message.content[0].value,
+      'text': req.body.text,
     };
 
     db.collection('mail').insertOne(newMail, (error: any, docs: any) => {
