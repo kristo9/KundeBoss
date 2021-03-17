@@ -32,6 +32,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   let result: JSON = JSON.parse('{}');
   result['firstLogin'] = false;
   result['isConfigured'] = false;
+  result['admin'] = null;
 
   const functionQuery = (db: Db) => {
     result['name'] = decodedToken.name;
@@ -41,10 +42,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
       .project({
         '_id': 0,
         'employeeId': 1,
-        'isCustomer': 1,
         'admin': 1,
+        'isCustomer': 1,
       })
-      .toArray((error: any, docs: string | any[]) => {
+      .toArray((error: any, docs: any[]) => {
         if (error) {
           errorQuery(context);
           return context.done();
@@ -52,19 +53,13 @@ module.exports = (context: Context, req: HttpRequest): any => {
           if (docs.length === 0) {
             connectWrite(context, firstEmployee);
           } else {
-            let element = null;
+            let employee = docs.find((employee) => employee.employeeId === decodedToken.preferred_username);
 
-            for (let i = 0; i < docs.length; ++i) {
-              if (docs[i].employeeId === decodedToken.preferred_username) {
-                element = docs[i];
-                break;
-              }
-            }
-
-            if (element === null) {
+            if (employee == undefined) {
               connectWrite(context, createEmplyee);
             } else {
-              if (element.isCustomer !== null) {
+              result['admin'] = employee.admin;
+              if (employee.isCustomer !== null) {
                 result['isConfigured'] = true;
               }
 

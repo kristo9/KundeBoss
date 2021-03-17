@@ -1,7 +1,7 @@
 // Create the main myMSALObj instance
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from '@azure/msal-browser';
-import { loginRequest, msalConfig } from './authConfig';
+import { loginRequest, msalConfig, tokenRequest } from './authConfig';
 import { setUsername, callLogin, logToken } from './api';
 
 import { AuthContext, LogOut, LogIn } from '../Context';
@@ -11,10 +11,13 @@ const myMSALObj = new PublicClientApplication(msalConfig);
 
 let username = null;
 
+let userInformation: Promise<any> = null;
+
 myMSALObj
   .handleRedirectPromise()
-  .then(async () => console.log(await callLogin()))
   .then(HandleResponse)
+  .then(() => (userInformation = callLogin()))
+  .then(async () => console.log(await userInformation))
   .catch((error) => {
     console.error(error);
   });
@@ -63,7 +66,10 @@ export function SignIn() {
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#request
    */
 
-  myMSALObj.loginRedirect(loginRequest);
+  myMSALObj
+    .loginRedirect(loginRequest)
+    .then(() => (userInformation = callLogin()))
+    .then((respone) => console.log(respone));
 }
 
 export const SignOut = () => {
