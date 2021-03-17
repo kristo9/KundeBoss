@@ -52,14 +52,10 @@ function prepareCall(apiName, data = null) {
 }
 
 export function callLogin() {
-  if (username) {
-    getTokenRedirect(tokenRequest).then((response) => {
-      if (response) console.log(response.accessToken);
-    });
-    return prepareCall('LoginTrigger').then((response) => {
-      console.log('Called login func');
-    });
-  }
+  console.log('callLogin');
+  return prepareCall('LoginTrigger').then((response) => {
+    return response;
+  });
 }
 
 /*     const suppliers = [
@@ -182,5 +178,3 @@ export function logToken() {
     if (response) console.log(response.accessToken);
   });
 }
-
-//logToken();

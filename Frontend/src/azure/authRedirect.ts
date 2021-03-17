@@ -2,12 +2,10 @@
 // configuration parameters are located at authConfig.js
 import { PublicClientApplication, InteractionRequiredAuthError } from '@azure/msal-browser';
 import { loginRequest, msalConfig } from './authConfig';
-import { setUsername, callLogin } from './api';
+import { setUsername, callLogin, logToken } from './api';
 
-import { AuthContext, LogOut, LogIn } from "../Context";
-import react, { useReducer } from "react";
-
-
+import { AuthContext, LogOut, LogIn } from '../Context';
+import react, { useReducer } from 'react';
 
 const myMSALObj = new PublicClientApplication(msalConfig);
 
@@ -15,8 +13,8 @@ let username = null;
 
 myMSALObj
   .handleRedirectPromise()
+  .then(async () => console.log(await callLogin()))
   .then(HandleResponse)
-  .then(callLogin)
   .catch((error) => {
     console.error(error);
   });
@@ -40,13 +38,15 @@ function selectAccount() {
 }
 
 function HandleResponse(response) {
+  logToken();
+
   /**
    * To see the full list of response object properties, visit:
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/request-response-object.md#response
    */
 
   if (response !== null) {
-    username = response.account.username;
+    username = response?.account?.username;
   } else {
     selectAccount();
   }
@@ -67,7 +67,6 @@ export function SignIn() {
 }
 
 export const SignOut = () => {
-  
   username = null;
   setUsername(username);
   /**
@@ -77,12 +76,12 @@ export const SignOut = () => {
 
   // Choose which account to logout from by passing a username.
   const logoutRequest = {
-    account: myMSALObj.getAccountByUsername(username)
+    account: myMSALObj.getAccountByUsername(username),
   };
-  
+
   myMSALObj.logout(logoutRequest);
   LogOut();
-}
+};
 
 selectAccount();
 
