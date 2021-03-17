@@ -1,6 +1,6 @@
 import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, errorWrongInput } from '../SharedFiles/dataValidation';
-import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { collections, connectWrite } from '../SharedFiles/dataBase';
 import { Db } from '../SharedFiles/interfaces';
 import { simpleParser } from 'mailparser';
 import { errorQuery } from '../SharedFiles/auth';

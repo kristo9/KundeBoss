@@ -1,5 +1,5 @@
 import { Context } from '@azure/functions';
-import crypto = require('crypto');
+const crypto = require('crypto');
 
 const MongoClient = require('mongodb').MongoClient;
 const config = {
