@@ -1,6 +1,6 @@
 // Libaries
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { MsalProvider } from "@azure/msal-react";
+import { MsalProvider, useMsal } from "@azure/msal-react";
 
 
 // Components
@@ -32,22 +32,24 @@ const Routes = () => {
 }
 
 const App = ({ pca }) => {
+  const { inProgress } = useMsal();
 
-/*
-  const history = useHistory();
-  const navigationClient = new CustomNavigationClient(history);
-  pca.setNavigationClient(navigationClient);
-*/  
-
+  console.log(inProgress);
   return (
     <Router>
       <MsalProvider instance={pca}>
+        {(inProgress === 'login') ? 
+        <div>
+          <h6> Loading Login.........</h6>
+        </div>
+        :
         <div className='app' style={{ height: '100vh' }}>
           <Navbar/>
           <div style={{ marginTop: '23px', width: '100%' }}>
             <Routes/>
           </div>
         </div>
+        }
       </MsalProvider>
     </Router>
   );
