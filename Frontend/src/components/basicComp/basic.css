@@ -20,3 +20,19 @@
 .H100 {
   height: 100%;
 }
+
+.loading {
+  animation: rotation 4s infinite linear;
+  text-align: center;
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
