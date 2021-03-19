@@ -1,9 +1,8 @@
-import { getEmployee, modifyEmployeeData } from '../../../azure/api';
+import { getEmployee } from '../../../azure/api';
 import './Dashboard.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Inputfield from '../../../components/basicComp/searchfield';
-import { type } from 'os';
 
 let customers = getEmployee();
 
@@ -28,10 +27,10 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   componentDidMount() {
     const fetchName = async () => {
-      customers = await customers;
-      console.log(customers);
-      if (typeof customers !== 'object') {
-        customers = await getEmployee();
+    customers = await customers;
+    console.log(customers);
+    if (typeof customers !== 'object') {
+      customers = await getEmployee();
       }
       this.setState({
         customers,

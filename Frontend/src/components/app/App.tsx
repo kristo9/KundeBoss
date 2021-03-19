@@ -1,6 +1,6 @@
 // Libaries
-import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { MsalProvider } from '@azure/msal-react';
 
 // Components
 import Navbar from '../navbar/Navbar';
@@ -31,15 +31,23 @@ const Routes = () => {
   );
 };
 
-const App = () => {
+const App = ({ pca }) => {
+  /*
+  const history = useHistory();
+  const navigationClient = new CustomNavigationClient(history);
+  pca.setNavigationClient(navigationClient);
+*/
+
   return (
     <Router>
-      <div className='app' style={{ height: '100vh' }}>
-        <Navbar />
-        <div style={{ marginTop: '23px', width: '100%' }}>
-          <Routes />
+      <MsalProvider instance={pca}>
+        <div className='app' style={{ height: '100vh' }}>
+          <Navbar />
+          <div style={{ marginTop: '23px', width: '100%' }}>
+            <Routes />
+          </div>
         </div>
-      </div>
+      </MsalProvider>
     </Router>
   );
 };

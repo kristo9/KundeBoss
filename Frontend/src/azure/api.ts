@@ -2,8 +2,6 @@ import { apiConfig } from './apiConfig';
 import { getTokenRedirect } from './authRedirect';
 import { tokenRequest } from './authConfig';
 
-let username = null;
-
 function callApi(endpoint, token, data) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
@@ -52,14 +50,75 @@ function prepareCall(apiName, data = null) {
 }
 
 export function callLogin() {
-  if (username) {
-    getTokenRedirect(tokenRequest).then((response) => {
-      if (response) console.log(response.accessToken);
-    });
-    return prepareCall('LoginTrigger').then((response) => {
-      console.log('Called login func');
-    });
-  }
+  console.log('callLogin');
+  return prepareCall('LoginTrigger').then((response) => {
+    return response;
+  });
+}
+
+/*     const suppliers = [
+      {
+        'id' : '604a7ba6fe05bd49dcb6b7a3',
+        'name': "t"
+       },
+       {
+         'id':'604a7e8f4ce34420cc732813',
+         'name': "t"
+       }
+    ];
+    const tags = [
+      "Viktig Kunde",
+      "Gjerrig"
+    ];
+    var suppliersObject = JSON.parse(JSON.stringify(suppliers));
+    newCustomer('Timinski Corp.', 'Timain@timinski.gg', 12312312, "Timain", suppliersObject, tags, "CC Corp", "inforRef??" ) */
+
+export function newCustomer(
+  name: string,
+  mail: string,
+  phone: number = null,
+  contactName: string = null,
+  suppliers: [] = null,
+  tags: string[] = null,
+  comment: string = null,
+  //types: [] = null,
+  //typeValues: [] = null,
+  //customerAgreements: [],
+  infoReference: string = null
+  //mailgroup: null
+) {
+  const data = {
+    name: name,
+    phone: phone,
+    mail: mail,
+    contactName: contactName,
+    suppliers: suppliers,
+    tags: tags,
+    comment: comment,
+    infoReference: infoReference,
+  };
+  return prepareCall('NewCustomer', data);
+}
+/*
+newSupplier('Nasjonal catering', 'Padme@NC.com', 74839283, 'Padmé Amidala Naberrie', 'Senator of Naboo, former Queen of Naboo')
+*/
+export function newSupplier(
+  name: string,
+  mail: string,
+  phone: number = null,
+  contactName: string = null,
+  comment: string = null
+  //mailgroup: null
+) {
+  const data = {
+    name: name,
+    phone: phone,
+    mail: mail,
+    contactName: contactName,
+    comment: comment,
+  };
+
+  return prepareCall('NewSupplier', data);
 }
 
 export function getCustomer(id: string) {
@@ -95,26 +154,8 @@ export function modifyEmployeeData(
   return prepareCall('ModifyEmployeeData', data);
 }
 
-export function setUsername(user) {
-  username = user;
-}
-
-export function isLogedIn() {
-  let validate = null;
-  if (username != null) {
-    validate = username;
-    console.log(validate);
-    return validate;
-  } else {
-    console.log(validate);
-    return validate;
-  }
-}
-
 export function logToken() {
   getTokenRedirect(tokenRequest).then((response) => {
     if (response) console.log(response.accessToken);
   });
 }
-
-//logToken();

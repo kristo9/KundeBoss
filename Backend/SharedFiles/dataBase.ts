@@ -1,4 +1,5 @@
 import { Context } from '@azure/functions';
+const crypto = require('crypto');
 
 const MongoClient = require('mongodb').MongoClient;
 const config = {
@@ -12,6 +13,14 @@ const uriWrite = process.env['UriWrite'];
 //module.exports.clientRead = () => this.MongoClient(this.uriRead).connect(); //serverSelectionTimeoutMS: 10000, useUnifiedTopology: true, useNewUriParser: true
 const DBName = 'KundebossDB';
 
+export const collections = {
+  customer: 'customer',
+  employee: 'employee',
+  mail: 'mail',
+  mailGroup: 'mailGroup',
+  supplier: 'supplier',
+};
+
 export let clientRead = null;
 export let clientWrite = null;
 
@@ -23,7 +32,6 @@ export let clientWrite = null;
  */
 export function connectRead(context: Context, callback: (arg0: any) => void, overrideTest = false) {
   context.log('Connecting read client');
-  console.log('Inne i connectRead');
 
   if (clientRead == null || overrideTest) {
     MongoClient.connect(uriRead, config, (error: any, _client: any) => {
@@ -80,4 +88,16 @@ export const checkDbConnection = (context: Context, connection: any) => {
   } else {
     context.log('No reuseable db connection');
   }
+};
+
+const algorithm = 'aes-256-ctr';
+const secretKey = process.env['EncryptionKey'];
+const iv = Buffer.from(process.env['EncryptionIv']);
+
+export const encryptReplyId = (id: number) => {
+  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+
+  const encrypted = Buffer.concat([cipher.update(id.toString()), cipher.final()]);
+
+  return encrypted.toString('hex');
 };

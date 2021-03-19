@@ -1,17 +1,20 @@
 // Liberaries
-import { useContext, useReducer } from 'react';
 import { Link } from 'react-router-dom';
-import { SignIn, SignOut } from '../../azure/authRedirect';
-
-import { AuthContext, Toggle, AuthenticationReducer, AuthContextProvider } from "../../Context";
+import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 
 // CSS style
 import './Navbar.css';
+import { PublicClientApplication } from '@azure/msal-browser';
+import { msalConfig } from '../../azure/authConfig';
+import { useAccount } from "@azure/msal-react";
+
+// Components
+import { SignInSignOutButton } from '../basicComp/SignInOutButton'
 
 
 
 const Authenticated = () => {
-  const [state, dispatch] = useReducer(AuthenticationReducer, AuthContext)
+
   return (
     <div className='topnav'>
       <div className='left'>
@@ -21,15 +24,14 @@ const Authenticated = () => {
         <Link to='/contact' className='Link'> Contact </Link>
         <Link to='/help' className='Link'> Help </Link>
         <Link to='/about' className='Link'> About </Link>
-        <button id='nt' className='Link' onClick={SignOut}> Log Out </button>
-        <button id='nt' className='Link' onClick={() => {dispatch('LOGOUT')}}> Toggle Igjen </button>
+        <SignInSignOutButton />
     </div>
     </div>
   )
 }
 
 const Unauthenticated = () => {
-  const [state, dispatch] = useReducer(AuthenticationReducer, AuthContext)
+
   return (
       <div className='topnav'>
         <div className='left'>
@@ -39,23 +41,29 @@ const Unauthenticated = () => {
           <Link to='/contact' className='Link'> Contact </Link>
           <Link to='/help' className='Link'> Help </Link>
           <Link to='/about' className='Link'> About </Link>
-          <button id='nt' className='Link' onClick={SignIn}> Log In </button>
-          <button id='nt' className='Link' onClick={() => {dispatch({type: 'LOGIN_AUTHENTICATION'})}}> Toggle </button>
+          <SignInSignOutButton />
         </div>
       </div>
   )
 }
 
 const Navbar = () => {
-  
-  const { isAuthenticated } = useContext(AuthContext);
-  console.log(isAuthenticated);
+  const isAuthenticated = useIsAuthenticated();
+
+  console.log("Bruker er authentisert:  " + isAuthenticated);
+
+
+  const msalInstance = new PublicClientApplication(msalConfig);
+  const { accounts } = useMsal();
+  const account = useAccount(accounts[0] || {});
+  msalInstance.setActiveAccount(account);
+  console.log(msalInstance.getActiveAccount())
+  console.log(localStorage.getItem("UserName"))
+
   return (
-    <AuthContextProvider>
       <div>
         {(isAuthenticated) ? <Authenticated/> : <Unauthenticated/>}
       </div>
-    </AuthContextProvider>
   );
 }
 

@@ -15,8 +15,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
   let employeeId: any;
 
   let token = prepToken(context, req.headers.authorization);
-  console.log('sjekker token');
+
   if (token === null) {
+    errorUnauthorized(context, 'Token is null');
     return context.done();
   }
 
