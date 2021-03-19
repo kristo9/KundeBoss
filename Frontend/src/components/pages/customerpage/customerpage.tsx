@@ -46,7 +46,7 @@ class CustomerPage extends React.Component<RouteComponentProps, { buttonState: n
   componentDidMount() {
     // Loades the data from the API
     const fetchCustomerInfo = async () => {
-      let customerI = await getCustomer('60461a9a4ceb3ceb38bc803d'); //TODO: endre denne
+      let customerI = await getCustomer('604a7ae0fe05bd49dcb6b7a1'); //TODO: endre denne
       this.setState({
         customerInfo: customerI,
       });

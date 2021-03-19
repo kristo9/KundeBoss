@@ -17,7 +17,7 @@ export function getTokenRedirect(request): Promise<any> {
     console.error(error);
     console.warn('silent token acquisition fails. acquiring token using redirect');
     if (error instanceof InteractionRequiredAuthError) {
-      // fallback to interaction when silent call fails
+      // Fallback to interaction when silent call fails
       return myMSALObj
         .acquireTokenRedirect(request)
         .then((response) => {

@@ -16,6 +16,7 @@ import PageNotFound from '../pages/pageNotFound/pageNotFound';
 // CSS Styling
 import './App.css';
 
+
 const Routes = () => {
   return(
     <Switch className='Component'>
