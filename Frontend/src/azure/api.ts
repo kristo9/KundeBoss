@@ -2,8 +2,6 @@ import { apiConfig } from './apiConfig';
 import { getTokenRedirect } from './authRedirect';
 import { tokenRequest } from './authConfig';
 
-let username = null;
-
 function callApi(endpoint, token, data) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
@@ -39,6 +37,7 @@ function prepareCall(apiName, data = null) {
     .then((response) => {
       if (response) {
         console.log('access_token acquired at: ' + new Date().toString());
+        console.log(response.accessToken);
         try {
           return callApi(apiConfig.uri + apiName, response.accessToken, data);
         } catch (error) {
@@ -72,7 +71,6 @@ export function callLogin() {
       "Viktig Kunde",
       "Gjerrig"
     ];
-
     var suppliersObject = JSON.parse(JSON.stringify(suppliers));
     newCustomer('Timinski Corp.', 'Timain@timinski.gg', 12312312, "Timain", suppliersObject, tags, "CC Corp", "inforRef??" ) */
 
@@ -155,22 +153,6 @@ export function modifyEmployeeData(
   };
 
   return prepareCall('ModifyEmployeeData', data);
-}
-
-export function setUsername(user) {
-  username = user;
-}
-
-export function isLogedIn() {
-  let validate = null;
-  if (username != null) {
-    validate = username;
-    console.log(validate);
-    return validate;
-  } else {
-    console.log(validate);
-    return validate;
-  }
 }
 
 export function logToken() {

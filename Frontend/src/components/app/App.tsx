@@ -1,6 +1,7 @@
 // Libaries
-import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { MsalProvider, useMsal } from "@azure/msal-react";
+
 
 // Components
 import Navbar from '../navbar/Navbar';
@@ -11,12 +12,13 @@ import About from '../pages/about/About';
 import Dashboard from '../pages/dashboard/Dashboard';
 import CustomerPage from '../pages/customerpage/customerpage';
 import PageNotFound from '../pages/pageNotFound/pageNotFound';
+import AdminPage from '../pages/adminPages/adminPage';
 
 // CSS Styling
 import './App.css';
 
 const Routes = () => {
-  return(
+  return (
     <Switch className='Component'>
       <Route path='/' exact component={StartPage} />
       <Route path='/contact' component={Contact} />
@@ -24,22 +26,34 @@ const Routes = () => {
       <Route path='/about' component={About} />
       <Route path='/dashboard' component={Dashboard} />
       <Route path='/customerpage' component={CustomerPage} />
+      <Route path='/admin' component={AdminPage} />
       <Route path='*' exact={true} component={PageNotFound} />
     </Switch>
-  )
-}
+  );
+};
 
-const App = () => {
+const App = ({ pca }) => {
+  const { inProgress } = useMsal();
+
+  console.log(inProgress);
   return (
     <Router>
-      <div className='app' style={{ height: '100vh' }}>
-        <Navbar/>
-        <div style={{ marginTop: '23px', width: '100%' }}>
-          <Routes/>
+      <MsalProvider instance={pca}>
+        {(inProgress === 'login') ? 
+        <div>
+          <h6> Loading Login.........</h6>
         </div>
-      </div>
+        :
+        <div className='app' style={{ height: '100vh' }}>
+          <Navbar />
+          <div style={{ marginTop: '23px', width: '100%' }}>
+            <Routes />
+          </div>
+        </div>
+        }
+      </MsalProvider>
     </Router>
   );
-}
+};
 
 export default App;

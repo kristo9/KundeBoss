@@ -1,9 +1,11 @@
 // Liberaries
-import { useContext, useReducer } from 'react';
 import { Link } from 'react-router-dom';
-import { SignIn, SignOut } from '../../azure/authRedirect';
+import { useIsAuthenticated, useMsal } from "@azure/msal-react";
+import { useAccount } from "@azure/msal-react";
 
-import { AuthContext, Toggle, AuthenticationReducer, AuthContextProvider } from "../../Context";
+// Components
+import { SignInSignOutButton } from '../basicComp/SignInOutButton'
+import { msalInstance } from '../../index'
 
 // CSS style
 import './Navbar.css';
@@ -11,7 +13,12 @@ import './Navbar.css';
 
 
 const Authenticated = () => {
-  const [state, dispatch] = useReducer(AuthenticationReducer, AuthContext)
+
+  const accounts = msalInstance.getAllAccounts();
+  msalInstance.setActiveAccount(accounts[0]);
+  localStorage.setItem("UserName", accounts[0].username)
+  console.log("UserName is set at LocalsStorage \"UserName\":  " + localStorage.getItem("UserName"))
+
   return (
     <div className='topnav'>
       <div className='left'>
@@ -21,15 +28,17 @@ const Authenticated = () => {
         <Link to='/contact' className='Link'> Contact </Link>
         <Link to='/help' className='Link'> Help </Link>
         <Link to='/about' className='Link'> About </Link>
-        <button id='nt' className='Link' onClick={SignOut}> Log Out </button>
-        <button id='nt' className='Link' onClick={() => {dispatch('LOGOUT')}}> Toggle Igjen </button>
+        <SignInSignOutButton />
     </div>
     </div>
   )
 }
 
 const Unauthenticated = () => {
-  const [state, dispatch] = useReducer(AuthenticationReducer, AuthContext)
+
+  localStorage.removeItem("UserName")
+  console.log("UserName is removed as no account is signed in")
+
   return (
       <div className='topnav'>
         <div className='left'>
@@ -39,23 +48,27 @@ const Unauthenticated = () => {
           <Link to='/contact' className='Link'> Contact </Link>
           <Link to='/help' className='Link'> Help </Link>
           <Link to='/about' className='Link'> About </Link>
-          <button id='nt' className='Link' onClick={SignIn}> Log In </button>
-          <button id='nt' className='Link' onClick={() => {dispatch({type: 'LOGIN_AUTHENTICATION'})}}> Toggle </button>
+          <SignInSignOutButton />
         </div>
       </div>
   )
 }
 
 const Navbar = () => {
-  
-  const { isAuthenticated } = useContext(AuthContext);
-  console.log(isAuthenticated);
+  const isAuthenticated = useIsAuthenticated();
+
+  console.log("Bruker er authentisert:  " + isAuthenticated);
+
+  const { accounts } = useMsal();
+  const account = useAccount(accounts[0] || {});
+  msalInstance.setActiveAccount(account);
+  console.log(msalInstance.getActiveAccount())
+  console.log(localStorage.getItem("UserName"))
+
   return (
-    <AuthContextProvider>
       <div>
         {(isAuthenticated) ? <Authenticated/> : <Unauthenticated/>}
       </div>
-    </AuthContextProvider>
   );
 }
 
