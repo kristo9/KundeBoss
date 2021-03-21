@@ -1,4 +1,4 @@
-jest.mock('../SharedFiles/dataBase');
+//jest.mock('../SharedFiles/dataBase');
 import { invalidToken, prepareContext, token, timeout, readerToken, expectStuff } from './sharedItems';
 
 const config = require('.././local.settings.json');

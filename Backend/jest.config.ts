@@ -6,6 +6,6 @@ const config: Config.InitialOptions = {
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   verbose: true,
   silent: false,
-  preset: '@shelf/jest-mongodb',
+  //preset: '@shelf/jest-mongodb',
 };
 export default config;
