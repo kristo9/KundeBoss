@@ -19,6 +19,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
   let token = prepToken(context, req.headers.authorization);
 
   if (token === null) {
+    errorUnauthorized(context, 'Token is null');
     return context.done();
   }
 
@@ -35,7 +36,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  // What information is to be recieved
+  // Which information is to be recieved
   const projection = {
     'name': 1,
     'employeeId': 1,
