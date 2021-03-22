@@ -1,19 +1,23 @@
 // Liberaries
 import { Link } from 'react-router-dom';
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
-
-// CSS style
-import './Navbar.css';
-import { PublicClientApplication } from '@azure/msal-browser';
-import { msalConfig } from '../../azure/authConfig';
 import { useAccount } from "@azure/msal-react";
 
 // Components
 import { SignInSignOutButton } from '../basicComp/SignInOutButton'
+import { msalInstance } from '../../index'
+
+// CSS style
+import './Navbar.css';
 
 
 
 const Authenticated = () => {
+
+  const accounts = msalInstance.getAllAccounts();
+  msalInstance.setActiveAccount(accounts[0]);
+  localStorage.setItem("UserName", accounts[0].username)
+  console.log("UserName is set at LocalsStorage \"UserName\":  " + localStorage.getItem("UserName"))
 
   return (
     <div className='topnav'>
@@ -31,6 +35,9 @@ const Authenticated = () => {
 }
 
 const Unauthenticated = () => {
+
+  localStorage.removeItem("UserName")
+  console.log("UserName is removed as no account is signed in")
 
   return (
       <div className='topnav'>
@@ -52,8 +59,6 @@ const Navbar = () => {
 
   console.log("Bruker er authentisert:  " + isAuthenticated);
 
-
-  const msalInstance = new PublicClientApplication(msalConfig);
   const { accounts } = useMsal();
   const account = useAccount(accounts[0] || {});
   msalInstance.setActiveAccount(account);

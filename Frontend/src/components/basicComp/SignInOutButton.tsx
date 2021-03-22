@@ -6,10 +6,10 @@ export const SignInSignOutButton = () => {
     return (
         <div>
             <AuthenticatedTemplate>
-                <button onClick={() => instance.logout()} className="l">Sign Out</button>
+                <button onClick={() => instance.logout()} className="link">Sign Out</button>
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
-                <button onClick={() => instance.loginRedirect(loginRequest)} className="l">Sign In</button>
+                <button onClick={() => instance.loginRedirect(loginRequest)} className="link">Sign In</button>
             </UnauthenticatedTemplate>
         </div>
     );

@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
-import { PublicClientApplication, EventType } from "@azure/msal-browser";
+import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig } from "./azure/authConfig";
 
 // Component
@@ -11,25 +11,27 @@ import App from './components/app/App';
 // CSS Style
 import './index.css';
 
+// Creating a new msalInstanse for keeping track of Authentification.
 export const msalInstance = new PublicClientApplication(msalConfig);
 
+// Assigning the active account to ".activeAccount" and storing the 
+//     username for token fetching. If no account is signed in, 
+//     make sure the username is removed from localstorage.
 const accounts = msalInstance.getAllAccounts();
 if (accounts.length > 0) {
-  msalInstance.setActiveAccount(accounts[0]);
-  localStorage.setItem("UserName", accounts[0].username)
-  console.log(localStorage.getItem("UserName"))
+    msalInstance.setActiveAccount(accounts[0]);
+ // localStorage.setItem("UserName", accounts[0].username)
+ // console.log("UserName is set at LocalsStorage \"UserName\":  " + localStorage.getItem("UserName"))
+}
+else {
+ // localStorage.removeItem("UserName")
+ // console.log("UserName is removed as no account is signed in")
 }
 
-msalInstance.addEventCallback((event) => {
-    if (event.eventType === EventType.LOGIN_SUCCESS && event.payload.account) {
-      const account = event.payload.account;
-      msalInstance.setActiveAccount(account);
-    }
-  });
-
+// Sending instance of msal as prop to App component. 
 ReactDOM.render(
     <React.StrictMode>
-        <App pca={msalInstance}/>
+        <App pca={msalInstance}/> 
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -37,6 +37,7 @@ function prepareCall(apiName, data = null) {
     .then((response) => {
       if (response) {
         console.log('access_token acquired at: ' + new Date().toString());
+        console.log(response.accessToken);
         try {
           return callApi(apiConfig.uri + apiName, response.accessToken, data);
         } catch (error) {

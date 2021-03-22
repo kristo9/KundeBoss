@@ -1,4 +1,5 @@
-import { invalidToken, token } from './sharedItems';
+//jest.mock('../SharedFiles/dataBase');
+import { invalidToken, prepareContext, token, timeout, readerToken, expectStuff } from './sharedItems';
 
 const config = require('.././local.settings.json');
 let GetAllEmployees = null;
@@ -19,90 +20,43 @@ let request = {
   body: null, // The HTTP request body.
 };
 
-//jest.mock('../SharedFiles/dataBase');
-
 describe('GetAllEmployees function', () => {
   test('status should return 200, no problems', async () => {
-    let context = {
-      res: { status: null, body: null },
-      log: jest.fn(),
-      done: null,
-    };
-
-    context.done = () => {
-      context.done = true;
-    };
-
+    let context = prepareContext();
+    console.log(context.res);
     GetAllEmployees(context, request);
     await timeout(context);
 
-    //expect(context.res.body)
-    expect(context.res.status).toEqual(200);
-    expect(context.done).toEqual(true);
+    expectStuff(context, 200, 'Token is null');
   });
 
   test('status should return 401. Invalid token', async () => {
-    let context = {
-      res: { status: null, body: null },
-      log: jest.fn(),
-      done: null,
-    };
-    context.done = () => {
-      context.done = true;
-    };
+    let context = prepareContext();
     request.headers = { 'authorization': 'Bearer ' + invalidToken };
 
     GetAllEmployees(context, request);
     await timeout(context);
 
-    expect(context.res.status).toEqual(401);
-    expect(context.res.body).toEqual('Token not valid');
-    expect(context.done).toEqual(true);
+    expectStuff(context, 401, 'Token not valid');
   });
 
   test('status should return 401. Token is null', async () => {
-    let context = {
-      res: { status: null, body: null },
-      log: jest.fn(),
-      done: null,
-    };
-    context.done = () => {
-      context.done = true;
-    };
+    let context = prepareContext();
     request.headers = { 'authorization': null };
 
     GetAllEmployees(context, request);
     await timeout(context);
 
-    expect(context.res.status).toEqual(401);
-    expect(context.res.body).toEqual('Token is null');
-    expect(context.done).toEqual(true);
+    expectStuff(context, 401, 'Token is null');
   });
 
   test('status should return 401. User dont have admin-write permission', async () => {
-    let context = {
-      res: { status: null, body: null },
-      log: jest.fn(),
-      done: null,
-    };
-    context.done = () => {
-      context.done = true;
-    };
-    request.headers = { 'authorization': 'Bearer ' + token };
+    let context = prepareContext();
+    request.headers = { 'authorization': 'Bearer ' + readerToken };
 
     GetAllEmployees(context, request);
     await timeout(context);
 
-    expect(context.res.status).toEqual(401);
-    expect(context.res.body).toEqual('User dont have admin-write permission');
-    expect(context.done).toEqual(true);
+    expectStuff(context, 401, 'User dont have admin-write permission');
   });
 });
-
-async function timeout(context) {
-  let i = 0;
-  for (; i < 100 && context.done !== true; ++i) {
-    await new Promise((r) => setTimeout(r, 100));
-  }
-  //console.log('Time: ' + --i * 100 + 'ms');
-}
