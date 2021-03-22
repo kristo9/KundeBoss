@@ -1,4 +1,3 @@
-import { PromptState } from 'msal/lib-commonjs/utils/Constants';
 import React from 'react';
 
 interface inputProps {
@@ -22,7 +21,7 @@ export function InputField(props: inputProps) {
         type={props.lableType}
         name={props.lableName}
         id={props.lableName}
-        defaultValue={props.defaultValue != 'null' ? props.defaultValue : ''}
+        defaultValue={props.defaultValue !== 'null' ? props.defaultValue : ''}
         placeholder={props.placeholderText}
         required={props.required}
       ></input>
@@ -37,7 +36,7 @@ export function TextArea(props: inputProps) {
       <textarea
         name={props.lableName}
         id={props.lableName}
-        defaultValue={props.defaultValue != 'null' ? props.defaultValue : ''}
+        defaultValue={props.defaultValue !== 'null' ? props.defaultValue : ''}
         placeholder={props.placeholderText}
         required={props.required}
       ></textarea>

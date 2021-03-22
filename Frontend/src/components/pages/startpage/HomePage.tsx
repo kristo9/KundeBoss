@@ -79,8 +79,9 @@ const HomePage = () => {
     
     useEffect(() => {
         async function fetchAccountInfo() {
-          setLoading(true)  
+          setLoading(true) 
           let info= await callLogin();
+          //await new Promise(r => setTimeout(r, 2000));
           console.log(info);
           (!info.isConfigured) ? setUserCase('NotConfigured') :
           (info.isCustomer) ? (info.firstLogin) ? setUserCase('CustomerFirstLogin'): setUserCase('CustomerNotFirst') : 
