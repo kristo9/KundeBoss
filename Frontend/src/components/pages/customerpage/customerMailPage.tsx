@@ -3,7 +3,7 @@ import react from 'react';
 /**
  * @returns a react component with the mail page.
  */
-function CustomerMailPage() {
+function CustomerMailPage({ props }: any) {
   return (
     <div>
       <h1>Her er det Mail</h1>

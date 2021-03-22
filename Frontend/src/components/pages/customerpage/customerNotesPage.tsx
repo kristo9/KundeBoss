@@ -9,7 +9,7 @@ function CustomerNotesPage(custInfo: any) {
   return (
     <div>
       <h1>Her er det Notater</h1>
-      {custInfo.comment}
+      {custInfo.comment ? custInfo.comment : 'Kunden har ingen notater'}
     </div>
   );
 }

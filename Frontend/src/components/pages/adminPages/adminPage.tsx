@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Searchfield from '../../basicComp/searchfield';
 import LoadingSymbol from '../../basicComp/loading';
+import { SBElementProps, SBProps, Sidebar } from '../../basicComp/sidebar';
+import NewCustomer from './newCustomer';
+import ViewRights from './viewRights';
+import NewSupplier from './newSupplier';
 
 const mockData = {
   users: [
@@ -8,7 +12,6 @@ const mockData = {
       _id: '603648ae0ab39703a4580395',
       name: 'Didrik K Bjerk',
       employeeId: 'didrik.bjerk@kundeboss.onmicrosoft.com',
-      t: 'noe',
     },
     {
       _id: '603648420ab39703a4580395',
@@ -19,16 +22,30 @@ const mockData = {
 };
 
 function AdminPage() {
+  const [CurrentPage, setCurrentPage] = useState(<ViewRights />);
+  const buttons: SBElementProps = [
+    { text: 'Se rettigheter', ID: '1', onClick: () => setCurrentPage(<ViewRights />) },
+    { text: 'Lag kunde', ID: '2', onClick: () => setCurrentPage(<NewCustomer />) },
+    { text: 'Lag leverandør', ID: '3', onClick: () => setCurrentPage(<NewSupplier />) },
+    { text: 'Nyinnlogget', ID: '4', onClick: () => setCurrentPage(<NewSupplier />) }, //TODO: lage side for nyinnlogget
+  ];
+
   return (
-    <div>
-      <h1>Admin side</h1>
-      <Searchfield />
-      {mockData.users.map((user) => (
-        <DisplayInfo name={user.name} />
-      ))}
-      <LoadingSymbol />
+    <div className='H100'>
+      <Sidebar text='Admin page' buttons={buttons} />
+      <div>
+        {CurrentPage ? CurrentPage : <LoadingSymbol />}
+        {/* {mockData.users.map((user) => (
+          <DisplayInfo name={user.name} />
+        ))}
+        <LoadingSymbol /> */}
+      </div>
     </div>
   );
+}
+
+function a(props: string) {
+  console.log(props);
 }
 
 interface userInfo {
@@ -38,15 +55,11 @@ interface userInfo {
 
 function DisplayInfo(props: userInfo) {
   return (
-    <div>
-      <p>
-        <b>{props.name} </b>
+    <p>
+      <b>{props.name} </b>
 
-        {props.type === 'customer' ? 'Kunde' : 'Ansatt'}
-      </p>
-
-      <b></b>
-    </div>
+      {props.type === 'customer' ? 'Kunde' : 'Ansatt'}
+    </p>
   );
 }
 
