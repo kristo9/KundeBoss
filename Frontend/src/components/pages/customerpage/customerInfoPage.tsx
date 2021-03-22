@@ -5,28 +5,19 @@ import react from 'react';
  * @param {any} customerInfo contains all the information about the customer being displayed.
  * @returns a react-component with the customer information.
  */
-export function CustomerInfoPage(customerInfo: any) {
-  //the data is loaded, diasply it
-  if (customerInfo) {
-    return (
-      <div>
-        <DisplayTextAndInfo text={'Navn'} information={customerInfo.name} />
-        <ContactPersonInfo
-          name={customerInfo.contact.name}
-          mail={customerInfo.contact.mail}
-          phone={customerInfo.contact.phone}
-        />
-        <DisplayTags tags={customerInfo.tags} />
-      </div>
-    );
-    //the data is not loaded, diaplay an "error"-message
-  } else {
-    return (
-      <div>
-        <p>Henter data...</p>
-      </div>
-    );
-  }
+export function CustomerInfoPage({ customerInfo }: any) {
+  return (
+    <div>
+      <h1>Infomasjon</h1>
+      <DisplayTextAndInfo text={'Navn'} information={customerInfo.name} />
+      <ContactPersonInfo
+        name={customerInfo.contact.name}
+        mail={customerInfo.contact.mail}
+        phone={customerInfo.contact.phone}
+      />
+      <DisplayTags tags={customerInfo.tags} />
+    </div>
+  );
 }
 
 /**
@@ -83,7 +74,7 @@ function DisplayTags(props: { tags: any }) {
     <div>
       <h3>Tags</h3>
       {props.tags.map((tag) => (
-        <p>{tag}</p>
+        <p key={tag}>{tag}</p>
       ))}
     </div>
   );
