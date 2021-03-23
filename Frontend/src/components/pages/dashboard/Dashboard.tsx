@@ -3,6 +3,7 @@ import './Dashboard.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Inputfield from '../../../components/basicComp/searchfield';
+import LoadingSymbol from '../../basicComp/loading';
 
 let customers = getEmployee();
 
@@ -27,10 +28,10 @@ class Dashboard extends React.Component<{}, { customers: any }> {
    */
   componentDidMount() {
     const fetchName = async () => {
-    customers = await customers;
-    console.log(customers);
-    if (typeof customers !== 'object') {
-      customers = await getEmployee();
+      customers = await customers;
+      console.log(customers);
+      if (typeof customers !== 'object') {
+        customers = await getEmployee();
       }
       this.setState({
         customers,
@@ -93,11 +94,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
         </table>
       );
     } else {
-      return (
-        <div>
-          <p>Henter data...</p>
-        </div>
-      );
+      return <LoadingSymbol />;
     }
   }
 }
@@ -122,10 +119,6 @@ function InfoBox(prop: customerProp) {
         <Link
           to={{
             pathname: '/customerpage/' + prop.id,
-            state: {
-              id: 37,
-              name: prop.id,
-            },
           }}
         ></Link>;
         console.log('trykk ' + prop.id);
@@ -135,10 +128,6 @@ function InfoBox(prop: customerProp) {
         <Link
           to={{
             pathname: '/customerpage/' + prop.id,
-            state: {
-              id: 37,
-              name: prop.customerName,
-            },
           }}
         >
           <b>{prop.customerName}</b>

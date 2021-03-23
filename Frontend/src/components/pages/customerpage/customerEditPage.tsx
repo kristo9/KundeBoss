@@ -15,7 +15,7 @@ function CustomerEditPage({ customerInfo }: any) {
           lableType={'text'}
           lableName={'name'}
           placeholderText={'Bedriftens navn'}
-          defaultValue={customerInfo.name}
+          defaultValue={customerInfo && customerInfo.name ? customerInfo.name : ''}
         />
 
         <MultipleInputField text='Kontaktperson'>
@@ -24,21 +24,27 @@ function CustomerEditPage({ customerInfo }: any) {
             lableType={'text'}
             lableName={'contactName'}
             placeholderText={'Kontaktpersonens navn'}
-            defaultValue={customerInfo.contact.name}
+            defaultValue={
+              customerInfo && customerInfo.contact && customerInfo.contact.name ? customerInfo.contact.name : ''
+            }
           />
           <InputField
             labelText={'Telfon'}
             lableType={'tel'}
             lableName={'contactPhone'}
             placeholderText={'Kontaktpersonens tlf'}
-            defaultValue={customerInfo.contact.phone}
+            defaultValue={
+              customerInfo && customerInfo.contact && customerInfo.contact.phone ? customerInfo.contact.phone : ''
+            }
           />
           <InputField
             labelText={'Epost'}
             lableType={'email'}
             lableName={'contactMail'}
             placeholderText={'Kontaktpersonens mail'}
-            defaultValue={customerInfo.contact.mail}
+            defaultValue={
+              customerInfo && customerInfo.contact && customerInfo.contact.mail ? customerInfo.contact.mail : ''
+            }
           />
         </MultipleInputField>
 
@@ -47,11 +53,13 @@ function CustomerEditPage({ customerInfo }: any) {
           lableType={'text'}
           lableName={'note'}
           placeholderText={'Notat om kunden'}
-          defaultValue={customerInfo.note}
+          defaultValue={customerInfo && customerInfo.note ? customerInfo.note : ''}
         />
 
-        <button>Slett kunde</button>
-        <button type='submit'>Submit</button>
+        <button>+</button>
+
+        {customerInfo ? <button>Slett kunde</button> : ''}
+        <button type='submit'>{customerInfo ? 'Rediger bruker' : 'Lag bruker'}</button>
         <button type='reset'>Reset</button>
       </form>
     </div>

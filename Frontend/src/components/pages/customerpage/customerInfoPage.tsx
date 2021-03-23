@@ -46,9 +46,9 @@ export function ContactPersonInfo(props: { name: string; phone: number; mail: st
     <div style={{ background: 'red' }}>
       <h3>Kontaktperson</h3>
       <div style={{ paddingLeft: '250 px' }}>
-        <DisplayTextAndInfo text={'Navn: '} information={props.name} />
-        <DisplayTextAndInfo text={'Telefon: '} information={props.phone} />
-        <DisplayTextAndInfo text={'Mail: '} information={props.mail} />
+        <DisplayTextAndInfo text={'Navn'} information={props.name} />
+        <DisplayTextAndInfo text={'Telefon'} information={props.phone} />
+        <DisplayTextAndInfo text={'Mail'} information={props.mail} />
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import CustomerEditPage from './customerEditPage';
 import LoadingSymbol from '../../basicComp/loading';
 import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 import { isThisTypeNode } from 'typescript';
+import SendMail from './customerSendMail';
 
 /**
  * Contains the customer page and all the info needed by the subpages.
@@ -39,7 +40,9 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
   componentDidMount() {
     // Loades the data from the API
     const fetchCustomerInfo = async () => {
-      let customerI = await getCustomer('604a7ae0fe05bd49dcb6b7a1'); //TODO: endre denne
+      //Gets information about the customer based on the id in the URL
+      await new Promise((r) => setTimeout(r, 500));
+      let customerI = await getCustomer(window.location.pathname.split('/')[2]);
       this.setState({
         customerInfo: customerI,
         pageState: <CustomerInfoPage customerInfo={customerI} />,
@@ -83,7 +86,7 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
     {
       text: 'Send mail',
       ID: 'sendMail',
-      onClick: () => this.setState({ pageState: <CustomerMailPage customerInfo={this.state.customerInfo} /> }),
+      onClick: () => this.setState({ pageState: <SendMail customerInfo={this.state.customerInfo} /> }),
     },
     {
       text: 'Notat',

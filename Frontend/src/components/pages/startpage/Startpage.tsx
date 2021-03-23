@@ -9,7 +9,6 @@ import { msalInstance } from '../../..';
  */
 
 const WelcomePage = () => {
-
   return (
     <div className='add-margins'>
       <div className='page'>
@@ -25,31 +24,26 @@ const WelcomePage = () => {
       </div>
     </div>
   );
-}
+};
 
 const HomePage = () => {
-
   return (
-  <div className='add-margins'>
-    <div>
-    <h6> HEI {localStorage.getItem("UserName")}</h6>
-      <Link to='/dashboard'>
+    <div className='add-margins'>
+      <div>
+        <h6> HEI {localStorage.getItem('UserName')}</h6>
+        <Link to='/dashboard'>
           <u>Dashboard</u>
         </Link>
+      </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
 function Startpage() {
   const isAuthenticated = useIsAuthenticated();
-  console.log(msalInstance.getAccountByUsername(localStorage.getItem("UserName")))
+  console.log(msalInstance.getAccountByUsername(localStorage.getItem('UserName')));
 
-  return (
-    <div>
-      {(isAuthenticated) ? <HomePage /> : <WelcomePage />}
-    </div>
-  );
+  return <div>{isAuthenticated ? <HomePage /> : <WelcomePage />}</div>;
 }
 
 export default Startpage;

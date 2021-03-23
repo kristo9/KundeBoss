@@ -22,12 +22,14 @@ const mockData = {
 };
 
 function AdminPage() {
+  const [adminData, setAdminData] = useState(null);
   const [CurrentPage, setCurrentPage] = useState(<ViewRights />);
+
   const buttons: SBElementProps = [
-    { text: 'Se rettigheter', ID: '1', onClick: () => setCurrentPage(<ViewRights />) },
-    { text: 'Lag kunde', ID: '2', onClick: () => setCurrentPage(<NewCustomer />) },
-    { text: 'Lag leverandør', ID: '3', onClick: () => setCurrentPage(<NewSupplier />) },
-    { text: 'Nyinnlogget', ID: '4', onClick: () => setCurrentPage(<NewSupplier />) }, //TODO: lage side for nyinnlogget
+    { text: 'Se rettigheter', ID: 'rights', onClick: () => setCurrentPage(<ViewRights />) },
+    { text: 'Ny kunde', ID: 'newCustomer', onClick: () => setCurrentPage(<NewCustomer />) },
+    { text: 'Ny leverandør', ID: 'newSupplier', onClick: () => setCurrentPage(<NewSupplier />) },
+    { text: 'Nyinnlogget', ID: 'newLogin', onClick: () => setCurrentPage(<NewSupplier />) }, //TODO: lage side for nyinnlogget
   ];
 
   return (
@@ -42,10 +44,6 @@ function AdminPage() {
       </div>
     </div>
   );
-}
-
-function a(props: string) {
-  console.log(props);
 }
 
 interface userInfo {
