@@ -6,12 +6,12 @@ import { ContactPersonInfo } from './customerInfoPage';
  * @param {any} custInfo information about the cutomer.
  * @returns a react component with the customer-supplier page
  */
-function CustomerSupplierPage(custInfo: any) {
+function CustomerSupplierPage({ customerInfo }: any) {
   return (
     <div>
       <h1>Her er det Leverandører</h1>
       <p>
-        <DisplaySupplier suppliers={custInfo.suppliers} />
+        <DisplaySupplier suppliers={customerInfo.suppliers} />
       </p>
     </div>
   );

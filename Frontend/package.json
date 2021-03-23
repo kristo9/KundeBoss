@@ -12,6 +12,7 @@
     "@types/node": "^12.19.16",
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
+    "lottie-web": "^5.7.7",
     "msal": "^1.4.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

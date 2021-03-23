@@ -11,12 +11,16 @@ import { CustomerInfoPage } from './customerInfoPage';
 import CustomerNotesPage from './customerNotesPage';
 import CustomerSupplierPage from './customerSupplierPage';
 import CustomerEditPage from './customerEditPage';
+import LoadingSymbol from '../../basicComp/loading';
+import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
+import { isThisTypeNode } from 'typescript';
+import SendMail from './customerSendMail';
 
 /**
  * Contains the customer page and all the info needed by the subpages.
  * Subpages are also loaded/viewed from here.
  */
-class CustomerPage extends React.Component<RouteComponentProps, { buttonState: number; customerInfo: any }> {
+class CustomerPage extends React.Component<RouteComponentProps, { pageState: any; customerInfo: any }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class.
@@ -24,20 +28,10 @@ class CustomerPage extends React.Component<RouteComponentProps, { buttonState: n
   constructor(props) {
     super(props);
     this.state = {
-      buttonState: 0,
+      pageState: <LoadingSymbol />,
       customerInfo: null,
     };
   }
-
-  // A list with all the subpages
-  private pageList = [
-    CustomerInfoPage,
-    CustomerSupplierPage,
-    CustomerMailPage,
-    CustomerMailPage,
-    CustomerNotesPage,
-    CustomerEditPage,
-  ];
 
   /**
    * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
@@ -46,9 +40,12 @@ class CustomerPage extends React.Component<RouteComponentProps, { buttonState: n
   componentDidMount() {
     // Loades the data from the API
     const fetchCustomerInfo = async () => {
-      let customerI = await getCustomer('604a7ae0fe05bd49dcb6b7a1'); //TODO: endre denne
+      //Gets information about the customer based on the id in the URL
+      await new Promise((r) => setTimeout(r, 500));
+      let customerI = await getCustomer(window.location.pathname.split('/')[2]);
       this.setState({
         customerInfo: customerI,
+        pageState: <CustomerInfoPage customerInfo={customerI} />,
       });
     };
     fetchCustomerInfo();
@@ -61,69 +58,47 @@ class CustomerPage extends React.Component<RouteComponentProps, { buttonState: n
   render() {
     return (
       <div className='margin-right H100'>
-        {this.renderSidebar()}
-        <div>{this.pageList[this.state.buttonState](this.state.customerInfo)}</div>
+        <Sidebar
+          text={this.state.customerInfo && this.state.customerInfo.name ? this.state.customerInfo.name : 'Kundenavn'}
+          buttons={this.buttons}
+        />
+        {this.state.customerInfo ? this.state.pageState : <LoadingSymbol />}
       </div>
     );
   }
 
-  /**
-   * @returns A react component with the sidebar for the customer page
-   */
-  renderSidebar() {
-    return (
-      <div className='sidebar'>
-        <h2>
-          <b>Kunde navn</b>
-        </h2>
-        <SidebarButton
-          onClick={() => this.changePageState(0)}
-          active={this.state.buttonState === 0}
-          text='Informasjon'
-        />
-        <SidebarButton
-          onClick={() => this.changePageState(1)}
-          active={this.state.buttonState === 1}
-          text='Leverandører'
-        />
-        <SidebarButton onClick={() => this.changePageState(2)} active={this.state.buttonState === 2} text='Mail' />
-        <SidebarButton
-          onClick={() => this.changePageState(3)}
-          active={this.state.buttonState === 3}
-          text='Sende Mail'
-        />
-        <SidebarButton onClick={() => this.changePageState(4)} active={this.state.buttonState === 4} text='Notater' />
-        <SidebarButton onClick={() => this.changePageState(5)} active={this.state.buttonState === 5} text='Rediger' />
-      </div>
-    );
-  }
-
-  /**
-   * Changes the page.
-   * @param {number} prop is the ID of page it should change to.
-   */
-  changePageState(prop: number) {
-    if (this.state.buttonState !== prop) {
-      this.setState({ buttonState: prop });
-    }
-  }
-}
-
-/**
- * Creates a button based on the input-parameters.
- * @param {string} text the button text.
- * @param {any} onCLick a function that is executed when the button is pressed.
- * @param {boolean} active if the button is currently selected.
- * @returns A react component with buttons for the sidebar.
- */
-function SidebarButton(prop: { text: string; onClick: any; active: boolean }) {
-  let classNameName = prop.active ? 'b buttonActive' : 'b buttonNotActive';
-
-  return (
-    <div className={classNameName} onClick={prop.onClick}>
-      <button>{prop.text}</button>
-    </div>
-  );
+  buttons: SBElementProps = [
+    {
+      text: 'Infomasjon',
+      ID: 'info',
+      onClick: () => this.setState({ pageState: <CustomerInfoPage customerInfo={this.state.customerInfo} /> }),
+    },
+    {
+      text: 'Leverandører',
+      ID: 'supplier',
+      onClick: () => this.setState({ pageState: <CustomerSupplierPage customerInfo={this.state.customerInfo} /> }),
+    },
+    {
+      text: 'Mail',
+      ID: 'mail',
+      onClick: () => this.setState({ pageState: <CustomerMailPage customerInfo={this.state.customerInfo} /> }),
+    },
+    {
+      text: 'Send mail',
+      ID: 'sendMail',
+      onClick: () => this.setState({ pageState: <SendMail customerInfo={this.state.customerInfo} /> }),
+    },
+    {
+      text: 'Notat',
+      ID: 'note',
+      onClick: () => this.setState({ pageState: <CustomerNotesPage customerInfo={this.state.customerInfo} /> }),
+    },
+    {
+      text: 'Rediger',
+      ID: 'edit',
+      onClick: () => this.setState({ pageState: <CustomerEditPage customerInfo={this.state.customerInfo} /> }),
+    },
+  ];
 }
 
 export default CustomerPage;
