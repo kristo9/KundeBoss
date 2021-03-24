@@ -140,6 +140,13 @@ export function getCustomer(id: string) {
   return prepareCall('GetCustomerData', customerId);
 }
 
+export function getSupplier(id: string) {
+  let supplierId = {
+    id: id,
+  };
+  return prepareCall('GetSupplierData', supplierId);
+}
+
 export function getEmployee(tag = null): Promise<any> {
   tag = {
     tag: tag,
