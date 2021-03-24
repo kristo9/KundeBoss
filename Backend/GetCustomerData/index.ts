@@ -6,19 +6,28 @@ import { connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
+/**
+ * @description Get alle data about a customer
+ * @param contect : Context
+ * @param req : HttpRequest
+ */
 export = (context: Context, req: HttpRequest): any => {
+  /* Sanitizes input. Returns if there are no request body */
   req.body = prepInput(context, req.body);
-
   if (req.body === null) {
     return context.done();
   }
 
+  /* Checks that header includes a token. Returns if there are no token */
   let token = prepToken(context, req.headers.authorization);
-
   if (token === null) {
     return context.done();
   }
 
+  /**
+   * @description Validates that id provided in req.body has right format. Returns if it isn't
+   * @returns contect.done()
+   */
   const inputValidation = () => {
     if (_idVal(req.body?.id)) {
       connectRead(context, authorize);
@@ -29,7 +38,10 @@ export = (context: Context, req: HttpRequest): any => {
   };
 
   let isCustomer = true;
-
+  /**
+   * @description validates token and that client has permission to get data about the customer
+   * @param db : db connection
+   */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       if (err) {
@@ -52,7 +64,7 @@ export = (context: Context, req: HttpRequest): any => {
                 (customer) =>
                   customer.id == req.body.id && (customer.permission === 'read' || customer.permission === 'write')
               );
-
+              /* Query database if user is admin or has access to the customer */
               if (docs.admin === 'write' || docs.admin === 'read' || cust) {
                 if (docs.isCustomer === false) {
                   isCustomer = false;
@@ -71,14 +83,19 @@ export = (context: Context, req: HttpRequest): any => {
     });
   };
 
+  /**
+   * @description query db for all inforamtion about the specified customer
+   * @param db : db connection
+   */
   const functionQuery = (db: Db) => {
-    db.collection('customer') // Query to recieve information about one customer and their suppliers
+    db.collection('customer')
       .aggregate([
         {
           '$match': {
             '_id': ObjectId(req.body.id),
           },
         },
+        /* Gets all suppliers linked to the customer */
         {
           '$lookup': {
             'from': 'supplier',
@@ -87,6 +104,7 @@ export = (context: Context, req: HttpRequest): any => {
             'as': 'supplierInformation',
           },
         },
+        /* Gets mailGroup linked to the customer */
         {
           '$lookup': {
             'from': 'mailGroup',
@@ -96,6 +114,7 @@ export = (context: Context, req: HttpRequest): any => {
           },
         },
         { '$unwind': '$mailGroup' },
+        /* Gets all mails in customers mailGroup */
         {
           '$lookup': {
             'from': 'mail',
@@ -113,6 +132,7 @@ export = (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         }
+        console.log(docs);
         if (docs.length === 0) {
           errorWrongInput(context, 'No customer found');
           return context.done();

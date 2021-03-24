@@ -79,17 +79,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
           let customers = result.customerInformation;
           let allTags = [];
 
-          /* 
-          // Adds tags if they are not already added
-           for (let i = 0; i < customers.length; ++i) {
-            for (let j = 0; j < customers[i].tags.length; ++j) {
-              if (!allTags.includes(customers[i].tags[j])) {
-                allTags.push(customers[i].tags[j]);
-                }
-              }
-           }
-          result['allTags'] = allTags; */
-
           customers.forEach((customer) => (allTags = allTags.concat(customer.tags)));
 
           result['allTags'] = allTags.filter((tag, index) => allTags.indexOf(tag) === index);
