@@ -122,6 +122,17 @@ export function newSupplier(
   return prepareCall('NewSupplier', data);
 }
 
+/*      <button onClick={async () => {
+          console.log("Her skal det komme tekst: ")
+          console.log(await getAllEmployees())
+          console.log("------------------------")}}>
+          KNAPP
+        </button>
+        */
+export function getAllEmployees() {
+  return prepareCall('GetAllEmployees');
+}
+
 export function getCustomer(id: string) {
   let customerId = {
     id: id,
