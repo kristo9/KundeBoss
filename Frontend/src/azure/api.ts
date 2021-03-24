@@ -49,7 +49,10 @@ function prepareCall(apiName, data = null) {
       console.error(error);
     });
 }
-
+/**
+ * @description
+ * @returns
+ */
 export function callLogin() {
   console.log('callLogin');
   return prepareCall('LoginTrigger').then((response) => {
@@ -73,7 +76,18 @@ export function callLogin() {
     ];
     var suppliersObject = JSON.parse(JSON.stringify(suppliers));
     newCustomer('Timinski Corp.', 'Timain@timinski.gg', 12312312, "Timain", suppliersObject, tags, "CC Corp", "inforRef??" ) */
-
+/**
+ * @description Creates new customer
+ * @param name
+ * @param mail
+ * @param phone
+ * @param contactName
+ * @param suppliers
+ * @param tags
+ * @param comment
+ * @param infoReference
+ * @returns
+ */
 export function newCustomer(
   name: string,
   mail: string,
@@ -103,6 +117,16 @@ export function newCustomer(
 /*
 newSupplier('Nasjonal catering', 'Padme@NC.com', 74839283, 'Padmé Amidala Naberrie', 'Senator of Naboo, former Queen of Naboo')
 */
+
+/**
+ * @description Creates a new supplier
+ * @param name
+ * @param mail
+ * @param phone
+ * @param contactName
+ * @param comment
+ * @returns
+ */
 export function newSupplier(
   name: string,
   mail: string,
@@ -129,10 +153,26 @@ export function newSupplier(
           KNAPP
         </button>
         */
+/**
+ * @description Gets all the employees and their data
+ * @returns an array of JSON objects with:
+ *  'name'                              - string
+ *  'employeeId'                        - string
+ *  'admin'                             - string
+ *  'customerInformation'               - array
+ *  'customerInformation._id'           - objectId
+ *  'customerInformation.name'          - string
+ *  'customerInformation.permission'    - string
+ */
 export function getAllEmployees() {
   return prepareCall('GetAllEmployees');
 }
 
+/**
+ * @description Gets information about the customer that was provided as a parameter
+ * @param id customerId, the mail of a customer
+ * @returns
+ */
 export function getCustomer(id: string) {
   let customerId = {
     id: id,
@@ -140,6 +180,20 @@ export function getCustomer(id: string) {
   return prepareCall('GetCustomerData', customerId);
 }
 
+/**
+ * @description Gets all customers that the user has access to. Return may be customized by tags
+ * @param tag Keywords that some customers have attached
+ * @returns a JSON object with:
+ *   '_id'                              - objectId
+ *  'name'                              - string
+ *  'employeeId'                        - string
+ *  'customerInformation'               - array
+ *  'customerInformation._id'           - objectId
+ *  'customerInformation.name'          - string
+ *  'customerInformation.contact.name'  - string
+ *  'customerInformation.contact.mail'  - string
+ *  'customerInformation.tags'          - array
+ */
 export function getEmployee(tag = null): Promise<any> {
   tag = {
     tag: tag,
@@ -148,7 +202,7 @@ export function getEmployee(tag = null): Promise<any> {
 }
 
 /**
- * Deletes a employee, the employees mails and mailGroup from the database
+ * @description Deletes a employee, the employees mails and mailGroup from the database
  * @param mail Mail to the employee which is to be deleted
  * @returns returns result. if result.n = 1 the employee is deleted.
  */
@@ -160,7 +214,7 @@ export function deleteEmployee(mail) {
 }
 
 /**
- * Deletes a customer, the customers mails and mailGroup from the database
+ * @description Deletes a customer, the customers mails and mailGroup from the database
  * @param mail Mail to the customer which is to be deleted
  * @returns returns result. if result.n = 1 the customer is deleted.
  */
@@ -172,7 +226,7 @@ export function deleteCustomer(mail) {
 }
 
 /**
- * Deletes a supplier, the suppliers mails and mailGroup from the database
+ * @description Deletes a supplier, the suppliers mails and mailGroup from the database
  * @param mail Mail to the supplier which is to be deleted
  * @returns returns result. if result.n = 1 the supplier is deleted.
  */
@@ -182,7 +236,15 @@ export function deleteSupplier(mail) {
   };
   return prepareCall('DeleteSupplier', data);
 }
-
+/**
+ * @description Modifies employee data
+ * @param employeeId string, the mail of employee
+ * @param name string, name of employee
+ * @param admin string, admin lvl of employee
+ * @param isCustomer ?
+ * @param customers JSON object ?
+ * @returns
+ */
 export function modifyEmployeeData(
   employeeId: string = null,
   name: string = null,
