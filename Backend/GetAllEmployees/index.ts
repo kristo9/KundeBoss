@@ -60,7 +60,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     'name': 1,
     'employeeId': 1,
     'admin': 1,
-    'customer': 1,
+    'customers': 1,
   };
 
   /**
