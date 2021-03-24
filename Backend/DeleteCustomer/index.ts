@@ -9,11 +9,15 @@ import { ObjectId } from 'mongodb';
 module.exports = (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
-  if (req.body === null) return context.done();
+  if (req.body === null) {
+    return context.done();
+  }
 
   let token = prepToken(context, req.headers.authorization);
 
-  if (token === null) return context.done();
+  if (token === null) {
+    return context.done();
+  }
 
   const inputValidation = () => {
     let errMsg = 'Error: ';
@@ -91,25 +95,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
               '_id': { $in: array },
             };
 
-            console.log(
-              'Mails:\n' + array + '\nMailGroup: ' + ObjectId(mailGroup) + '\nQuery (mail): ' + req.body.mail
-            );
-            console.log('mailquery: ' + mailQuery);
-            console.log('query_' + query);
-            console.log('mailgroup:' + mailGroup);
-
-            /*             db.collection('mailGroup').deleteOne({ _id: ObjectId(mailGroup) }, (error: any, docs: any) => {
-              if (error) {
-                errorQuery(context);
-                console.log(error);
-                return context.done();
-              }
-              returnResult(context, docs);
-              context.done();
-              console.log('mailGroup deleted');
-            }); */
-
-            const deletedMails = db.collection('mail').deleteMany(mailQuery, (error: any, docs: any) => {
+            db.collection('mail').deleteMany(mailQuery, (error: any, docs: any) => {
               if (error) {
                 errorQuery(context);
                 return context.done();
@@ -129,14 +115,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
                     return context.done();
                   }
                   console.log('Customer deleted!');
-                  console.log(
-                    'Deleted customer: ' +
-                      req.body.mail +
-                      '\nDeleted mailGroup: ' +
-                      mailGroup +
-                      '\nNumber of mails deleted: ' +
-                      deletedMails
-                  );
 
                   returnResult(context, docs);
                   context.done();
