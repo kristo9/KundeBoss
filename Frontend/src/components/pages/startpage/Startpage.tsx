@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import '../../basicComp/basic.css';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { msalInstance } from '../../..';
-import HomePage from './HomePage';
+// import HomePage from './HomePage';
 
 /**
  * @returns A react component with the login page
