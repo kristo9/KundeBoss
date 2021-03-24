@@ -60,7 +60,8 @@ module.exports = (context: Context, req: HttpRequest): any => {
     'name': 1,
     'employeeId': 1,
     'admin': 1,
-    'customers': 1,
+    'customers.id': 1,
+    'customers.permission': 1,
   };
 
   /**
@@ -69,14 +70,55 @@ module.exports = (context: Context, req: HttpRequest): any => {
    * @return context.res.body that contains a JSON object that is an array of JSON objects for each employee
    */
   const functionQuery = (db: Db) => {
+    const project2 = {
+      '_id': 0,
+      'name': 1,
+      'employeeId': 1,
+      'admin': 1,
+      'customers': 1,
+      'customerInformation._id': 1,
+      'customerInformation.name': 1,
+    };
+
     db.collection('employee')
-      .find()
-      .project(projection)
+      .aggregate([
+        /*         {
+          '$match': {
+            employeeId: employeeId,
+          },
+        }, */
+        {
+          '$lookup': {
+            'from': 'customer',
+            'localField': 'customers.id',
+            'foreignField': '_id',
+            'as': 'customerInformation',
+          },
+        },
+        { '$project': project2 },
+      ])
       .toArray((error: any, docs: JSON) => {
         if (error) {
           errorQuery(context);
           return context.done();
         }
+
+        let stuff = null;
+        let arrL = Object.keys(docs).length;
+
+        for (let index = 0; index < arrL; index++) {
+          stuff = docs[index].customers;
+          docs[index].customerInformation.forEach((customerInformation) => {
+            stuff.forEach((element) => {
+              if (JSON.stringify(element.id).includes(customerInformation._id)) {
+                customerInformation.permission = element.permission;
+              }
+            });
+          });
+
+          delete docs[index].customers;
+        }
+
         returnResult(context, docs);
         context.done();
       });
