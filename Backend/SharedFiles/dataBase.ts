@@ -19,6 +19,7 @@ export const collections = {
   mail: 'mail',
   mailGroup: 'mailGroup',
   supplier: 'supplier',
+  customerType: 'customerType',
 };
 
 export let clientRead = null;
@@ -94,6 +95,11 @@ const algorithm = 'aes-256-ctr';
 const secretKey = process.env['EncryptionKey'];
 const iv = Buffer.from(process.env['EncryptionIv']);
 
+/**
+ * @description Encripts id
+ * @param id
+ * @returns : string('hex')
+ */
 export const encryptReplyId = (id: number) => {
   const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
 

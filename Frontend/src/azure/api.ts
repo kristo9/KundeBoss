@@ -179,6 +179,17 @@ export function getCustomer(id: string) {
   };
   return prepareCall('GetCustomerData', customerId);
 }
+/**
+ * Gets supplierdata
+ * @param id
+ * @returns
+ */
+export function getSupplier(id: string) {
+  let supplierId = {
+    id: id,
+  };
+  return prepareCall('GetSupplierData', supplierId);
+}
 
 /**
  * @description Gets all customers that the user has access to. Return may be customized by tags

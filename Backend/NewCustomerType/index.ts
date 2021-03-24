@@ -1,5 +1,5 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, nameVal, mailVal, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
+import { prepInput, nameVal, mailVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
@@ -19,18 +19,6 @@ module.exports = (context: Context, req: HttpRequest): any => {
     let errMsg = 'Error: ';
     let validInput = true;
 
-    if (req.body?.id && !_idVal(req.body?.id)) {
-      errMsg += 'Not valid id. ';
-      validInput = false;
-    }
-    if (!nameVal(req.body?.name)) {
-      errMsg += 'Not valid name. ';
-      validInput = false;
-    }
-    if (!mailVal(req.body?.mail)) {
-      errMsg += 'Not valid mail.';
-      validInput = false;
-    }
     if (validInput) {
       connectRead(context, authorize);
     } else {
@@ -71,52 +59,29 @@ module.exports = (context: Context, req: HttpRequest): any => {
     });
   };
 
+  const query = {
+    'name': req.body.name,
+  };
+  const update = {
+    '$set': {
+      'name': req.body.name,
+      'values': req.body.values || [],
+    },
+  };
+  const queryOptions = {
+    upsert: true,
+  };
+
   const functionQuery = (db: Db) => {
-    const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
-
-    const queryOptions = { upsert: req.body?.id ? false : true };
-
-    let update = {
-      '$set': {
-        'name': req.body.name,
-        'contact': {
-          'phone': req.body.phone || null,
-          'mail': req.body.mail,
-          'name': req.body.contactName || null,
-        },
-        'comment': req.body.comment || null,
-      },
-    };
-
-    const updateOrInsertSupplier = () => {
-      db.collection(collections.supplier).updateOne(query, update, queryOptions, (error: any, docs: any) => {
-        if (error) {
-          errorQuery(context);
-          return context.done();
-        }
-        returnResult(context, docs);
-        context.done();
-      });
-    };
-
-    if (!req.body?.id) {
-      db.collection('mailGroup').insertOne({ 'mails': [] }, (error: any, docs: any) => {
-        if (error) {
-          errorQuery(context);
-          return context.done();
-        }
-        update.$set['mailGroup'] = ObjectId(docs.insertedId);
-        updateOrInsertSupplier();
-      });
-    } else {
-      updateOrInsertSupplier();
-    }
+    db.collection(collections.customerType).updateOne(query, update, queryOptions, (error: any, docs: JSON) => {
+      if (error) {
+        errorQuery(context);
+        return context.done();
+      }
+      returnResult(context, docs);
+      context.done();
+    });
   };
 
   inputValidation();
 };
-
-/* {
-  "name":"",
-  "mail":"",
-} */

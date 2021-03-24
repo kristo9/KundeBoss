@@ -1,0 +1,14 @@
+{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 0 */1 * * *"
+    }
+  ],
+  "scriptFile": "../dist/CleanDatabase/index.js",
+  "dependencies": {
+    "unifi-bot-service-shared": "file:../.shared/svc"
+  }
+}
