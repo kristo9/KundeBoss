@@ -147,6 +147,42 @@ export function getEmployee(tag = null): Promise<any> {
   return prepareCall('GetCustomers', tag);
 }
 
+/**
+ * Deletes a employee, the employees mails and mailGroup from the database
+ * @param mail Mail to the employee which is to be deleted
+ * @returns returns result. if result.n = 1 the employee is deleted.
+ */
+export function deleteEmployee(mail) {
+  const data = {
+    mail: mail,
+  };
+  return prepareCall('DeleteEmployee', data);
+}
+
+/**
+ * Deletes a customer, the customers mails and mailGroup from the database
+ * @param mail Mail to the customer which is to be deleted
+ * @returns returns result. if result.n = 1 the customer is deleted.
+ */
+export function deleteCustomer(mail) {
+  const data = {
+    mail: mail,
+  };
+  return prepareCall('DeleteCustomer', data);
+}
+
+/**
+ * Deletes a supplier, the suppliers mails and mailGroup from the database
+ * @param mail Mail to the supplier which is to be deleted
+ * @returns returns result. if result.n = 1 the supplier is deleted.
+ */
+export function deleteSupplier(mail) {
+  const data = {
+    mail: mail,
+  };
+  return prepareCall('DeleteSupplier', data);
+}
+
 export function modifyEmployeeData(
   employeeId: string = null,
   name: string = null,
