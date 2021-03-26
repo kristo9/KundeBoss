@@ -4,6 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Inputfield from '../../../components/basicComp/searchfield';
 import LoadingSymbol from '../../basicComp/loading';
+import { useHistory } from 'react-router-dom';
 
 let customers = getEmployee();
 
@@ -112,26 +113,17 @@ interface customerProp {
  * @returns A react component with a table row contaning customer information
  */
 function InfoBox(prop: customerProp) {
+  let history = useHistory();
+
   return (
     <tr
       className='rad'
       onClick={() => {
-        <Link
-          to={{
-            pathname: '/customerpage/' + prop.id,
-          }}
-        ></Link>;
-        console.log('trykk ' + prop.id);
+        history.push('/customerpage/' + prop.id);
       }}
     >
       <td>
-        <Link
-          to={{
-            pathname: '/customerpage/' + prop.id,
-          }}
-        >
-          <b>{prop.customerName}</b>
-        </Link>
+        <b>{prop.customerName}</b>
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
