@@ -1,0 +1,170 @@
+{
+  "GetCustomerData": {
+    "input": {
+      "id": "ObjectId:string"
+    },
+    "output": {
+      "_id": "ObjectId:string",
+      "name": "string",
+      "contact": {
+        "phone": "string",
+        "mail": "string",
+        "name": "string"
+      },
+      "suppliers": [
+        {
+          "id": "ObjectId:string",
+          "contact": {
+            "phone": "string",
+            "mail": "string",
+            "name": "string"
+          },
+          "name": "string"
+        }
+      ],
+      "tags": ["string"],
+      "comment": "string",
+      "types": ["string"],
+      "typeValues": ["string"],
+      "customerAgreements": ["string"],
+      "infoReference": "string",
+      "mails": [
+        {
+          "_id": "string",
+          "date": "Date()",
+          "receivers": [
+            {
+              "replyId": "string",
+              "id": "ObjectId:string",
+              "name": "string",
+              "reply": {
+                "text": "string/null",
+                "date": "Date()"
+              },
+              "type": "string"
+            }
+          ],
+          "subject": "string",
+          "text": "string"
+        }
+      ]
+    }
+  },
+  "GetCustomers": {
+    "input": {},
+    "output": {
+      "_id": "ObjectId:string",
+      "name": "string",
+      "employeeId": "string",
+      "customerInformation": [
+        {
+          "_id": "ObjectId:string",
+          "name": "string",
+          "contact": {
+            "mail": "string",
+            "name": "string"
+          },
+          "tags": ["string"]
+        }
+      ],
+      "allTags": ["string"]
+    }
+  },
+  "GetSupplierData": {
+    "input": {
+      "id": "ObjectId:string"
+    },
+    "output": {
+      "_id": "ObjectId:string",
+      "name": "string",
+      "contact": {
+        "phone": "string",
+        "mail": "string",
+        "name": "string"
+      },
+      "comment": "string",
+      "mailGroup": "ObjectId:string",
+      "customers": [
+        {
+          "_id": "ObjectId:string",
+          "name": "Didrik AS",
+          "contact": {
+            "phone": "string",
+            "mail": "string",
+            "name": "string"
+          },
+          "supplier": {
+            "id": "ObjectId:string",
+            "contact": {
+              "phone": "string",
+              "mail": "string",
+              "name": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "LoginTrigger": {
+    "input": {},
+    "output": {
+      "firstLogin": "true || false",
+      "isConfigured": "true || false",
+      "admin": "write:string || read:string || null",
+      "isCustomer": "true || false || null",
+      "name": "String"
+    }
+  },
+  "NewCustomer": {
+    "input": {
+      "name": "string",
+      "phone": "string || null",
+      "mail": "string",
+      "contactName": "string",
+      "suppliers": [
+        { "_comment": "Can be null" },
+        {
+          "id": "ObjectId:string",
+          "contact": {
+            "phone": "string || null",
+            "mail": "string",
+            "name": "string"
+          }
+        }
+      ],
+      "tags": [
+        {
+          "_comment": "Can be null"
+        },
+        "string"
+      ],
+      "comment": "string",
+      "customerAgreements": ["string"],
+      "infoReference": "string"
+    },
+    "output": {}
+  },
+  "NewSupplier": {
+    "input": {
+      "name": "string",
+      "phone": "string || null",
+      "mail": "string",
+      "contactName": "string",
+      "comment": "string || null"
+    },
+    "output": {}
+  },
+  "SendMailCustomer": {
+    "input": {
+      "customerId": { "id": "ObjectId:string", "include": "true:string || false:string" },
+      "supplierIds": [
+        {
+          "_comment": "optional"
+        },
+        "ObjectId:string"
+      ],
+      "text": "string",
+      "subject": "string"
+    }
+  }
+}

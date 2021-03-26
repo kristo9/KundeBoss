@@ -89,7 +89,7 @@ export default (context: Context, req: HttpRequest): any => {
         'comment': req.body.comment || null,
         'types': [],
         'typeValues': [],
-        'customerAgreements': [],
+        'customerAgreements': req.body.customerAgreements || [],
         'infoReference': req.body.infoReference || null,
       },
     };
@@ -104,6 +104,7 @@ export default (context: Context, req: HttpRequest): any => {
         context.done();
       });
     };
+
     if (!req.body?.id) {
       db.collection('mailGroup').insertOne({ 'mails': [] }, (error: any, docs: any) => {
         if (error) {
