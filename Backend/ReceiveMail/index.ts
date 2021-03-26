@@ -12,7 +12,7 @@ import path = require('path');
  * @param contect : Context
  * @param req : HttpRequest
  */
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
   /*  Returns if there are no request body */
   if (req.body === null) {
     return context.done();

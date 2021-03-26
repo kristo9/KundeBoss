@@ -5,7 +5,7 @@ import { verify } from 'jsonwebtoken';
 import { connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
   if (req.body === null) {
@@ -34,7 +34,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
     } else {
       context.res = {
         status: 400,
-        body: errMsg
+        body: errMsg,
       };
       return context.done();
     }
@@ -49,10 +49,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
       } else {
         db.collection('employee')
           .find({
-            employeeId: decoded.preferred_username
+            employeeId: decoded.preferred_username,
           })
           .project({
-            admin: 1
+            admin: 1,
           })
           .toArray((error: any, docs: JSON) => {
             if (error) {
