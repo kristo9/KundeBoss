@@ -1,0 +1,4 @@
+{
+    "entryPoints": ["src/azure/api.ts"],
+    "out": "docs"
+  }

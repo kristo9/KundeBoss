@@ -4,8 +4,16 @@ import { collections, connectWrite } from '../SharedFiles/dataBase';
 import { Db } from '../SharedFiles/interfaces';
 import { simpleParser } from 'mailparser';
 import { errorQuery } from '../SharedFiles/auth';
+import fs = require('fs');
+import path = require('path');
 
-module.exports = (context: Context, req: HttpRequest): any => {
+/**
+ * @description Get alle data about a customer
+ * @param contect : Context
+ * @param req : HttpRequest
+ */
+export default (context: Context, req: HttpRequest): any => {
+  /*  Returns if there are no request body */
   if (req.body === null) {
     return context.done();
   }
@@ -13,6 +21,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
   let replyId = null;
   let replyText = null;
 
+  /**
+   * @description Parses incoming mail
+   */
   const parseMail = () => {
     try {
       simpleParser(req.body).then((parsed) => {
@@ -39,6 +50,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
     }
   };
 
+  /**
+   * @description Registeres reply in database
+   * @param db : database connection
+   */
   const functionQuery = (db: Db) => {
     db.collection(collections.mail).updateOne(
       { 'receivers.replyId': replyId },
@@ -51,8 +66,14 @@ module.exports = (context: Context, req: HttpRequest): any => {
         }
         if (docs.modifiedCount === 1) {
           context.log('Success!');
+          /* fs.readFile(path.resolve(__dirname, 'index.html'), 'UTF-8', (err, htmlContent) => {
+            context.res.body = htmlContent;
+            return context.done(null, context.res);
+          });*/
+
           context.res = {
-            body: '<h2>Registered</h2>',
+            body:
+              '<body><script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><div><lottie-player src="https://assets6.lottiefiles.com/packages/lf20_oiAkLg.json"background="transparent"speed="1"style="width: 300px; height: 300px; position: fixed; top: 30%; left: 40%"autoplay></lottie-player><h6 style="position: fixed; top: 60%; left: 46%">CONFIRMATION SENT!</h6></div></body>',
             headers: {
               'Content-Type': 'text/html',
             },
@@ -66,7 +87,9 @@ module.exports = (context: Context, req: HttpRequest): any => {
     );
   };
 
+  /* Determines if function was triggered by incoming mail (POST) or GET request  */
   if (req.method === 'GET') {
+    /* Registeres reply in db */
     if (req.query.replyId) {
       replyId = req.query.replyId;
       connectWrite(context, functionQuery);
@@ -75,6 +98,7 @@ module.exports = (context: Context, req: HttpRequest): any => {
       context.done();
     }
   } else {
+    /* Parses reply mail */
     parseMail();
   }
 };
