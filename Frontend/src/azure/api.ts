@@ -146,6 +146,35 @@ export function newSupplier(
   return prepareCall('NewSupplier', data);
 }
 
+/**
+ * @description Send mail to a customer and their suppliers
+ * @param customerId : ObjectId
+ * @param includeCustomer
+ * @param text
+ * @param subject
+ * @param supplierIds : Optional, Array with the suppliers ObjectIds
+ * @returns
+ */
+
+export function sendMailCustomer(
+  customerId: string,
+  includeCustomer: boolean,
+  text: string,
+  subject: string,
+  supplierIds: string[] = []
+) {
+  const data = {
+    customerId: {
+      id: customerId,
+      include: includeCustomer ? 'true' : 'false',
+    },
+    text,
+    subject,
+    supplierIds,
+  };
+  return prepareCall('SendMailCustomer', data);
+}
+
 /*      <button onClick={async () => {
           console.log("Her skal det komme tekst: ")
           console.log(await getAllEmployees())
