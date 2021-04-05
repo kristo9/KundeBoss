@@ -41,7 +41,7 @@ const App = ({ pca }) => {
       <MsalProvider instance={pca}>
         {(inProgress === 'login') ? 
         <div>
-          <h6> Loading Login.........</h6>
+          <h6> Loading Login......... </h6>
         </div>
         :
         <div className='app' style={{ height: '100vh' }}>

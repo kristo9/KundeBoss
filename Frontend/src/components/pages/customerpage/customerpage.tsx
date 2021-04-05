@@ -6,15 +6,15 @@ import { stat } from 'fs';
 import { getCustomer } from '../../../azure/api';
 
 //pages:
-import CustomerMailPage from './customerMailPage';
-import { CustomerInfoPage } from './customerInfoPage';
-import CustomerNotesPage from './customerNotesPage';
-import CustomerSupplierPage from './customerSupplierPage';
-import CustomerEditPage from './customerEditPage';
+import CustomerMailPage from './subPages/customerMailPage';
+import { CustomerInfoPage } from './subPages/customerInfoPage';
+import CustomerNotesPage from './subPages/customerNotesPage';
+import CustomerSupplierPage from './subPages/customerSupplierPage';
+import CustomerEditPage from './subPages/customerEditPage';
 import LoadingSymbol from '../../basicComp/loading';
 import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 import { isThisTypeNode } from 'typescript';
-import SendMail from './customerSendMail';
+import SendMail from './subPages/customerSendMail';
 
 /**
  * Contains the customer page and all the info needed by the subpages.

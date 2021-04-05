@@ -43,7 +43,7 @@ function DisplayTextAndInfo(props: { text: string; information: any }) {
  */
 export function ContactPersonInfo(props: { name: string; phone: number; mail: string }) {
   return (
-    <div style={{ background: 'red' }}>
+    <div style={{ borderStyle: 'solid'}}>
       <h3>Kontaktperson</h3>
       <div style={{ paddingLeft: '250 px' }}>
         <DisplayTextAndInfo text={'Navn'} information={props.name} />
@@ -74,7 +74,9 @@ function DisplayTags(props: { tags: any }) {
     <div>
       <h3>Tags</h3>
       {props.tags.map((tag) => (
-        <p key={tag}>{tag}</p>
+        <div>
+            <p key={tag}>{tag}</p>
+        </div>
       ))}
     </div>
   );

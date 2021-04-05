@@ -1,17 +1,21 @@
-import { getEmployee } from '../../../azure/api';
-import './Dashboard.css';
+// Libraries
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Inputfield from '../../../components/basicComp/searchfield';
 import LoadingSymbol from '../../basicComp/loading';
+
+// Component and function imports
+import { getEmployee } from '../../../azure/api';
 import { useHistory } from 'react-router-dom';
+
+// CSS imports
+import './Dashboard.css';
+
 
 let customers = getEmployee();
 
 /**
  * A class that contains and renders the dashboard
  */
-class Dashboard extends React.Component<{}, { customers: any }> {
+class Dashboard extends React.Component<{}, { customers: any, search: string }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class
@@ -20,6 +24,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
     super(props);
     this.state = {
       customers: null,
+      search: '',
     };
   }
 
@@ -44,15 +49,39 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   /**
    * Rendre the dashboard page
    */
+
+  updateSearch(event) {
+    this.setState({search: event.target.value.substr(0,20)});
+  }
+
+
   render() {
+    console.log(customers);
+    
+    let filteredCustomers = null;
+
+    if(this.state.customers){
+    console.log(this.state.customers.customerInformation);
+    filteredCustomers = this.state.customers.customerInformation.filter(
+        (customer) => { 
+          customer.tags.forEach(myFunction)
+          const tag = customer.tags.toString().toLowerCase();
+          return tag.indexOf(this.state.search.toLowerCase()) !== -1}
+    );
+    }
+
     return (
       <div className='add-margins'>
         <div className='page'>
           {this.displayGreeting()}
           <div style={{ float: 'right' }}>
-            <Inputfield />
+            <input type="text"
+              placeholder="Search tag"
+              value={this.state.search}
+              onChange={this.updateSearch.bind(this)}> 
+            </input>
           </div>
-          <div>{this.displayCustomers()}</div>
+          <div>{this.displayCustomers(filteredCustomers)}</div>
         </div>
       </div>
     );
@@ -72,7 +101,7 @@ class Dashboard extends React.Component<{}, { customers: any }> {
   /**
    * Displays the emplyees customers
    */
-  private displayCustomers() {
+  private displayCustomers(filteredCustomers) {
     if (this.state.customers) {
       console.log('cust');
       console.log(this.state.customers.name);
@@ -81,11 +110,12 @@ class Dashboard extends React.Component<{}, { customers: any }> {
           <tbody>
             {
               //Creates a table entry for each customer returned from the database.
-              this.state.customers.customerInformation.map((customer) => (
+              filteredCustomers.map((customer) => (
                 <InfoBox
                   customerName={customer.name}
                   contactName={customer.contact.name}
                   mail={customer.contact.mail}
+                  tags={customer.tags}
                   key={customer._id}
                   id={customer._id}
                 />
@@ -115,20 +145,27 @@ interface customerProp {
 function InfoBox(prop: customerProp) {
   let history = useHistory();
 
+  const tags = prop.tags;
+
+  console.log("Her er jeggg")
   return (
     <tr
       className='rad'
       onClick={() => {
         history.push('/customerpage/' + prop.id);
-      }}
-    >
+      }}>
       <td>
         <b>{prop.customerName}</b>
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
+      <td> { (tags.length === 0) ? "Ingen Tags" : prop.tags.toString().split(',').join(', ')} </td>
     </tr>
   );
+}
+
+function myFunction(value) {
+ return ('Hei');
 }
 
 export default Dashboard;
