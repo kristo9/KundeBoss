@@ -56,15 +56,11 @@ class Dashboard extends React.Component<{}, { customers: any, search: string }> 
 
 
   render() {
-    console.log(customers);
-    
     let filteredCustomers = null;
 
     if(this.state.customers){
-    console.log(this.state.customers.customerInformation);
     filteredCustomers = this.state.customers.customerInformation.filter(
         (customer) => { 
-          customer.tags.forEach(myFunction)
           const tag = customer.tags.toString().toLowerCase();
           return tag.indexOf(this.state.search.toLowerCase()) !== -1}
     );
@@ -103,8 +99,6 @@ class Dashboard extends React.Component<{}, { customers: any, search: string }> 
    */
   private displayCustomers(filteredCustomers) {
     if (this.state.customers) {
-      console.log('cust');
-      console.log(this.state.customers.name);
       return (
         <table className='diasplayTable'>
           <tbody>
@@ -144,10 +138,8 @@ interface customerProp {
  */
 function InfoBox(prop: customerProp) {
   let history = useHistory();
-
   const tags = prop.tags;
 
-  console.log("Her er jeggg")
   return (
     <tr
       className='rad'
@@ -164,8 +156,5 @@ function InfoBox(prop: customerProp) {
   );
 }
 
-function myFunction(value) {
- return ('Hei');
-}
 
 export default Dashboard;

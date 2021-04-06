@@ -1,11 +1,10 @@
-import react from 'react';
-
 /**
  * Displayes the customer information.
  * @param {any} customerInfo contains all the information about the customer being displayed.
  * @returns a react-component with the customer information.
  */
 export function SupplierInfoPage({ supplierInfo }: any) {
+console.log(supplierInfo.name)
   return (
     <div>
       <h1>Infomasjon</h1>
@@ -15,7 +14,6 @@ export function SupplierInfoPage({ supplierInfo }: any) {
         mail={supplierInfo.contact.mail}
         phone={supplierInfo.contact.phone}
       />
-      <DisplayTags tags={supplierInfo.tags} />
     </div>
   );
 }
@@ -70,7 +68,7 @@ function DisplayTags(props: { tags: any }) {
     );
   }
   //the supplier have tags, display them
-  return (
+  else return (
     <div>
       <h3>Tags</h3>
       {props.tags.map((tag) => (

@@ -1,4 +1,4 @@
-import { ContactPersonInfo } from './customerInfoPage';
+import { ContactPersonInfo } from './SupplierInfoPage';
 import { useHistory } from 'react-router-dom';
 
 
@@ -7,12 +7,12 @@ import { useHistory } from 'react-router-dom';
  * @param {any} custInfo information about the cutomer.
  * @returns a react component with the customer-supplier page
  */
-function CustomerSupplierPage({ customerInfo }: any) {
+function SupplierCustomerPage({ supplierInfo }: any) {
   return (
     <div>
-      <h1>Her er det Leverandører</h1>
+      <h1>Her er det Kunder</h1>
       <p>
-        <DisplaySupplier suppliers={customerInfo.suppliers} />
+        <DisplayCustomer customers={supplierInfo.customers} />
       </p>
     </div>
   );
@@ -23,24 +23,24 @@ function CustomerSupplierPage({ customerInfo }: any) {
  * @param {any} suppliers information about the suppliers.
  * @returns a react component with the supplier information.
  */
-function DisplaySupplier(props: { suppliers: any }) {
+function DisplayCustomer(props: { customers: any }) {
   let history = useHistory();
   //the supplier-data are loaded/available
-  if (props.suppliers) {
+  if (props.customers) {
     //the customer doen't hava any suppliers
-    if (props.suppliers.length === 0) {
+    if (props.customers.length === 0) {
       return <div>Denne kunden har ingen leverandører</div>;
     }
     //the customer have suppliers
     return (
       <div>
-        {props.suppliers.map((supplier) => (
-          <div onClick={() => { history.push('/supplierpage/' + supplier.id.toString()); }}>
+        {props.customers.map((customer) => (
+          <div onClick={() => { history.push('/customerpage/' + customer._id.toString()); }}>
             <ContactPersonInfo
-              key={supplier.id.toString()}
-              name={supplier.contact.name}
-              mail={supplier.contact.mail}
-              phone={supplier.contact.phone}
+              key={customer._id.toString()}
+              name={customer.contact.name}
+              mail={customer.contact.mail}
+              phone={customer.contact.phone}
             />
           </div>
         ))}
@@ -49,5 +49,5 @@ function DisplaySupplier(props: { suppliers: any }) {
   }
 }
 
-export default CustomerSupplierPage;
+export default SupplierCustomerPage;
 

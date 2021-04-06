@@ -1,5 +1,6 @@
 import react from 'react';
 
+
 /**
  * Displayes the customer information.
  * @param {any} customerInfo contains all the information about the customer being displayed.

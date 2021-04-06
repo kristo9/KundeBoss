@@ -13,6 +13,7 @@ import Dashboard from '../pages/dashboard/Dashboard';
 import CustomerPage from '../pages/customerpage/customerpage';
 import PageNotFound from '../pages/pageNotFound/pageNotFound';
 import AdminPage from '../pages/adminPages/adminPage';
+import SupplierPage from '../pages/supplierPages/supplierPage'
 
 // CSS Styling
 import './App.css';
@@ -26,6 +27,7 @@ const Routes = () => {
       <Route path='/about' component={About} />
       <Route path='/dashboard' component={Dashboard} />
       <Route path='/customerpage' component={CustomerPage} />
+      <Route path='/supplierpage' component={SupplierPage} />
       <Route path='/admin' component={AdminPage} />
       <Route path='*' exact={true} component={PageNotFound} />
     </Switch>

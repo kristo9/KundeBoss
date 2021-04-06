@@ -1,20 +1,20 @@
+// Libraries
 import React from 'react';
 import { RouteComponentProps } from 'react-router';
-import './customerpage.css';
-import '../../basicComp/basic.css';
-import { stat } from 'fs';
-import { getCustomer } from '../../../azure/api';
+import { getSupplier } from '../../../azure/api';
 
-//pages:
-//import SupplierMailPage from './subPages/SupplierMailPage';
+//Pages:
 import { SupplierInfoPage } from './subPages/SupplierInfoPage';
-//import CustomerNotesPage from './subPages/customerNotesPage';
-//import CustomerSupplierPage from './subPages/customerSupplierPage';
-//import CustomerEditPage from './subPages/customerEditPage';
+import  SupplierCustomerPage  from './subPages/SupplierCustomerPage'
+import SupplierNotesPage from './subPages/SupplierNotesPage'
 import LoadingSymbol from '../../basicComp/loading';
+
+// Components
 import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
-import { isThisTypeNode } from 'typescript';
-//import SendMail from './subPages/customerSendMail';
+
+// CSS
+import '../../basicComp/basic.css';
+
 
 /**
  * Contains the customer page and all the info needed by the subpages.
@@ -39,16 +39,16 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
    */
   componentDidMount() {
     // Loades the data from the API
-    const fetchCustomerInfo = async () => {
+    const fetchSupplierInfo = async () => {
       //Gets information about the customer based on the id in the URL
       await new Promise((r) => setTimeout(r, 500));
-      let supplierI = await getCustomer(window.location.pathname.split('/')[2]);
+      let supplierI = await getSupplier(window.location.pathname.split('/')[2]);
       this.setState({
         supplierInfo: supplierI,
-        pageState: <SupplierInfoPage customerInfo={supplierI} />,
+        pageState: <SupplierInfoPage supplierInfo={supplierI} />,
       });
     };
-    fetchCustomerInfo();
+    fetchSupplierInfo();
   }
 
   /**
@@ -71,56 +71,34 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
     {
       text: 'Infomasjon',
       ID: 'info',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage customerInfo={this.state.supplierInfo} /> }),
+      onClick: () => {console.log(this.state.supplierInfo); this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> })},
     },
     {
       text: 'Kunder',
       ID: 'supplier',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage customerInfo={this.state.supplierInfo} /> }),
+      onClick: () => this.setState({ pageState: <SupplierCustomerPage supplierInfo={this.state.supplierInfo} /> }),
     },
     {
       text: 'Mail',
       ID: 'mail',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage customerInfo={this.state.supplierInfo} /> }),
+      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
     },
     {
       text: 'Send mail',
       ID: 'sendMail',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage customerInfo={this.state.supplierInfo} /> }),
+      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
     },
     {
       text: 'Notat',
       ID: 'note',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage customerInfo={this.state.supplierInfo} /> }),
+      onClick: () => this.setState({ pageState: <SupplierNotesPage supplierInfo={this.state.supplierInfo} /> }),
     },
     {
       text: 'Rediger',
       ID: 'edit',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage customerInfo={this.state.supplierInfo} /> }),
+      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
     },
   ];
 }
 
 export default SupplierPage;
-
-
-
-
-
-/*
-import React, { useState } from 'react';
-import LoadingSymbol from '../../basicComp/loading';
-
-function SupplierPage() {
-  const [pageState, setPageState] = useState(<LoadingSymbol />);
-  const [supplierInfo, setSupplierInfo] = useState(null);
-
-  async function loadSupplierInfo() {
-    // const supplierI =
-  }
-
-  return <div>test</div>;
-}
-
-export default SupplierPage;
-*/
