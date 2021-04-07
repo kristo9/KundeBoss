@@ -29,9 +29,9 @@ export function CustomerInfoPage({ customerInfo }: any) {
  */
 function DisplayTextAndInfo(props: { text: string; information: any }) {
   return (
-    <p>
+    <div>
       {props.text}: {props.information}
-    </p>
+    </div>
   );
 }
 
@@ -66,7 +66,7 @@ function DisplayTags(props: { tags: any }) {
     return (
       <div>
         <h3>Tags</h3>
-        <p>Denne kunden har ingen tags</p>
+        <div>Denne kunden har ingen tags</div>
       </div>
     );
   }
@@ -76,7 +76,7 @@ function DisplayTags(props: { tags: any }) {
       <h3>Tags</h3>
       {props.tags.map((tag) => (
         <div>
-            <p key={tag}>{tag}</p>
+            <div key={tag}>{tag}</div>
         </div>
       ))}
     </div>
