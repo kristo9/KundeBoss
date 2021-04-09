@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputField, TextArea } from '../../basicComp/inputField';
+import { InputField, TextArea } from '../../../basicComp/inputField';
 
 function SendMail({ customerInfo }: any) {
   return (

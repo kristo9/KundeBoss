@@ -12,9 +12,8 @@ import './Navbar.css';
 
 const Authenticated = () => {
   const accounts = msalInstance.getAllAccounts();
-  msalInstance.setActiveAccount(accounts[0]);
-  localStorage.setItem('UserName', accounts[0].username);
-  console.log('UserName is set at LocalsStorage "UserName":  ' + localStorage.getItem('UserName'));
+  sessionStorage.setItem('UserName', accounts[0].username);
+  console.log('UserName is set at sessionStorage "UserName":  ' + sessionStorage.getItem('UserName'));
 
   return (
     <div className='topnav'>
@@ -40,7 +39,7 @@ const Authenticated = () => {
 };
 
 const Unauthenticated = () => {
-  localStorage.removeItem('UserName');
+  sessionStorage.removeItem('UserName');
   console.log('UserName is removed as no account is signed in');
 
   return (
@@ -75,7 +74,7 @@ const Navbar = () => {
   const account = useAccount(accounts[0] || {});
   msalInstance.setActiveAccount(account);
   console.log(msalInstance.getActiveAccount());
-  console.log(localStorage.getItem('UserName'));
+  console.log(sessionStorage.getItem('UserName'));
 
   return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
 };

@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+// Libraries
+import React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { getSupplier } from '../../../azure/api';
 
-import Searchfield from '../../basicComp/searchfield';
+//Pages:
+import SupplierCustomerPage from './subPages/SupplierCustomerPage';
+import SupplierNotesPage from './subPages/SupplierNotesPage';
 import LoadingSymbol from '../../basicComp/loading';
 import { SBElementProps, SBProps, Sidebar } from '../../basicComp/sidebar';
 import SupplierInfoPage from './supplierInfoPage';
-import { getSupplier } from '../../../azure/api';
-import { CustomerInfoPage } from '../customerpage/customerInfoPage';
-import SupplierCustomerPage from './supplierCustomerPage';
 
-//pages
+// CSS
+import '../../basicComp/basic.css';
 
+/**
+ * Contains the customer page and all the info needed by the subpages.
+ * Subpages are also loaded/viewed from here.
+ */
 class SupplierPage extends React.Component<RouteComponentProps, { pageState: any; supplierInfo: any }> {
   /**
    * @constructor
@@ -30,17 +36,16 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
    */
   componentDidMount() {
     // Loades the data from the API
-    const fetchCustomerInfo = async () => {
+    const fetchSupplierInfo = async () => {
       //Gets information about the customer based on the id in the URL
-      await new Promise((r) => setTimeout(r, 1000));
-      let supplierI = await getSupplier('605b37ae6c35ab18d8c49da7'); //605b37ae6c35ab18d8c49da9
-      console.log(supplierI);
+      await new Promise((r) => setTimeout(r, 500));
+      let supplierI = await getSupplier(window.location.pathname.split('/')[2]);
       this.setState({
         supplierInfo: supplierI,
         pageState: <SupplierInfoPage supplierInfo={supplierI} />,
       });
     };
-    fetchCustomerInfo();
+    fetchSupplierInfo();
   }
 
   /**
@@ -50,7 +55,12 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
   render() {
     return (
       <div className='margin-right H100'>
-        <Sidebar text='Admin side' buttons={this.buttons} />
+        <Sidebar
+          text={
+            this.state.supplierInfo && this.state.supplierInfo.name ? this.state.supplierInfo.name : 'Leverandørnavn'
+          }
+          buttons={this.buttons}
+        />
         {this.state.supplierInfo ? this.state.pageState : <LoadingSymbol />}
       </div>
     );
@@ -58,15 +68,39 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
 
   buttons: SBElementProps = [
     {
-      text: 'Informasjon',
+      text: 'Infomasjon',
       ID: 'info',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
+      onClick: () => {
+        console.log(this.state.supplierInfo);
+        this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> });
+      },
     },
     {
       text: 'Kunder',
-      ID: 'customers',
+      ID: 'supplier',
       onClick: () => this.setState({ pageState: <SupplierCustomerPage supplierInfo={this.state.supplierInfo} /> }),
+    },
+    {
+      text: 'Mail',
+      ID: 'mail',
+      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
+    },
+    {
+      text: 'Send mail',
+      ID: 'sendMail',
+      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
+    },
+    {
+      text: 'Notat',
+      ID: 'note',
+      onClick: () => this.setState({ pageState: <SupplierNotesPage supplierInfo={this.state.supplierInfo} /> }),
+    },
+    {
+      text: 'Rediger',
+      ID: 'edit',
+      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
     },
   ];
 }
+
 export default SupplierPage;

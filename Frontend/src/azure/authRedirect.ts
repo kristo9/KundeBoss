@@ -10,7 +10,7 @@ export function getTokenRedirect(request): Promise<any> {
    * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-common/docs/Accounts.md
    */
 
-  const name = localStorage.getItem("UserName");
+  const name = sessionStorage.getItem("UserName");
   request.account = myMSALObj.getAccountByUsername(name);
 
   return myMSALObj.acquireTokenSilent(request).catch((error) => {

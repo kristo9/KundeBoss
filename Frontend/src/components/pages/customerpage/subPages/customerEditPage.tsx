@@ -1,5 +1,5 @@
 import react from 'react';
-import { InputField, MultipleInputField, TextArea } from '../../basicComp/inputField';
+import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inputField';
 
 /**
  * A page for editing customers.
