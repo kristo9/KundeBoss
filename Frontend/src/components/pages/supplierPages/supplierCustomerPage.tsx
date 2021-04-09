@@ -1,5 +1,5 @@
 import react from 'react';
-import { ContactPersonInfo } from '../customerpage/customerInfoPage';
+import { ContactPersonInfo } from '../customerpage/subPages/customerInfoPage';
 
 /**
  * Displayes a list with the suppliers.
