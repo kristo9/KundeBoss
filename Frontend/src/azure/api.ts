@@ -2,14 +2,14 @@ import { apiConfig } from './apiConfig';
 import { getTokenRedirect } from './authRedirect';
 import { tokenRequest } from './authConfig';
 
-function callApi(endpoint, token, data, role = null) {
+function callApi(endpoint, token, data) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
   data = data ? JSON.stringify(data) : {};
 
   headers.append('Authorization', bearer);
 
-  interface pre {
+  /*   interface pre {
     method: string;
     headers: any;
     body: any;
@@ -20,17 +20,17 @@ function callApi(endpoint, token, data, role = null) {
     method: 'POST',
     headers: headers,
     body: data,
-  };
+  }; */
 
-  /*   let options = {
+  let options = {
     method: 'POST',
     headers: headers,
     body: data,
-  }; */
+  };
 
-  if (role !== null) options.role = role;
+  /*   if (role !== null) options.role = role;
+   */
 
-  console.log('Options\t' + endpoint);
   console.log(options);
 
   console.log('Calling Web API...');
@@ -54,10 +54,10 @@ function prepareCall(apiName, data = null) {
       if (response) {
         console.log('access_token acquired at: ' + new Date().toString());
         console.log(response.accessToken);
-        let role = response.account.idTokenClaims.roles[0];
-        console.log(response);
+        /*         let role = response.account.idTokenClaims.roles[0];
+        console.log(response); */
         try {
-          return callApi(apiConfig.uri + apiName, response.accessToken, data, role);
+          return callApi(apiConfig.uri + apiName, response.accessToken, data);
         } catch (error) {
           console.warn(error);
         }
@@ -74,8 +74,6 @@ function prepareCall(apiName, data = null) {
 export function callLogin() {
   console.log('callLogin');
   return prepareCall('LoginTrigger').then((response) => {
-    console.log('response i  callLogin func');
-    console.log(response);
     return response;
   });
 }
