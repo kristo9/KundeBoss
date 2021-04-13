@@ -14,9 +14,7 @@ export default (context: Context, req: HttpRequest): any => {
   checkDbConnection(context, clientRead);
 
   let decodedToken = null;
-  console.log('Req from logintrigger');
-  console.log(req);
-  console.log('-------------\nEnd of req');
+  let isCustomer = null;
 
   /* Checks that header includes a token. Returns if there are no token */
   let token = prepToken(context, req.headers.authorization);
@@ -75,6 +73,10 @@ export default (context: Context, req: HttpRequest): any => {
             let employee = docs.find((employee) => employee.employeeId === decodedToken.preferred_username);
 
             if (employee == undefined) {
+              decodedToken.roles.forEach((role) => {
+                if (role == 'customer') isCustomer = true;
+              });
+
               /* Creates new entry in database for the function caller */
               connectWrite(context, createEmplyee);
             } else {
@@ -118,7 +120,7 @@ export default (context: Context, req: HttpRequest): any => {
     query['name'] = decodedToken.name;
     query['employeeId'] = decodedToken.preferred_username;
 
-    if (5 > 6) {
+    if (isCustomer) {
       query['isCustomer'] = true;
     }
 
