@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "jwks-rsa": "^1.12.2",
-    "mailparser": "^2.8.1",
     "mongodb": "^3.6.4",
     "sanitize-html": "^2.3.2"
   }

@@ -54,10 +54,10 @@ function prepareCall(apiName, data = null) {
       if (response) {
         console.log('access_token acquired at: ' + new Date().toString());
         console.log(response.accessToken);
-        let role = response.account.idTokenClaims.roles[0];
+        //let role = response.account.idTokenClaims.roles[0];
         console.log(response);
         try {
-          return callApi(apiConfig.uri + apiName, response.accessToken, data, role);
+          return callApi(apiConfig.uri + apiName, response.accessToken, data); //,role);
         } catch (error) {
           console.warn(error);
         }
