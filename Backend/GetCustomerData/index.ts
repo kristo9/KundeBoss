@@ -132,13 +132,15 @@ export = (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         }
-        console.log(docs);
+        //console.log(docs);
         if (docs.length === 0) {
           errorWrongInput(context, 'No customer found');
           return context.done();
         }
 
         docs = docs[0];
+
+        docs.mails.reverse();
 
         docs.supplierInformation.forEach((supplierInformation, index) => {
           if (JSON.stringify(docs.suppliers).includes(supplierInformation._id)) {

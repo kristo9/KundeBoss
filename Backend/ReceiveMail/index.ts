@@ -4,8 +4,6 @@ import { collections, connectWrite } from '../SharedFiles/dataBase';
 import { Db } from '../SharedFiles/interfaces';
 import { simpleParser } from 'mailparser';
 import { errorQuery } from '../SharedFiles/auth';
-import fs = require('fs');
-import path = require('path');
 
 /**
  * @description Get alle data about a customer
@@ -73,7 +71,10 @@ module.exports = (context: Context, req: HttpRequest): any => {
 
           context.res = {
             body:
-              '<body><script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><div><lottie-player src="https://assets6.lottiefiles.com/packages/lf20_oiAkLg.json"background="transparent"speed="1"style="width: 300px; height: 300px; position: fixed; top: 30%; left: 40%"autoplay></lottie-player><h6 style="position: fixed; top: 60%; left: 46%">CONFIRMATION SENT!</h6></div></body>',
+              '<body><script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>' +
+              '<div><lottie-player src="https://assets6.lottiefiles.com/packages/lf20_oiAkLg.json"background="transparent"' +
+              'speed="1"style="width: 300px; height: 300px; position: fixed; top: 30%; left: 40%"autoplay></lottie-player>' +
+              '<h6 style="position: fixed; top: 60%; left: 46%">CONFIRMATION SENT!</h6></div></body>',
             headers: {
               'Content-Type': 'text/html',
             },
