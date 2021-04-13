@@ -14,6 +14,9 @@ export default (context: Context, req: HttpRequest): any => {
   checkDbConnection(context, clientRead);
 
   let decodedToken = null;
+  console.log('Req from logintrigger');
+  console.log(req);
+  console.log('-------------\nEnd of req');
 
   /* Checks that header includes a token. Returns if there are no token */
   let token = prepToken(context, req.headers.authorization);
@@ -114,6 +117,10 @@ export default (context: Context, req: HttpRequest): any => {
   const createEmplyee = (db: Db) => {
     query['name'] = decodedToken.name;
     query['employeeId'] = decodedToken.preferred_username;
+
+    if (5 > 6) {
+      query['isCustomer'] = true;
+    }
 
     db.collection('employee').insertOne(query, (error: any) => {
       if (error) {

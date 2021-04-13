@@ -2,19 +2,35 @@ import { apiConfig } from './apiConfig';
 import { getTokenRedirect } from './authRedirect';
 import { tokenRequest } from './authConfig';
 
-function callApi(endpoint, token, data) {
+function callApi(endpoint, token, data, role = null) {
   const headers = new Headers();
   const bearer = `Bearer ${token}`;
   data = data ? JSON.stringify(data) : {};
 
   headers.append('Authorization', bearer);
 
-  const options = {
+  interface pre {
+    method: string;
+    headers: any;
+    body: any;
+    role?: boolean;
+  }
+  let options: pre;
+  options = {
     method: 'POST',
     headers: headers,
     body: data,
   };
 
+  /*   let options = {
+    method: 'POST',
+    headers: headers,
+    body: data,
+  }; */
+
+  if (role !== null) options.role = role;
+
+  console.log('Options\t' + endpoint);
   console.log(options);
 
   console.log('Calling Web API...');
@@ -38,8 +54,10 @@ function prepareCall(apiName, data = null) {
       if (response) {
         console.log('access_token acquired at: ' + new Date().toString());
         console.log(response.accessToken);
+        let role = response.account.idTokenClaims.roles[0];
+        console.log(response);
         try {
-          return callApi(apiConfig.uri + apiName, response.accessToken, data);
+          return callApi(apiConfig.uri + apiName, response.accessToken, data, role);
         } catch (error) {
           console.warn(error);
         }
@@ -56,6 +74,8 @@ function prepareCall(apiName, data = null) {
 export function callLogin() {
   console.log('callLogin');
   return prepareCall('LoginTrigger').then((response) => {
+    console.log('response i  callLogin func');
+    console.log(response);
     return response;
   });
 }
@@ -100,7 +120,6 @@ export function newCustomer(
   //typeValues: [] = null,
   //customerAgreements: [],
   infoReference: string = null
-  //mailgroup: null
 ) {
   const data = {
     name: name,
@@ -114,10 +133,10 @@ export function newCustomer(
   };
   return prepareCall('NewCustomer', data);
 }
+
 /*
 newSupplier('Nasjonal catering', 'Padme@NC.com', 74839283, 'Padmé Amidala Naberrie', 'Senator of Naboo, former Queen of Naboo')
 */
-
 /**
  * @description Creates a new supplier
  * @param name
