@@ -20,14 +20,7 @@ export const msalInstance = new PublicClientApplication(msalConfig);
 const accounts = msalInstance.getAllAccounts();
 if (accounts.length > 0) {
     msalInstance.setActiveAccount(accounts[0]);
- // localStorage.setItem("UserName", accounts[0].username)
- // console.log("UserName is set at LocalsStorage \"UserName\":  " + localStorage.getItem("UserName"))
 }
-else {
- // localStorage.removeItem("UserName")
- // console.log("UserName is removed as no account is signed in")
-}
-
 // Sending instance of msal as prop to App component. 
 ReactDOM.render(
     <React.StrictMode>

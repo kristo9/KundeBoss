@@ -6,7 +6,7 @@ import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
   if (req.body === null) {

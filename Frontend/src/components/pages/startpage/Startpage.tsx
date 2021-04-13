@@ -31,7 +31,7 @@ const HomePage = () => {
   return (
     <div className='add-margins'>
       <div>
-        <h6> HEI {localStorage.getItem('UserName')}</h6>
+        <h6> HEI {sessionStorage.getItem('UserName')}</h6>
         <Link to='/dashboard'>
           <u>Dashboard</u>
         </Link>

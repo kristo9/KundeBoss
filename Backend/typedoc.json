@@ -1,0 +1,8 @@
+{
+    "entryPoints": ["./GetAllEmployees/index.ts", "./GetCustomerData/index.ts", "./GetCustomers/index.ts", "./GetSupplierData/index.ts",
+         "./LoginTrigger/index.ts", "./ModifyEmployeeData/index.ts", "./NewCustomer/index.ts", "./NewCustomerType/index.ts",
+         "./NewEmployeeType/index.ts", "./NewSupplier/index.ts", "./ReceiveMail/index.ts", "./SendMailCustomer/index.ts", 
+         "./CleanDatabase/index.ts", "./DeleteCustomer/index.ts", "./DeleteEmployee/index.ts", "./DeleteSupplier/index.ts",
+         "./testFunction/index.ts"],
+    "out": "docs"
+  }

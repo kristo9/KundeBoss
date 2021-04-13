@@ -1,5 +1,6 @@
-import react from 'react';
 import { ContactPersonInfo } from './customerInfoPage';
+import { useHistory } from 'react-router-dom';
+
 
 /**
  * Displayes a list with the suppliers.
@@ -23,6 +24,7 @@ function CustomerSupplierPage({ customerInfo }: any) {
  * @returns a react component with the supplier information.
  */
 function DisplaySupplier(props: { suppliers: any }) {
+  let history = useHistory();
   //the supplier-data are loaded/available
   if (props.suppliers) {
     //the customer doen't hava any suppliers
@@ -33,12 +35,14 @@ function DisplaySupplier(props: { suppliers: any }) {
     return (
       <div>
         {props.suppliers.map((supplier) => (
-          <ContactPersonInfo
-            key={supplier.id.toString()}
-            name={supplier.contact.name}
-            mail={supplier.contact.mail}
-            phone={supplier.contact.phone}
-          />
+          <div onClick={() => { history.push('/supplierpage/' + supplier.id.toString()); }}>
+            <ContactPersonInfo
+              key={supplier.id.toString()}
+              name={supplier.contact.name}
+              mail={supplier.contact.mail}
+              phone={supplier.contact.phone}
+            />
+          </div>
         ))}
       </div>
     );
@@ -46,3 +50,4 @@ function DisplaySupplier(props: { suppliers: any }) {
 }
 
 export default CustomerSupplierPage;
+

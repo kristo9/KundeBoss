@@ -11,7 +11,7 @@ import { ObjectId } from 'mongodb';
  * @param contect : Context
  * @param req : HttpRequest
  */
-export = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
   /* Sanitizes input. Returns if there are no request body */
   req.body = prepInput(context, req.body);
   if (req.body === null) {

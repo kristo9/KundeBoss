@@ -10,7 +10,7 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
  * @param contect : Context
  * @param req : HttpRequest
  */
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
   checkDbConnection(context, clientRead);
 
   let decodedToken = null;

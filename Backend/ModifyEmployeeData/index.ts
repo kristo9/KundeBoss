@@ -11,7 +11,7 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
  * @param req - the httpRequest, in this case contains the authentification token and the info to be modified
  * @return information about what the query has done, not used for anything
  */
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
   if (req.body === null) {

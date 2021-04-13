@@ -11,7 +11,7 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
  * @param req - the httpRequest, in this case contains the authentification token
  * @return context.res.body that contains a JSON object that is an array of JSON objects for each customer
  */
-module.exports = (context: Context, req: HttpRequest): any => {
+export default (context: Context, req: HttpRequest): any => {
   checkDbConnection(context, clientRead);
 
   let employeeId: any;

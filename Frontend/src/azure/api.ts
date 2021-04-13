@@ -78,15 +78,15 @@ export function callLogin() {
     newCustomer('Timinski Corp.', 'Timain@timinski.gg', 12312312, "Timain", suppliersObject, tags, "CC Corp", "inforRef??" ) */
 /**
  * @description Creates new customer
- * @param name
- * @param mail
- * @param phone
- * @param contactName
- * @param suppliers
- * @param tags
- * @param comment
+ * @param name name of company
+ * @param mail mail to contact person
+ * @param phone phone number to contact person
+ * @param contactName name of contactperson
+ * @param suppliers array, contains json objects (id, name) of suppliers
+ * @param tags array, contains strings of tags
+ * @param comment string,
  * @param infoReference
- * @returns
+ * @returns json object ?
  */
 export function newCustomer(
   name: string,
@@ -184,14 +184,15 @@ export function sendMailCustomer(
         */
 /**
  * @description Gets all the employees and their data
- * @returns an array of JSON objects with:
- *  'name'                              - string
- *  'employeeId'                        - string
- *  'admin'                             - string
- *  'customerInformation'               - array
- *  'customerInformation._id'           - objectId
- *  'customerInformation.name'          - string
- *  'customerInformation.permission'    - string
+ * @returns an array of JSON objects with:<br>
+ *  'name'                              - string<br>
+ *  'employeeId'                        - string<br>
+ *  'admin'                             - string<br>
+ *  'customerInformation'               - array<br>
+ *  'customerInformation._id'           - objectId<br>
+ *  'customerInformation.name'          - string<br>
+ *  'customerInformation.permission'    - string<br>
+ *
  */
 export function getAllEmployees() {
   return prepareCall('GetAllEmployees');
@@ -199,7 +200,7 @@ export function getAllEmployees() {
 
 /**
  * @description Gets information about the customer that was provided as a parameter
- * @param id customerId, the mail of a customer
+ * @param id customer mongodb id
  * @returns
  */
 export function getCustomer(id: string) {
@@ -209,9 +210,9 @@ export function getCustomer(id: string) {
   return prepareCall('GetCustomerData', customerId);
 }
 /**
- * Gets supplierdata
- * @param id
- * @returns
+ * Gets information about a supplier
+ * @param id supplier mongodb id
+ * @returns json object
  */
 export function getSupplier(id: string) {
   let supplierId = {
@@ -223,16 +224,16 @@ export function getSupplier(id: string) {
 /**
  * @description Gets all customers that the user has access to. Return may be customized by tags
  * @param tag Keywords that some customers have attached
- * @returns a JSON object with:
- *   '_id'                              - objectId
- *  'name'                              - string
- *  'employeeId'                        - string
- *  'customerInformation'               - array
- *  'customerInformation._id'           - objectId
- *  'customerInformation.name'          - string
- *  'customerInformation.contact.name'  - string
- *  'customerInformation.contact.mail'  - string
- *  'customerInformation.tags'          - array
+ * @returns a JSON object with:<br>
+ *   '_id'                              - objectId<br>
+ *  'name'                              - string<br>
+ *  'employeeId'                        - string<br>
+ *  'customerInformation'               - array<br>
+ *  'customerInformation._id'           - objectId<br>
+ *  'customerInformation.name'          - string<br>
+ *  'customerInformation.contact.name'  - string<br>
+ *  'customerInformation.contact.mail'  - string<br>
+ *  'customerInformation.tags'          - array<br>
  */
 export function getEmployee(tag = null): Promise<any> {
   tag = {
@@ -278,11 +279,11 @@ export function deleteSupplier(mail) {
 }
 /**
  * @description Modifies employee data
- * @param employeeId string, the mail of employee
- * @param name string, name of employee
- * @param admin string, admin lvl of employee
- * @param isCustomer ?
- * @param customers JSON object ?
+ * @param employeeId the mail of employee
+ * @param name name of employee
+ * @param admin admin lvl of employee
+ * @param isCustomer
+ * @param customers usually JSON object ?
  * @returns
  */
 export function modifyEmployeeData(
