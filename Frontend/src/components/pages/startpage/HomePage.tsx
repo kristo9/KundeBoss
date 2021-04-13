@@ -74,6 +74,7 @@ const NotConfigured = () => {
 
 const HomePage = () => {
 
+    console.log("Inne i homepage")
     const [UserCase, setUserCase] = useState(null);
     const [Load, setLoading] = useState(true);
     
@@ -81,12 +82,40 @@ const HomePage = () => {
         async function fetchAccountInfo() {
           setLoading(true) 
           let info= await callLogin();
+          console.log(info)
           //await new Promise(r => setTimeout(r, 2000));
           console.log(info);
-          (!info.isConfigured) ? setUserCase('NotConfigured') :
-          (info.isCustomer) ? (info.firstLogin) ? setUserCase('CustomerFirstLogin'): setUserCase('CustomerNotFirst') : 
-          (info.firstLogin) ? (info.admin === Admin) ? setUserCase('AdminFirst'): setUserCase('EmployeeFirst') 
-                            : (info.admin === Admin) ? setUserCase('AdminNotFirst') : setUserCase('EmployeeNotFirst');
+
+          if (info.isConfigured) {
+            if (info.isCustomer) {
+              if (info.firstLogin) {
+                setUserCase('CustomerFirstLogin')
+              }
+              else setUserCase('CustomerNotFirst')
+            }
+            else if (info.admin !== null) {
+              if (info.admin === "write") {
+                if (info.firstLogin) {
+                  setUserCase('AdminWriteFirst')
+                }
+                else setUserCase('AdminWriteNotFirst')
+              }
+              else {
+                if (info.firstLogin) {
+                  setUserCase('AdminReadFirst')
+                }
+                else setUserCase('AdminReadNotFirst')
+              }
+            }
+            else {
+              if (info.firstLogin) {
+                setUserCase('EmployeeFirst')
+              }
+              else setUserCase('EmployeeNotFirst')
+            }
+          }
+          else { setUserCase('NotConfigured') }
+
           setLoading(false)
         }
         fetchAccountInfo()
@@ -98,8 +127,10 @@ const HomePage = () => {
              (UserCase === 'NotConfigured') ? <NotConfigured />:
              (UserCase === 'CustomerFirstLogin') ? <Customer /> :
              (UserCase === 'CustomerNotFirst') ? <Customer /> :
-             (UserCase === 'AdminFirst') ? <Admin /> :
-             (UserCase === 'AdminNotFirst') ? <Admin /> :
+             (UserCase === 'AdminReadFirst') ? <Admin /> :
+             (UserCase === 'AdminReadNotFirst') ? <Admin /> :
+             (UserCase === 'AdminWriteFirst') ? <Admin /> :
+             (UserCase === 'AdminWriteNotFirst') ? <Admin /> :
              (UserCase === 'EmployeeFirst') ? <Employee /> :
              (UserCase === 'EmployeeNotFirst') ? <Employee /> :
                 <PageNotFound />}

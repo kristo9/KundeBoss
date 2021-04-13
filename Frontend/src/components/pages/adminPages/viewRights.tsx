@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { getAllEmployees } from '../../../azure/api';
 
-function ViewRights() {
+function ViewRights({ adminData: any }) {
   const mockData = {
     employe: [
       {

@@ -4,17 +4,14 @@ import { RouteComponentProps } from 'react-router';
 import { getSupplier } from '../../../azure/api';
 
 //Pages:
-import { SupplierInfoPage } from './subPages/SupplierInfoPage';
-import  SupplierCustomerPage  from './subPages/SupplierCustomerPage'
-import SupplierNotesPage from './subPages/SupplierNotesPage'
+import SupplierCustomerPage from './subPages/SupplierCustomerPage';
+import SupplierNotesPage from './subPages/SupplierNotesPage';
 import LoadingSymbol from '../../basicComp/loading';
-
-// Components
-import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
+import { SBElementProps, SBProps, Sidebar } from '../../basicComp/sidebar';
+import SupplierInfoPage from './supplierInfoPage';
 
 // CSS
 import '../../basicComp/basic.css';
-
 
 /**
  * Contains the customer page and all the info needed by the subpages.
@@ -59,7 +56,9 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
     return (
       <div className='margin-right H100'>
         <Sidebar
-          text={this.state.supplierInfo && this.state.supplierInfo.name ? this.state.supplierInfo.name : 'Leverandørnavn'}
+          text={
+            this.state.supplierInfo && this.state.supplierInfo.name ? this.state.supplierInfo.name : 'Leverandørnavn'
+          }
           buttons={this.buttons}
         />
         {this.state.supplierInfo ? this.state.pageState : <LoadingSymbol />}
@@ -71,7 +70,10 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
     {
       text: 'Infomasjon',
       ID: 'info',
-      onClick: () => {console.log(this.state.supplierInfo); this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> })},
+      onClick: () => {
+        console.log(this.state.supplierInfo);
+        this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> });
+      },
     },
     {
       text: 'Kunder',

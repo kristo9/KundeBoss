@@ -38,6 +38,7 @@
               "id": "ObjectId:string",
               "name": "string",
               "reply": {
+                "_comment": "if reply is null, no reply has been registered. If text is null, receiver replied by clicking the link in the mail",
                 "text": "string/null",
                 "date": "Date()"
               },
@@ -45,7 +46,8 @@
             }
           ],
           "subject": "string",
-          "text": "string"
+          "text": "string",
+          "sender": "string"
         }
       ]
     }
