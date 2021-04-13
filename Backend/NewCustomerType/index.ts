@@ -1,10 +1,9 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, nameVal, mailVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
+import { prepInput, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
-import { ObjectId } from 'mongodb';
 
 export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
@@ -58,6 +57,10 @@ export default (context: Context, req: HttpRequest): any => {
       }
     });
   };
+
+  req.body.values.forEach((value, index, values) => {
+    values[index] = { [value]: null };
+  });
 
   const query = {
     'name': req.body.name,

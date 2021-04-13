@@ -1,7 +1,6 @@
 // Libaries
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { MsalProvider, useMsal } from "@azure/msal-react";
-
+import { MsalProvider, useMsal } from '@azure/msal-react';
 
 // Components
 import Navbar from '../navbar/Navbar';
@@ -13,7 +12,7 @@ import Dashboard from '../pages/dashboard/Dashboard';
 import CustomerPage from '../pages/customerpage/customerpage';
 import PageNotFound from '../pages/pageNotFound/pageNotFound';
 import AdminPage from '../pages/adminPages/adminPage';
-import SupplierPage from '../pages/supplierPages/supplierPage'
+import SupplierPage from '../pages/supplierPages/supplierPage';
 
 // Context 
 import { LanguageProvider } from '../../LangContext';
@@ -33,6 +32,7 @@ const Routes = () => {
       <Route path='/customerpage' component={CustomerPage} />
       <Route path='/supplierpage' component={SupplierPage} />
       <Route path='/admin' component={AdminPage} />
+      <Route path='/supplier' component={SupplierPage} />
       <Route path='*' exact={true} component={PageNotFound} />
     </Switch>
   );
