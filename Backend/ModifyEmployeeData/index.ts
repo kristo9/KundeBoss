@@ -20,6 +20,7 @@ export default (context: Context, req: HttpRequest): any => {
 
   let token = prepToken(context, req.headers.authorization);
   let newVals = JSON.parse('{}'); // Makes new JSON object to store potential changes in employee
+  newVals['isConfigured'] = true;
 
   if (token === null) {
     return context.done();

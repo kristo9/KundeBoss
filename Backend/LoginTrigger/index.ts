@@ -44,7 +44,7 @@ export default (context: Context, req: HttpRequest): any => {
   result['firstLogin'] = false;
   result['isConfigured'] = false;
   result['admin'] = null;
-  result['isCustomer'] = null;
+  result['isCustomer'] = false;
 
   /**
    * @description Looks for emplyees in database. If none are found, a new admin is created. If the caller is not found, they are inserted into the databse
@@ -60,6 +60,7 @@ export default (context: Context, req: HttpRequest): any => {
         employeeId: 1,
         admin: 1,
         isCustomer: 1,
+        isConfigured: 1,
       })
       .toArray((error: any, docs: any[]) => {
         if (error) {
@@ -74,7 +75,10 @@ export default (context: Context, req: HttpRequest): any => {
 
             if (employee == undefined) {
               decodedToken.roles.forEach((role) => {
-                if (role == 'customer') isCustomer = true;
+                if (role == 'customer') {
+                  isCustomer = true;
+                  result['isCustomer'] = true;
+                }
               });
 
               /* Creates new entry in database for the function caller */
@@ -82,8 +86,12 @@ export default (context: Context, req: HttpRequest): any => {
             } else {
               /* Returns information about caller if they are already registered in the database */
               result['admin'] = employee.admin;
-              if (employee.isCustomer !== null) {
+              if (employee.isConfigured !== false) {
                 result['isConfigured'] = true;
+              } else {
+                result['isConfigured'] = employee.isConfigured;
+              }
+              if (employee.isCustomer !== null) {
                 result['isCustomer'] = employee.isCustomer;
               }
               returnResult(context, result);
@@ -99,7 +107,8 @@ export default (context: Context, req: HttpRequest): any => {
   query['employeeId'] = null;
   query['customers'] = [];
   query['admin'] = null;
-  query['isCustomer'] = null;
+  query['isCustomer'] = false;
+  query['isConfigured'] = false;
 
   /**
    * @description Modifies query for creating new admin
@@ -108,7 +117,6 @@ export default (context: Context, req: HttpRequest): any => {
   const firstEmployee = (db: Db) => {
     context.log('Creating first employee with admin:write');
     query['admin'] = 'write';
-    query['isCustomer'] = false;
     createEmplyee(db);
   };
 
