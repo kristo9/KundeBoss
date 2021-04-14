@@ -52,6 +52,10 @@ const Admin = () => {
             <Link to='/dashboard'>
                 <u>Dashboard</u>
             </Link>
+            <Link to='/admin'>
+                <br/>
+                <u>Admin</u>
+            </Link>
           </div>
         </div>
     )

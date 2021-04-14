@@ -6,10 +6,10 @@ import { useAccount } from '@azure/msal-react';
 // Components
 import { SignInSignOutButton } from '../basicComp/SignInOutButton';
 import { msalInstance } from '../../index';
-import LanguageSelector from '../../LangContext';
+import LanguageSelector from '../../language/LangContext';
 
 // Context
-import { LanguageContext } from '../../LangContext';
+import { LanguageContext } from '../../language/LangContext';
 
 // CSS style
 import './Navbar.css';
@@ -46,32 +46,37 @@ const Authenticated = () => {
   );
 };
 
+/*
+
+*/
+
+
 const Unauthenticated = () => {
   const { dictionary } = useContext(LanguageContext);
   sessionStorage.removeItem('UserName');
   console.log('UserName is removed as no account is signed in');
 
   return (
-    <div className='topnav'>
-      <div className='left'>
-        <Link to='/' className='Logo'>
-          "Logo"
-        </Link>
-      </div>
-      <div className='right'>
-        <Link to='/contact' className='Link'>
-          {dictionary.contact}
-        </Link>
-        <Link to='/help' className='Link'>
-          {dictionary.help}
-        </Link>
-        <Link to='/about' className='Link'>
-          {dictionary.about}
-        </Link>
-        <SignInSignOutButton />
-        <LanguageSelector />
-      </div>
+    <header className='topnav'>
+    <div className='left'>
+      <Link to='/' className='Logo'>
+        "Logo"
+      </Link>
     </div>
+    <div className='right'>
+      <Link to='/contact' className='Link'>
+        {dictionary.contact}
+      </Link>
+      <Link to='/help' className='Link'>
+        {dictionary.help}
+      </Link>
+      <Link to='/about' className='Link'>
+        {dictionary.about}
+      </Link>
+      <SignInSignOutButton />
+      <LanguageSelector />
+    </div>
+    </header>
   );
 };
 

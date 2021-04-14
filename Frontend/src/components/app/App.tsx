@@ -15,7 +15,7 @@ import AdminPage from '../pages/adminPages/adminPage';
 import SupplierPage from '../pages/supplierPages/supplierPage';
 
 // Context 
-import { LanguageProvider } from '../../LangContext';
+import { LanguageProvider } from '../../language/LangContext';
 
 // CSS Styling
 import './App.css';
