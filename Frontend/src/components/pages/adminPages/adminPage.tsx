@@ -12,7 +12,7 @@ import NewSupplier from './newSupplier';
 import { getAllEmployees } from '../../../azure/api';
 import CustomerEditPage from '../customerpage/subPages/customerEditPage';
 
-class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any }> {
+class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any; search: any }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class.
@@ -22,6 +22,7 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     this.state = {
       pageState: <LoadingSymbol />,
       adminInfo: null,
+      search: ' ',
     };
   }
 

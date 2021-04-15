@@ -1,0 +1,50 @@
+import { Context } from '@azure/functions';
+
+const MongoClient = require('mongodb').MongoClient;
+
+const config = {
+  'useNewUrlParser': true,
+  'useUnifiedTopology': true,
+};
+
+const uriWrite = process.env['UriWrite'];
+const DBName = 'KundebossDB';
+
+export const collections = {
+  customer: 'customer',
+  employee: 'employee',
+  mail: 'mail',
+  mailGroup: 'mailGroup',
+  supplier: 'supplier',
+  customerType: 'customerType',
+};
+export let clientWrite = null;
+
+/**
+ * @description If function succesfully connects to db, or db connection is already availible, function calls callback function with db connection as parameter
+ * @param context: Context
+ * @param callback: (any) => void
+ * @param overrideTest: bool = false. Makes function create new connection when a connection is availible
+ */
+export function connectWrite(context: Context, callback: (arg0: any) => void, overrideTest = false) {
+  context.log('Connecting write client');
+
+  if (clientWrite == null || overrideTest) {
+    MongoClient.connect(uriWrite, config, (error: any, _client: any) => {
+      if (error) {
+        context.log('Failed to connect write client');
+        context.res = {
+          status: 500,
+          body: 'Failed to connect write client',
+        };
+        return context.done();
+      }
+      clientWrite = _client;
+
+      context.log('Connected write client');
+      callback(clientWrite.db(DBName));
+    });
+  } else {
+    callback(clientWrite.db(DBName));
+  }
+}

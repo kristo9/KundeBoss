@@ -14,8 +14,12 @@ import PageNotFound from '../pages/pageNotFound/pageNotFound';
 import AdminPage from '../pages/adminPages/adminPage';
 import SupplierPage from '../pages/supplierPages/supplierPage';
 
+// Context 
+import { LanguageProvider } from '../../language/LangContext';
+
 // CSS Styling
 import './App.css';
+
 
 const Routes = () => {
   return (
@@ -39,22 +43,24 @@ const App = ({ pca }) => {
 
   console.log(inProgress);
   return (
-    <Router>
-      <MsalProvider instance={pca}>
-        {inProgress === 'login' ? (
+    <LanguageProvider>
+      <Router>
+        <MsalProvider instance={pca}>
+          {(inProgress === 'login') ? 
           <div>
-            <h6> Loading Login.........</h6>
+            <h6> Loading Login......... </h6>
           </div>
-        ) : (
+          :
           <div className='app' style={{ height: '100vh' }}>
-            <Navbar />
+              <Navbar />
             <div style={{ marginTop: '23px', width: '100%' }}>
               <Routes />
             </div>
           </div>
-        )}
-      </MsalProvider>
-    </Router>
+          }
+        </MsalProvider>
+      </Router>
+    </LanguageProvider>
   );
 };
 

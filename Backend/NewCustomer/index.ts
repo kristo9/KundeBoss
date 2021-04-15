@@ -72,29 +72,80 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
+    let val = [];
+    let mailGroup = null;
 
-    const queryOptions = { upsert: req.body?.id ? false : true };
-
-    let update = {
-      '$set': {
-        'name': req.body.name,
-        'contact': {
-          'phone': req.body.phone || null,
-          'mail': req.body.mail,
-          'name': req.body.contactName || null,
-        },
-        'suppliers': req.body.suppliers || [],
-        'tags': req.body.tags || [],
-        'comment': req.body.comment || null,
-        'types': [],
-        'typeValues': [],
-        'customerAgreements': req.body.customerAgreements || [],
-        'infoReference': req.body.infoReference || null,
-      },
+    const getTypeValues = () => {
+      db.collection(collections.customerType)
+        .find({ 'name': { '$in': req.body.typeValues } })
+        .project({ '_id': 0 })
+        .toArray((error: any, docs: any) => {
+          if (error) {
+            errorQuery(context);
+            return context.done();
+          } else {
+            docs.forEach((doc) => {
+              doc.values.forEach((value) => {
+                val.push(value);
+              });
+            });
+            console.log(val);
+            updateOrUpsertCustomer();
+          }
+        });
     };
 
-    const updateOrUnsertCustomer = () => {
+    const updateOrUpsertCustomer = () => {
+      const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
+
+      const queryOptions = { upsert: req.body?.id ? false : true };
+
+      let update = {
+        '$set': {
+          'name': req.body.name,
+          'contact': {
+            'phone': req.body.phone || null,
+            'mail': req.body.mail,
+            'name': req.body.contactName || null,
+          },
+          'suppliers': req.body.suppliers || [],
+          'tags': req.body.tags || [],
+          'comment': req.body.comment || null,
+          'customerAgreements': req.body.customerAgreements || [],
+          'infoReference': req.body.infoReference || null,
+          'types': req.body.typeValues,
+          'values': [],
+        },
+      };
+
+      val.forEach((value, index, values) => {
+        update.$set.values.push({
+          [values[index]]: null,
+        });
+      });
+
+      if (req.body.values) {
+        console.log(req.body.values);
+
+        req.body.values.forEach((value) => {
+          for (let i = 0, l = update.$set.values.length; i < l; ++i) {
+            console.log(update.$set.values[i] + '  ' + Object.keys(value)[0]);
+
+            if (Object.keys(update.$set.values[i])[0] == Object.keys(value)[0]) {
+              update.$set.values[i] = value;
+
+              break;
+            }
+            console.log(update.$set.values[i]);
+          }
+        });
+      }
+
+      if (mailGroup) {
+        update.$set['mailGroup'] = mailGroup;
+      }
+      console.log(JSON.stringify(update, null, 2));
+
       db.collection(collections.customer).updateOne(query, update, queryOptions, (error: any, docs: any) => {
         if (error) {
           errorQuery(context);
@@ -111,11 +162,20 @@ export default (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         }
-        update.$set['mailGroup'] = ObjectId(docs.insertedId);
-        updateOrUnsertCustomer();
+
+        mailGroup = ObjectId(docs.insertedId);
+        if (req.body.typeValues) {
+          getTypeValues();
+        } else {
+          updateOrUpsertCustomer();
+        }
       });
     } else {
-      updateOrUnsertCustomer();
+      if (req.body.typeValues) {
+        getTypeValues();
+      } else {
+        updateOrUpsertCustomer();
+      }
     }
   };
 

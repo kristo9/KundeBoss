@@ -76,6 +76,7 @@ export default (context: Context, req: HttpRequest): any => {
 
   let receiverMail = [];
   let receiverInformation = [];
+  let senderName = null;
 
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
@@ -83,6 +84,7 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid'); /*TODO: appropriate error message, optional */
         return context.done();
       } else {
+        senderName = decoded.name;
         db.collection('employee')
           .aggregate([
             {
@@ -223,6 +225,7 @@ export default (context: Context, req: HttpRequest): any => {
       'receivers': receiverInformation,
       'subject': req.body.subject,
       'text': req.body.text,
+      'sender': senderName,
     };
 
     db.collection('mail').insertOne(newMail, (error: any, docs: any) => {

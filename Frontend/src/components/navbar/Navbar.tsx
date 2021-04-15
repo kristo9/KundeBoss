@@ -6,11 +6,18 @@ import { useAccount } from '@azure/msal-react';
 // Components
 import { SignInSignOutButton } from '../basicComp/SignInOutButton';
 import { msalInstance } from '../../index';
+import LanguageSelector from '../../language/LangContext';
+
+// Context
+import { LanguageContext } from '../../language/LangContext';
 
 // CSS style
 import './Navbar.css';
+import { useContext } from 'react';
+
 
 const Authenticated = () => {
+  const { dictionary } = useContext(LanguageContext);
   const accounts = msalInstance.getAllAccounts();
   sessionStorage.setItem('UserName', accounts[0].username);
   console.log('UserName is set at sessionStorage "UserName":  ' + sessionStorage.getItem('UserName'));
@@ -24,44 +31,52 @@ const Authenticated = () => {
       </div>
       <div className='right'>
         <Link to='/contact' className='Link'>
-          Contact
+          {dictionary.contact}
         </Link>
         <Link to='/help' className='Link'>
-          Help
+          {dictionary.help}
         </Link>
         <Link to='/about' className='Link'>
-          About
+          {dictionary.about}
         </Link>
         <SignInSignOutButton />
+        <LanguageSelector />
       </div>
     </div>
   );
 };
 
+/*
+
+*/
+
+
 const Unauthenticated = () => {
+  const { dictionary } = useContext(LanguageContext);
   sessionStorage.removeItem('UserName');
   console.log('UserName is removed as no account is signed in');
 
   return (
-    <div className='topnav'>
-      <div className='left'>
-        <Link to='/' className='Logo'>
-          "Logo"
-        </Link>
-      </div>
-      <div className='right'>
-        <Link to='/contact' className='Link'>
-          Contact
-        </Link>
-        <Link to='/help' className='Link'>
-          Help
-        </Link>
-        <Link to='/about' className='Link'>
-          About
-        </Link>
-        <SignInSignOutButton />
-      </div>
+    <header className='topnav'>
+    <div className='left'>
+      <Link to='/' className='Logo'>
+        "Logo"
+      </Link>
     </div>
+    <div className='right'>
+      <Link to='/contact' className='Link'>
+        {dictionary.contact}
+      </Link>
+      <Link to='/help' className='Link'>
+        {dictionary.help}
+      </Link>
+      <Link to='/about' className='Link'>
+        {dictionary.about}
+      </Link>
+      <SignInSignOutButton />
+      <LanguageSelector />
+    </div>
+    </header>
   );
 };
 

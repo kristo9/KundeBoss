@@ -64,6 +64,11 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       } else {
         supplier = docs;
+
+        if (supplier == null) {
+          errorWrongInput(context, 'No supplier found');
+          return context.done();
+        }
         /* Find all customers that have a relation with the supplier */
         db.collection('customer')
           .find({ 'suppliers': { '$elemMatch': { 'id': ObjectId(req.body.id) } } })

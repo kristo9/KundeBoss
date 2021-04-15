@@ -9,11 +9,27 @@ function callApi(endpoint, token, data) {
 
   headers.append('Authorization', bearer);
 
-  const options = {
+  /*   interface pre {
+    method: string;
+    headers: any;
+    body: any;
+    role?: boolean;
+  }
+  let options: pre;
+  options = {
+    method: 'POST',
+    headers: headers,
+    body: data,
+  }; */
+
+  let options = {
     method: 'POST',
     headers: headers,
     body: data,
   };
+
+  /*   if (role !== null) options.role = role;
+   */
 
   console.log(options);
 
@@ -38,8 +54,10 @@ function prepareCall(apiName, data = null) {
       if (response) {
         console.log('access_token acquired at: ' + new Date().toString());
         console.log(response.accessToken);
+        //let role = response.account.idTokenClaims.roles[0];
+        console.log(response);
         try {
-          return callApi(apiConfig.uri + apiName, response.accessToken, data);
+          return callApi(apiConfig.uri + apiName, response.accessToken, data); //,role);
         } catch (error) {
           console.warn(error);
         }
@@ -78,6 +96,7 @@ export function callLogin() {
     newCustomer('Timinski Corp.', 'Timain@timinski.gg', 12312312, "Timain", suppliersObject, tags, "CC Corp", "inforRef??" ) */
 /**
  * @description Creates new customer
+ * @param id id of the customer you want to change. Use null to create a new customer
  * @param name name of company
  * @param mail mail to contact person
  * @param phone phone number to contact person
@@ -89,6 +108,7 @@ export function callLogin() {
  * @returns json object ?
  */
 export function newCustomer(
+  id: string,
   name: string,
   mail: string,
   phone: number = null,
@@ -100,26 +120,27 @@ export function newCustomer(
   //typeValues: [] = null,
   //customerAgreements: [],
   infoReference: string = null
-  //mailgroup: null
 ) {
   const data = {
-    name: name,
-    phone: phone,
-    mail: mail,
-    contactName: contactName,
-    suppliers: suppliers,
-    tags: tags,
-    comment: comment,
-    infoReference: infoReference,
+    name,
+    phone,
+    mail,
+    contactName,
+    suppliers,
+    tags,
+    comment,
+    infoReference,
+    id,
   };
   return prepareCall('NewCustomer', data);
 }
+
 /*
 newSupplier('Nasjonal catering', 'Padme@NC.com', 74839283, 'Padmé Amidala Naberrie', 'Senator of Naboo, former Queen of Naboo')
 */
-
 /**
  * @description Creates a new supplier
+ * @param id id of the supplier you want to change. Use null to create a new supplier
  * @param name
  * @param mail
  * @param phone
@@ -128,6 +149,7 @@ newSupplier('Nasjonal catering', 'Padme@NC.com', 74839283, 'Padmé Amidala Naber
  * @returns
  */
 export function newSupplier(
+  id: string,
   name: string,
   mail: string,
   phone: number = null,
@@ -136,11 +158,12 @@ export function newSupplier(
   //mailgroup: null
 ) {
   const data = {
-    name: name,
-    phone: phone,
-    mail: mail,
-    contactName: contactName,
-    comment: comment,
+    name,
+    phone,
+    mail,
+    contactName,
+    comment,
+    id,
   };
 
   return prepareCall('NewSupplier', data);
