@@ -6,3 +6,5 @@ function NewCustomer(props: any) {
 }
 
 export default NewCustomer;
+
+// kan mest sansynlig slettes

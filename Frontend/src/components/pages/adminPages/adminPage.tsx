@@ -10,21 +10,7 @@ import NewCustomer from './newCustomer';
 import ViewRights from './viewRights';
 import NewSupplier from './newSupplier';
 import { getAllEmployees } from '../../../azure/api';
-
-// const mockData = {
-//   users: [
-//     {
-//       _id: '603648ae0ab39703a4580395',
-//       name: 'Didrik K Bjerk',
-//       employeeId: 'didrik.bjerk@kundeboss.onmicrosoft.com',
-//     },
-//     {
-//       _id: '603648420ab39703a4580395',
-//       name: 'Alexander',
-//       employeeId: 'alexander.bjerk@kundeboss.onmicrosoft.com',
-//     },
-//   ],
-// };
+import CustomerEditPage from '../customerpage/subPages/customerEditPage';
 
 class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any }> {
   /**
@@ -79,7 +65,7 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     {
       text: 'Ny kunde',
       ID: 'newCustomer',
-      onClick: () => this.setState({ pageState: <ViewRights adminData={this.state.adminInfo} /> }),
+      onClick: () => this.setState({ pageState: <CustomerEditPage /> }),
     },
     {
       text: 'Ny leverandør',
