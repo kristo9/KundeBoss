@@ -24,7 +24,7 @@ function CustomerEditPage({ customerInfo }: any) {
     formState: { errors },
     control,
   } = useForm<FormValues>(
-    customerInfo
+    customerInfo //if customerInfo has data, add the tags
       ? {
           defaultValues: {
             tags: customerInfo.tags,

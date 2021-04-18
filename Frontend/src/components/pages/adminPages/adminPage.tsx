@@ -11,6 +11,7 @@ import ViewRights from './viewRights';
 import NewSupplier from './newSupplier';
 import { getAllEmployees } from '../../../azure/api';
 import CustomerEditPage from '../customerpage/subPages/customerEditPage';
+import SupplierEditPage from '../supplierPages/subPages/SupplierEditPage';
 
 class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any; search: any }> {
   /**
@@ -71,7 +72,7 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     {
       text: 'Ny leverandør',
       ID: 'newSupplier',
-      onClick: () => this.setState({ pageState: <ViewRights adminData={this.state.adminInfo} /> }),
+      onClick: () => this.setState({ pageState: <SupplierEditPage /> }),
     },
     {
       text: 'Nyinnlogget',

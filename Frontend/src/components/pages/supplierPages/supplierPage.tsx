@@ -9,6 +9,7 @@ import SupplierNotesPage from './subPages/SupplierNotesPage';
 import LoadingSymbol from '../../basicComp/loading';
 import { SBElementProps, SBProps, Sidebar } from '../../basicComp/sidebar';
 import SupplierInfoPage from './supplierInfoPage';
+import SupplierEditPage from './subPages/SupplierEditPage';
 
 // CSS
 import '../../basicComp/basic.css';
@@ -98,7 +99,7 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
     {
       text: 'Rediger',
       ID: 'edit',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
+      onClick: () => this.setState({ pageState: <SupplierEditPage supplierInfo={this.state.supplierInfo} /> }),
     },
   ];
 }
