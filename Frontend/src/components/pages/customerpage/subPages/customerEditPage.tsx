@@ -23,11 +23,15 @@ function CustomerEditPage({ customerInfo }: any) {
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm<FormValues>({
-    defaultValues: {
-      tags: customerInfo.tags,
-    },
-  });
+  } = useForm<FormValues>(
+    customerInfo
+      ? {
+          defaultValues: {
+            tags: customerInfo.tags,
+          },
+        }
+      : {}
+  );
 
   // https://react-hook-form.com/api/usefieldarray
   const { fields, append, prepend, remove } = useFieldArray({
@@ -136,9 +140,19 @@ function CustomerEditPage({ customerInfo }: any) {
 
         <p>Suppliers []</p>
 
-        {/* {customerInfo ? <button>Slett kunde</button> : ''} */}
+        {customerInfo ? (
+          <button
+            onClick={() => {
+              //slett kunde funksjon her (er du sikker boks?)
+            }}
+          >
+            Slett kunde
+          </button>
+        ) : (
+          ''
+        )}
         <button type='submit'>{customerInfo ? 'Rediger bruker' : 'Lag bruker'}</button>
-        {/* <button type='reset'>Reset</button> */}
+        <button type='reset'>Reset</button>
       </form>
     </div>
   );
