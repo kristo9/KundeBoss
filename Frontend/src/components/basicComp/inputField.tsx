@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { RegularExpressionLiteral } from 'typescript';
 
 interface inputProps {
+  register: any; //ReturnType<typeof useForm>['register']; // gir register typen :)
   labelText: string;
   lableType: string;
   lableName: string;
@@ -15,22 +16,16 @@ interface multipleInputField {
   children: React.ReactNode;
 }
 
-//TEST
-interface inputProps1 {
-  register: any; //ReturnType<typeof useForm>['register']; // gir register typen :)
-  labelText: string;
-  lableType: string;
-  lableName: string;
-  placeholderText?: string;
-  defaultValue?: string;
-  required?: boolean;
-}
-interface multipleInputField1 {
-  text: string;
-  children: React.ReactNode;
+export function MultipleInputField(props: multipleInputField) {
+  return (
+    <div>
+      {props.text}
+      <div>{props.children}</div>
+    </div>
+  );
 }
 
-//DNASJDNJAS
+//NYE
 
 export function InputField(props: inputProps) {
   return (
@@ -43,7 +38,8 @@ export function InputField(props: inputProps) {
         defaultValue={props.defaultValue !== 'null' ? props.defaultValue : ''}
         placeholder={props.placeholderText}
         required={props.required}
-      ></input>
+        {...props.register}
+      />
     </div>
   );
 }
@@ -58,56 +54,13 @@ export function TextArea(props: inputProps) {
         defaultValue={props.defaultValue !== 'null' ? props.defaultValue : ''}
         placeholder={props.placeholderText}
         required={props.required}
-      ></textarea>
-    </div>
-  );
-}
-
-export function MultipleInputField(props: multipleInputField) {
-  return (
-    <div>
-      {props.text}
-      <div>{props.children}</div>
-    </div>
-  );
-}
-
-//NYE
-
-export function InputField1(props: inputProps1) {
-  return (
-    <div>
-      <label htmlFor={props.lableName}>{props.labelText}:</label>
-      <input
-        type={props.lableType}
-        name={props.lableName}
-        id={props.lableName}
-        defaultValue={props.defaultValue !== 'null' ? props.defaultValue : ''}
-        placeholder={props.placeholderText}
-        required={props.required}
         {...props.register}
       />
     </div>
   );
 }
 
-export function TextArea1(props: inputProps1) {
-  return (
-    <div>
-      <label htmlFor={props.lableName}>{props.labelText}:</label>
-      <textarea
-        name={props.lableName}
-        id={props.lableName}
-        defaultValue={props.defaultValue !== 'null' ? props.defaultValue : ''}
-        placeholder={props.placeholderText}
-        required={props.required}
-        {...props.register}
-      />
-    </div>
-  );
-}
-
-export function MultipleInputField1(props: multipleInputField1) {
+export function MultipleInputField1(props: multipleInputField) {
   return (
     <div>
       {props.text}

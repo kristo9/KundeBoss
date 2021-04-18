@@ -1,6 +1,6 @@
 import react from 'react';
-import { InputField1, MultipleInputField, TextArea1 } from '../../../basicComp/inputField';
-import { useForm } from 'react-hook-form';
+import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inputField';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { newCustomer } from '../../../../azure/api';
 
 /**
@@ -15,39 +15,45 @@ function CustomerEditPage({ customerInfo }: any) {
     contactMail: string;
     note: string;
     infoReference: string;
+    tags: { tag: string }[];
   };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+    control,
+  } = useForm<FormValues>({
+    defaultValues: {
+      tags: customerInfo.tags,
+    },
+  });
+
+  // https://react-hook-form.com/api/usefieldarray
+  const { fields, append, prepend, remove } = useFieldArray({
+    control,
+    name: 'tags',
+  });
 
   return (
     <div>
       <h1>{customerInfo ? 'Redigere kunden' : 'Ny kunde'}</h1>
       <form
         onSubmit={handleSubmit((data) => {
-          if (customerInfo) {
-            alert(JSON.stringify(data));
-            console.log('rediger kunde');
-          } else {
-            alert(JSON.stringify(data));
-            console.log('Ny kunde');
-            // newCustomer(
-            //   data.customerName,
-            //   data.contactMail,
-            //   data.contactPhone,
-            //   data.contactName,
-            //   null,
-            //   null,
-            //   data.note,
-            //   data.infoReference
-            // );
-          }
+          newCustomer(
+            customerInfo ? customerInfo._id : null,
+            data.customerName,
+            data.contactMail,
+            data.contactPhone,
+            data.contactName,
+            null,
+            getTagsArray(data.tags),
+            data.note,
+            data.infoReference
+          );
         })}
       >
-        <InputField1
+        <InputField
           labelText={'Navn'}
           lableType={'text'}
           lableName={'name'}
@@ -57,7 +63,7 @@ function CustomerEditPage({ customerInfo }: any) {
         />
 
         <MultipleInputField text='Kontaktperson'>
-          <InputField1
+          <InputField
             labelText={'Navn'}
             lableType={'text'}
             lableName={'contactName'}
@@ -67,7 +73,7 @@ function CustomerEditPage({ customerInfo }: any) {
             }
             register={register('contactName')}
           />
-          <InputField1
+          <InputField
             labelText={'Telfon'}
             lableType={'tel'}
             lableName={'contactPhone'}
@@ -77,7 +83,7 @@ function CustomerEditPage({ customerInfo }: any) {
             }
             register={register('contactPhone')}
           />
-          <InputField1
+          <InputField
             labelText={'Epost'}
             lableType={'email'}
             lableName={'contactMail'}
@@ -89,7 +95,7 @@ function CustomerEditPage({ customerInfo }: any) {
           />
         </MultipleInputField>
 
-        <TextArea1
+        <TextArea
           labelText={'Notat'}
           lableType={'text'}
           lableName={'note'}
@@ -98,7 +104,7 @@ function CustomerEditPage({ customerInfo }: any) {
           register={register('note')}
         />
 
-        <TextArea1
+        <TextArea
           labelText={'Referanser'}
           lableType={'text'}
           lableName={'reference'}
@@ -106,7 +112,28 @@ function CustomerEditPage({ customerInfo }: any) {
           defaultValue={customerInfo && customerInfo.note ? customerInfo.note : ''}
           register={register('infoReference')}
         />
-        <p>Tag []</p>
+
+        <MultipleInputField text={'Tags'}>
+          {fields.map(({ id }, index) => {
+            return (
+              <div key={id}>
+                <InputField
+                  labelText={'Tag ' + (index + 1)}
+                  lableType={'text'}
+                  lableName={`tags[${index}].tag`}
+                  register={register(`tags.${index}.tag` as const)}
+                  defaultValue={customerInfo.tags[index]}
+                />
+                <button onClick={() => remove(index)}>x</button>
+              </div>
+            );
+          })}
+
+          <button type='button' onClick={() => append({})}>
+            Legg til tag
+          </button>
+        </MultipleInputField>
+
         <p>Suppliers []</p>
 
         {/* {customerInfo ? <button>Slett kunde</button> : ''} */}
@@ -115,6 +142,18 @@ function CustomerEditPage({ customerInfo }: any) {
       </form>
     </div>
   );
+}
+
+function getTagsArray(tags: any) {
+  var outputArray = [];
+  for (let element in tags) {
+    console.log(tags[element].tag);
+    if (tags[element].tag) {
+      outputArray.push(tags[element].tag);
+    }
+  }
+
+  return outputArray;
 }
 
 export default CustomerEditPage;
