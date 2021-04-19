@@ -1,6 +1,5 @@
 import react from 'react';
 
-
 /**
  * Displayes the customer information.
  * @param {any} customerInfo contains all the information about the customer being displayed.
@@ -44,7 +43,7 @@ function DisplayTextAndInfo(props: { text: string; information: any }) {
  */
 export function ContactPersonInfo(props: { name: string; phone: number; mail: string }) {
   return (
-    <div style={{ borderStyle: 'solid'}}>
+    <div style={{ borderStyle: 'solid' }}>
       <h3>Kontaktperson</h3>
       <div style={{ paddingLeft: '250 px' }}>
         <DisplayTextAndInfo text={'Navn'} information={props.name} />
@@ -75,9 +74,7 @@ function DisplayTags(props: { tags: any }) {
     <div>
       <h3>Tags</h3>
       {props.tags.map((tag) => (
-        <div>
-            <div key={tag}>{tag}</div>
-        </div>
+        <div key={tag}>{tag}</div>
       ))}
     </div>
   );
