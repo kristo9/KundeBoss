@@ -118,7 +118,7 @@ export default (context: Context, req: HttpRequest): any => {
               replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
               receiverMail.push({
                 'to': [{ 'email': customer.contact.mail }],
-                'subject': req.body.subject + ' <' + 'replyId:' + replyId + '>',
+                'subject': req.body.subject,
                 'substitutions': {
                   '%replyUrl%': replyUrl + replyId,
                 },
@@ -141,7 +141,7 @@ export default (context: Context, req: HttpRequest): any => {
                     replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
                     receiverMail.push({
                       'to': [{ 'email': supplier.contact.mail }],
-                      'subject': req.body.subject + ' <' + 'replyId:' + replyId + '>',
+                      'subject': req.body.subject,
                       'substitutions': {
                         '%replyUrl%': replyUrl + replyId,
                       },

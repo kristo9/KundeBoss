@@ -1,71 +1,61 @@
-import { apiConfig } from './apiConfig';
-import { getTokenRedirect } from './authRedirect';
-import { tokenRequest } from './authConfig';
+import fetch from 'node-fetch';
+import { accessToken, apiConfig } from './stuff';
 
-function callApi(endpoint, token, data) {
-  const headers = new Headers();
-  const bearer = `Bearer ${token}`;
-  data = data ? JSON.stringify(data) : {};
-
-  headers.append('Authorization', bearer);
-
-  /*   interface pre {
-    method: string;
-    headers: any;
-    body: any;
-    role?: boolean;
+async function runTest() {
+  let res = [];
+  for (let i = 0; i < 1; ++i) {
+    //res.push(callLogin());
+    res.push(getCustomer('60705fc7b178af6350fd1645'));
+    //res.push(getEmployee());
+    //res.push(getSupplier('605b37ae6c35ab18d8c49da7'));
   }
-  let options: pre;
-  options = {
-    method: 'POST',
-    headers: headers,
-    body: data,
-  }; */
+
+  res.forEach(async (r, index) => {
+    if (index % 100 == 0) console.log(index + ' ' + (await r));
+
+    //console.log((await r).stat);
+  });
+}
+
+runTest();
+
+function callApi(endpoint: string, token: string, data: {} | null) {
+  //const headers = new Headers();
+  const bearer = `Bearer ${token}`;
+  data = data ? data : {};
+
+  const headers = {
+    // 'Accept': 'application/json',
+    'Authorization': bearer,
+  };
 
   let options = {
     method: 'POST',
     headers: headers,
-    body: data,
+    body: JSON.stringify(data),
   };
-
-  /*   if (role !== null) options.role = role;
-   */
-
-  console.log(options);
 
   console.log('Calling Web API...');
 
-  return fetch(endpoint, options)
-    .then((response) => response.json())
-    .then((response) => {
-      if (response) {
-        //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
-        return response;
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  return fetch(endpoint, options).then(async (response) => {
+    const stat = response.status;
+    let body;
+    try {
+      body = await response.json();
+    } catch {
+      console.log('error');
+    }
+    const res = { body, stat };
+    return stat;
+  });
 }
 
-function prepareCall(apiName, data = null) {
-  return getTokenRedirect(tokenRequest)
-    .then((response) => {
-      if (response) {
-        console.log('access_token acquired at: ' + new Date().toString());
-        console.log(response.accessToken);
-        //let role = response.account.idTokenClaims.roles[0];
-        console.log(response);
-        try {
-          return callApi(apiConfig.uri + apiName, response.accessToken, data); //,role);
-        } catch (error) {
-          console.warn(error);
-        }
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+function prepareCall(apiName: string, data = null) {
+  try {
+    return callApi(apiConfig.uri + apiName, accessToken, data); //,role);
+  } catch (error) {
+    console.warn(error);
+  }
 }
 /**
  * @description
@@ -78,22 +68,6 @@ export function callLogin() {
   });
 }
 
-/*     const suppliers = [
-      {
-        'id' : '604a7ba6fe05bd49dcb6b7a3',
-        'name': "t"
-       },
-       {
-         'id':'604a7e8f4ce34420cc732813',
-         'name': "t"
-       }
-    ];
-    const tags = [
-      "Viktig Kunde",
-      "Gjerrig"
-    ];
-    var suppliersObject = JSON.parse(JSON.stringify(suppliers));
-    newCustomer('Timinski Corp.', 'Timain@timinski.gg', 12312312, "Timain", suppliersObject, tags, "CC Corp", "inforRef??" ) */
 /**
  * @description Creates new customer
  * @param id id of the customer you want to change. Use null to create a new customer
@@ -221,10 +195,6 @@ export function getAllEmployees() {
   return prepareCall('GetAllEmployees');
 }
 
-export function getCustomersAndSuppliers() {
-  return prepareCall('GetCustomersAndSuppliers');
-}
-
 /**
  * @description Gets information about the customer that was provided as a parameter
  * @param id customer mongodb id
@@ -274,7 +244,7 @@ export function getEmployee(tag = null): Promise<any> {
  * @param mail Mail to the employee which is to be deleted
  * @returns returns result. if result.n = 1 the employee is deleted.
  */
-export function deleteEmployee(mail) {
+export function deleteEmployee(mail: any) {
   const data = {
     mail: mail,
   };
@@ -286,7 +256,7 @@ export function deleteEmployee(mail) {
  * @param mail Mail to the customer which is to be deleted
  * @returns returns result. if result.n = 1 the customer is deleted.
  */
-export function deleteCustomer(mail) {
+export function deleteCustomer(mail: any) {
   const data = {
     mail: mail,
   };
@@ -298,7 +268,7 @@ export function deleteCustomer(mail) {
  * @param mail Mail to the supplier which is to be deleted
  * @returns returns result. if result.n = 1 the supplier is deleted.
  */
-export function deleteSupplier(mail) {
+export function deleteSupplier(mail: any) {
   const data = {
     mail: mail,
   };
@@ -330,10 +300,4 @@ export function modifyEmployeeData(
   };
 
   return prepareCall('ModifyEmployeeData', data);
-}
-
-export function logToken() {
-  getTokenRedirect(tokenRequest).then((response) => {
-    if (response) console.log(response.accessToken);
-  });
 }
