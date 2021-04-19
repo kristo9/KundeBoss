@@ -1,7 +1,7 @@
 {
   "bindings": [
     {
-      "authLevel": "function",
+      "authLevel": "anonymous",
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
@@ -13,5 +13,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/ReceiveMail/index.js"
+  "scriptFile": "../dist/GetCustomersAndSuppliers/index.js"
 }
