@@ -52,6 +52,7 @@ Video {
   position: relative;
   z-index: 10;
   color: black;
+  padding: 40px 200px;
 }
 
 .text h2 {
