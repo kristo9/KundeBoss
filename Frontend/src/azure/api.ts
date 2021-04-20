@@ -1,6 +1,7 @@
 import { apiConfig } from './apiConfig';
 import { getTokenRedirect } from './authRedirect';
 import { tokenRequest } from './authConfig';
+import { stat } from 'fs';
 
 function callApi(endpoint, token, data) {
   const headers = new Headers();
@@ -34,11 +35,15 @@ function callApi(endpoint, token, data) {
   console.log(options);
 
   console.log('Calling Web API...');
-
+  let status = null;
   return fetch(endpoint, options)
-    .then((response) => response.json())
+    .then((response) => {
+      status = response.status;
+      return response.json();
+    })
     .then((response) => {
       if (response) {
+        response['status'] = status;
         //ui.logMessage('Web API responded: Hello ' + response['name'] + '!');
         return response;
       }
