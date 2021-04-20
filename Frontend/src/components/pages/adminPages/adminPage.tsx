@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
-import Searchfield from '../../basicComp/searchfield';
 import LoadingSymbol from '../../basicComp/loading';
-import { SBElementProps, SBProps, Sidebar } from '../../basicComp/sidebar';
+import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 
 //pages
-import NewCustomer from './subPages/newCustomer';
+
 import ViewRights from './subPages/viewRights';
-import NewSupplier from './subPages/newSupplier';
 import { getAllEmployees } from '../../../azure/api';
 import CustomerEditPage from '../customerpage/subPages/customerEditPage';
 
@@ -80,20 +78,5 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     }, //TODO: lage side for nyinnlogget
   ];
 }
-
-// interface userInfo {
-//   name: string;
-//   type?: string;
-// }
-
-// function DisplayInfo(props: userInfo) {
-//   return (
-//     <p>
-//       <b>{props.name} </b>
-
-//       {props.type === 'customer' ? 'Kunde' : 'Ansatt'}
-//     </p>
-//   );
-// }
 
 export default AdminPage;
