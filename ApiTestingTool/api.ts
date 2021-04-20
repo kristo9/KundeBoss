@@ -3,15 +3,15 @@ import { accessToken, apiConfig } from './stuff';
 
 async function runTest() {
   let res = [];
-  for (let i = 0; i < 1; ++i) {
+  for (let i = 0; i < 100; ++i) {
     //res.push(callLogin());
-    res.push(getCustomer('60705fc7b178af6350fd1645'));
+    res.push(getCustomer('60782f09d4cd6b141cad9288'));
     //res.push(getEmployee());
     //res.push(getSupplier('605b37ae6c35ab18d8c49da7'));
   }
 
   res.forEach(async (r, index) => {
-    if (index % 100 == 0) console.log(index + ' ' + (await r));
+    if (1 == 1) console.log(index + ' ' + (await r));
 
     //console.log((await r).stat);
   });

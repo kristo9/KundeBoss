@@ -41,17 +41,25 @@ export default (context: Context, req: HttpRequest): any => {
    * @description Finds all customer ids in the database
    * @returns promise that resolves to array of customer ids
    */
-  const getCustomerIds = (db) => {
-    return new Promise((resolve, reject) => {
-      db.collection(collections.customer)
-        .find({}, { projection: { _id: 1 } })
-        .toArray((error, docs) => {
+  const customerIdExist = (db) => {
+    return new Promise((resolve) => {
+      db.collection(collections.customer).findOne(
+        { _id: ObjectId(req.body.id) },
+        { 'projection': { '_id': 1 } },
+        (error, docs) => {
           if (error) {
-            reject(null);
+            errorQuery(context);
+            resolve(false);
           } else {
-            resolve(docs);
+            if (docs != null) {
+              resolve(true);
+            } else {
+              errorWrongInput(context, 'No customer found');
+              resolve(false);
+            }
           }
-        });
+        }
+      );
     });
   };
 
@@ -67,7 +75,7 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       } else {
         /*Check that customerid exists*/
-        let customerIds = getCustomerIds(db);
+        let customerIds = customerIdExist(db);
 
         db.collection('employee').findOne(
           {
@@ -81,8 +89,7 @@ export default (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              if (!JSON.stringify(await customerIds).includes(req.body.id)) {
-                errorWrongInput(context, 'No customer found');
+              if (!(await customerIds)) {
                 return context.done();
               }
               let cust = docs.customers.find(
