@@ -13,6 +13,7 @@ import CustomerPage from '../pages/customerpage/customerpage';
 import PageNotFound from '../pages/pageNotFound/pageNotFound';
 import AdminPage from '../pages/adminPages/adminPage';
 import SupplierPage from '../pages/supplierPages/supplierPage';
+import HttpError from '../pages/pageNotFound/HttpErrorPage'
 
 // Context 
 import { LanguageProvider } from '../../language/LangContext';
@@ -34,6 +35,7 @@ const Routes = () => {
       <Route path='/admin' component={AdminPage} />
       <Route path='/supplier' component={SupplierPage} />
       <Route path='*' exact={true} component={PageNotFound} />
+      <Route path='/error' component={HttpError} />
     </Switch>
   );
 };

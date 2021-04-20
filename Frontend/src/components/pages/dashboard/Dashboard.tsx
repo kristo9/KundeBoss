@@ -15,7 +15,7 @@ let customers = getEmployee();
 /**
  * A class that contains and renders the dashboard
  */
-class Dashboard extends React.Component<{}, { customers: any, search: string }> {
+class Dashboard extends React.Component<{}, { customers: any, search: string, error: string }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class
@@ -25,6 +25,7 @@ class Dashboard extends React.Component<{}, { customers: any, search: string }> 
     this.state = {
       customers: null,
       search: '',
+      error: '',
     };
   }
 
