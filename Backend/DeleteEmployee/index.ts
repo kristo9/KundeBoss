@@ -68,6 +68,10 @@ export default (context: Context, req: HttpRequest): any => {
         errorQuery(context);
         return context.done();
       }
+      if (docs.deletedCount === 0) {
+        errorWrongInput(context, 'No employee found');
+        return context.done();
+      }
       returnResult(context, docs);
       context.done();
     });
