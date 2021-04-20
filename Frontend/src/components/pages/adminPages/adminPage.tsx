@@ -6,13 +6,13 @@ import LoadingSymbol from '../../basicComp/loading';
 import { SBElementProps, SBProps, Sidebar } from '../../basicComp/sidebar';
 
 //pages
-import NewCustomer from './newCustomer';
-import ViewRights from './viewRights';
-import NewSupplier from './newSupplier';
+import NewCustomer from './subPages/newCustomer';
+import ViewRights from './subPages/viewRights';
+import NewSupplier from './subPages/newSupplier';
 import { getAllEmployees } from '../../../azure/api';
 import CustomerEditPage from '../customerpage/subPages/customerEditPage';
 
-class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any; search: any }> {
+class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any; }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class.
@@ -22,7 +22,6 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     this.state = {
       pageState: <LoadingSymbol />,
       adminInfo: null,
-      search: ' ',
     };
   }
 
@@ -36,6 +35,7 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
       //Gets information about the customer based on the id in the URL
       await new Promise((r) => setTimeout(r, 500));
       let adminI = await getAllEmployees();
+      console.log(adminI);
       this.setState({
         adminInfo: adminI,
         pageState: <ViewRights adminData={adminI} />,
