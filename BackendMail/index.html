@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Svar</h1>
+    <input type="text" id="data" name="data" textarea="200" /><br /><br />
+    <button id="Button" onclick="sendReply()">Send svar</button>
+    <p id="demo"></p>
+    <script defer>
+      function sendReply() {
+        document.getElementById('Button').disabled = true;
+        var data = document.getElementById('data').value;
+        var loading = true;
+        var loadingBar = '';
+        var options = {
+          method: 'POST',
+          body: JSON.stringify({ replyText: data, replyId: ' + '"' + replyId +  '"' + '
+        }),
+        };
+        fetch(' + '"' + process.env['ReceiveMailUrl'] + '"' + ', options)
+          .then(async (response) => {
+            loading = false;
+            console.log(response);
+            var text = (await response.json()).text;
+            console.log(text);
+            return { text, response };
+          })
+          .then((response) => {
+            console.log(response);
+            document.getElementById('demo').innerHTML = response.text;
+          })
+          .catch(() => {
+            loading = false;
+            document.getElementById("demo").innerHTML = "Connection failed";
+          });
+        async function loadingb() {
+          while (loading) {
+            loadingBar += '=';
+            document.getElementById('demo').innerHTML = loadingBar;
+            await new Promise((r) => setTimeout(r, 100));
+          }
+        }
+        loadingb();
+      }
+    </script>
+  </body>
+</html>

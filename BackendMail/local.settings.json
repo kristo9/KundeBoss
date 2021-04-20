@@ -4,6 +4,11 @@
     "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=mailparserfunctionapp;AccountKey=r794pfcEamfhokN/U4dGQWr9JFqEGxbr7mgXjQuSyyWNzj03Pr7txuMDQwAZWILWKiYeyLcHsQH7eHwJbBF8Rg==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "UriWrite": "mongodb://kundebossmongodb:GHLql0AhgKRnqQVp63pp88C96GmIbC7tkzXpaUfxtbyll5IlPsHyeL7YMb0tWeFbnbAU8Iu8RTYXkX5Bu2bOfA==@kundebossmongodb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=200000&appName=@kundebossmongodb@",
-    "EmailAddress": "post@flyt.cloud"
+    "UriRead": "mongodb://kundebossmongodb:xakwppy4qPl6gkC5fWAYMLvq3SFaL3WOxi1SNgNRdbwCe0hffcyc35kzTcXwKP8VOFQlvczfrjA6fw8HcEdH9g==@kundebossmongodb.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=200000&appName=@kundebossmongodb@",
+    "EmailAddress": "post@flyt.cloud",
+    "ReceiveMailUrl": "http://localhost:7071/api/ReceiveMail"
+  },
+  "Host": {
+    "CORS": "*"
   }
 }
