@@ -81,6 +81,7 @@ const HomePage = () => {
     console.log("Inne i homepage")
     const [UserCase, setUserCase] = useState(null);
     const [Load, setLoading] = useState(true);
+    const [isError, setIsError] = useState(null);
     
     useEffect(() => {
         async function fetchAccountInfo() {
@@ -89,6 +90,7 @@ const HomePage = () => {
           console.log(info)
           //await new Promise(r => setTimeout(r, 2000));
           console.log(info);
+
 
           if (info.isConfigured) {
             if (info.isCustomer) {
