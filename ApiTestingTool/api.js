@@ -45,9 +45,9 @@ function runTest() {
         var _this = this;
         return __generator(this, function (_a) {
             res = [];
-            for (i = 0; i < 3; ++i) {
+            for (i = 0; i < 100; ++i) {
                 //res.push(callLogin());
-                res.push(getCustomer('60705fc7b178af6350fd1645'));
+                res.push(getCustomer('60782f09d4cd6b141cad9288'));
                 //res.push(getEmployee());
                 //res.push(getSupplier('605b37ae6c35ab18d8c49da7'));
             }
@@ -56,7 +56,7 @@ function runTest() {
                 return __generator(this, function (_d) {
                     switch (_d.label) {
                         case 0:
-                            if (!(index % 100 == 0)) return [3 /*break*/, 2];
+                            if (!(1 == 1)) return [3 /*break*/, 2];
                             _b = (_a = console).log;
                             _c = index + ' ';
                             return [4 /*yield*/, r];

@@ -75,7 +75,10 @@ export default (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         }
-
+        if (docs.length === 0) {
+          errorWrongInput(context, 'No customer found');
+          return context.done();
+        }
         let mailGroup = docs[0].mailGroup;
 
         db.collection('mailGroup')
