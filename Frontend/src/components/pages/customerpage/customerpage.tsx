@@ -41,7 +41,7 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
     // Loades the data from the API
     const fetchCustomerInfo = async () => {
       //Gets information about the customer based on the id in the URL
-      await new Promise((r) => setTimeout(r, 500));
+     // await new Promise((r) => setTimeout(r, 500));
       let customerI = await getCustomer(window.location.pathname.split('/')[2]);
       this.setState({
         customerInfo: customerI,

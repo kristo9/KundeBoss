@@ -5,7 +5,7 @@ import { useAccount } from '@azure/msal-react';
 
 // Components
 import { SignInSignOutButton } from '../basicComp/SignInOutButton';
-import { msalInstance } from '../../index';
+import { msalInstance } from '../../azure/authRedirect';
 import LanguageSelector from '../../language/LangContext';
 
 // Context

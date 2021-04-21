@@ -9,12 +9,12 @@ const auth_1 = require("../SharedFiles/auth");
  * @param req : HttpRequest
  */
 exports.default = (context, req) => {
+    var _a;
     req.body = dataValidation_1.prepInput(context, req.body);
     /*  Returns if there are no request body */
     if (req.body === null) {
         return context.done();
     }
-    context.log(req.body);
     let replyId = null;
     let replyText = null;
     /**
@@ -36,16 +36,31 @@ exports.default = (context, req) => {
             }
             else {
                 context.log('No document found');
-                context.res.status = 400;
-                context.res.body = { text: 'Error, not found' };
+                context.res = {
+                    status: 400,
+                    body: {
+                        text: 'Error, not found',
+                    },
+                };
             }
             context.done();
         });
     };
     if (req.body.replyId) {
         replyId = req.body.replyId;
-        if (req.body.replyText) {
-            replyText = req.body.replyText;
+        if ((_a = req.body) === null || _a === void 0 ? void 0 : _a.replyText) {
+            if (req.body.replyText.length < 1000) {
+                replyText = req.body.replyText;
+            }
+            else {
+                context.res = {
+                    status: 400,
+                    body: {
+                        text: 'Feil, hold svartekst under 1000 tegn',
+                    },
+                };
+                return context.done();
+            }
         }
         dataBase_1.connectWrite(context, functionQuery);
     }
