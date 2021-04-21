@@ -39,6 +39,7 @@ function callApi(endpoint, token, data) {
   return fetch(endpoint, options)
     .then((response) => {
       status = response.status;
+      console.log(status)
       return response.json();
     })
     .then((response) => {
