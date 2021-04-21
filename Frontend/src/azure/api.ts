@@ -227,6 +227,16 @@ export function getAllEmployees() {
 }
 
 /**
+ * @description Gets all the suppliers
+ * @returns an array of JSON objects with:<br>
+ *  '_id'                         - string<br>
+ *  'name'                        - string<br>
+ */
+export function getAllSuppliers() {
+  return prepareCall('GetAllSuppliers');
+}
+
+/**
  * @description Gets all the employees and their suppliers
  * @returns an array of JSON objects with:<br>
  *  'customer._id'                      - string<br>

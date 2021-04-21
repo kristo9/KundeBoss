@@ -53,7 +53,7 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   /**
-   * @description query db for all inforamtion about the specified customer
+   * @description query db for getting all suppliers, and then only keeping id and names
    * @param db : db connection
    */
   const functionQuery = (db: Db) => {
