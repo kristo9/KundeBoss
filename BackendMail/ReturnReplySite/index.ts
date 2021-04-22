@@ -28,24 +28,28 @@ export default (context: Context, req: HttpRequest) => {
         return context.done();
       }
       let receiver = docs.receivers.find((receiver) => receiver.replyId === replyId);
-      if (receiver.reply === null) {
-        context.res = {
-          headers: {
-            'Content-Type': 'text/html',
-          },
-          body:
-            '<body>    <script defer>      function sendReply() {        const fakeFetch = new Promise((resolve) => {          setTimeout(() => {            resolve({ text: "Random text", status: 200 });          }, 500);        });        document.getElementById("replyButton").disabled = true;        var data = document.getElementById("responseText").value;        var loading = true;        var loadingBar = "";        var options = {          method: "POST",          body: {},        };        var options = {          method: "POST",          body: JSON.stringify({ replyText: data, replyId: ' +
-            '"' +
-            replyId +
-            '"' +
-            '        }),        };        fetch(' +
-            '"' +
-            process.env['ReceiveMailUrl'] +
-            '"' +
-            ', options)        .then(async (response) => {            loading = false;        console.log(response);var data = document.getElementById("responseText").value;if (response.status === 400) { document.getElementById("replyButton").disabled = false;} var text = (await response.json()).text;return { text, response };}).then((response) => {console.log(response);document.getElementById("demo").innerHTML = response.text;})      .catch(() => {            loading = false;            document.getElementById("demo").innerHTML = "Connection failed";          });        async function loadingb() {          while (loading) {            loadingBar += "=";            document.getElementById("demo").innerHTML = loadingBar;            await new Promise((r) => setTimeout(r, 100));            if (loadingBar.length > 4) {              loadingBar = "";            }          }        }        loadingb();      }    </script>    <h1>Svar</h1>    <textarea id="responseText" name="responseText" rows="8" cols="50" style="resize: none"></textarea> <br /><br />    <button id="replyButton" onclick="sendReply()">Send svar</button>    <p id="demo"></p>  </body>',
-        };
-        context.done();
-      } else {
+      //if (receiver.reply === null) {
+      let replyText = receiver?.reply?.text ? receiver.reply.text : '';
+
+      context.res = {
+        headers: {
+          'Content-Type': 'text/html',
+        },
+        body:
+          '<body>    <script defer>      function sendReply() {        const fakeFetch = new Promise((resolve) => {          setTimeout(() => {            resolve({ text: "Random text", status: 200 });          }, 500);        });        document.getElementById("replyButton").disabled = true;        var data = document.getElementById("responseText").value;        var loading = true;        var loadingBar = "";        var options = {          method: "POST",          body: {},        };        var options = {          method: "POST",          body: JSON.stringify({ replyText: data, replyId: ' +
+          '"' +
+          replyId +
+          '"' +
+          '        }),        };        fetch(' +
+          '"' +
+          process.env['ReceiveMailUrl'] +
+          '"' +
+          ', options)        .then(async (response) => {            loading = false;        console.log(response);var data = document.getElementById("responseText").value; document.getElementById("replyButton").disabled = false;var text = (await response.json()).text;return { text, response };}).then((response) => {console.log(response);document.getElementById("demo").innerHTML = response.text;})      .catch(() => {            loading = false;            document.getElementById("demo").innerHTML = "Connection failed";          });        async function loadingb() {          while (loading) {            loadingBar += "=";            document.getElementById("demo").innerHTML = loadingBar;            await new Promise((r) => setTimeout(r, 100));            if (loadingBar.length > 4) {              loadingBar = "";            }          }        }        loadingb();      }    </script>    <h1>Svar</h1>  <p></p>   <textarea id="responseText" name="responseText" rows="8" cols="50" style="resize: none">' +
+          replyText +
+          '</textarea> <br /><br />    <button id="replyButton" onclick="sendReply()">Send svar</button>    <p id="demo"></p>  </body>',
+      };
+      context.done();
+      /*} else {
         context.res = {
           headers: {
             'Content-Type': 'text/html',
@@ -53,7 +57,7 @@ export default (context: Context, req: HttpRequest) => {
           body: '<h1>Svar er allerede registrert</h1>',
         };
         return context.done();
-      }
+      }*/
     });
   };
 
