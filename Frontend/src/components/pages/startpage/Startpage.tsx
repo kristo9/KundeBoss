@@ -2,7 +2,7 @@ import './Startpage.css';
 import { Link } from 'react-router-dom';
 import '../../basicComp/basic.css';
 import { useIsAuthenticated } from '@azure/msal-react';
-import { msalInstance } from '../../..';
+import { msalInstance } from '../../../azure/authRedirect';
 import HomePage from './HomePage';
 import Clouds from "./Clouds.mp4";
 

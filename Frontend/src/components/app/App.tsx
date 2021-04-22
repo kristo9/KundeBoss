@@ -54,7 +54,7 @@ const App = ({ pca }) => {
           </div>
           :
           <div className='app' style={{ height: '100vh' }}>
-              <Navba />
+              <div className='navbar'> <Navba /> </div>
             <div style={{ marginTop: '23px', width: '100%' }}>
               <Routes />
             </div>

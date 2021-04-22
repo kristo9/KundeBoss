@@ -33,7 +33,7 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     // Loades the data from the API
     const fetchCustomerInfo = async () => {
       //Gets information about the customer based on the id in the URL
-      await new Promise((r) => setTimeout(r, 500));
+      //await new Promise((r) => setTimeout(r, 500));
       let adminI = await getAllEmployees();
       console.log(adminI);
       this.setState({

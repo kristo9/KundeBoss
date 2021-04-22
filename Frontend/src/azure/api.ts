@@ -1,7 +1,6 @@
 import { apiConfig } from './apiConfig';
-import { getTokenRedirect } from './authRedirect';
+import { getTokenRedirect, msalInstance } from './authRedirect';
 import { tokenRequest } from './authConfig';
-import { stat } from 'fs';
 
 function callApi(endpoint, token, data) {
   const headers = new Headers();
@@ -54,12 +53,20 @@ function callApi(endpoint, token, data) {
     });
 }
 
-function prepareCall(apiName, data = null) {
+async function prepareCall(apiName, data = null) {
+  let i = 0;
+  while (msalInstance.getActiveAccount() === null) {
+    await new Promise((r) => setTimeout(r, 10));
+    if (++i > 99) {
+      return;
+    }
+  }
+
   return getTokenRedirect(tokenRequest)
     .then((response) => {
       if (response) {
         console.log('access_token acquired at: ' + new Date().toString());
-        console.log(response.accessToken);
+        if (apiName === 'LoginTrigger') console.log(response.accessToken);
         //let role = response.account.idTokenClaims.roles[0];
         console.log(response);
         try {
@@ -225,6 +232,16 @@ export function sendMailCustomer(
  */
 export function getAllEmployees() {
   return prepareCall('GetAllEmployees');
+}
+
+/**
+ * @description Gets all the suppliers
+ * @returns an array of JSON objects with:<br>
+ *  '_id'                         - string<br>
+ *  'name'                        - string<br>
+ */
+export function getAllSuppliers() {
+  return prepareCall('GetAllSuppliers');
 }
 
 /**

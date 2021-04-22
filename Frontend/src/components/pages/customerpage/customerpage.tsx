@@ -44,19 +44,12 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
     const fetchCustomerInfo = async () => {
 
       //Gets information about the customer based on the id in the URL
-      //await new Promise((r) => setTimeout(r, 500));
-      try {
-        const customerI = await getCustomer(window.location.pathname.split('/')[2]);
-        console.log(customerI)
-        this.setState({
-          customerInfo: customerI,
-          pageState: <CustomerInfoPage customerInfo={customerI} />,
-          error: '',
-        });
- 
-      } catch (error) {
-        this.setState( { error:'gg' });
-      }
+     // await new Promise((r) => setTimeout(r, 500));
+      let customerI = await getCustomer(window.location.pathname.split('/')[2]);
+      this.setState({
+        customerInfo: customerI,
+        pageState: <CustomerInfoPage customerInfo={customerI} />,
+      });
     };
     fetchCustomerInfo();
   }
