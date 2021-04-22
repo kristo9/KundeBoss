@@ -28,6 +28,11 @@
   background-color: black;
 }
 
+.Page {
+  display: flex;
+  flex-direction: column;
+}
+
 Video {
   position: absolute;
   top: 0;
@@ -60,7 +65,11 @@ Video {
 }
 
 .text-box {
-  background-color: teal;
+  display: flex;
+  border-width: 2px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .text h1 {
@@ -72,15 +81,36 @@ Video {
   line-height: 1em;
   text-transform: uppercase;
   text-align: center;
+  font-weight: 900;
 }
 
-.text h4 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: calc(2em + 1vmin);
-  font-weight: 800;
-  line-height: 1em;
-  text-transform: uppercase;
-  text-align: center;
+.text-box button {
+  background: #000000;
+  border: none;
+  border-radius: 10%;
+  color: #ffffff;
+  font-size: calc(1em + 1vmin);
+  height: 70px;
+  padding: 11px 20px 10px 20px;
+  text-decoration: none;
+  font-weight: bold;
+  border-color: white;
+}
+
+.text-box button:hover {
+  border-style: solid;
+  border-color: rgb(3, 202, 3);
+  border-width: 4px;
+  cursor: pointer;
+}
+
+.footer {
+  height: 200px;
+  margin: 0;
+  width: 100%;
+  left: 0px;
+  bottom: 0px;
+  height: 200px;
+  max-height: 200px;
+  width: 100%;
 }

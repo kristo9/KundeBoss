@@ -67,13 +67,19 @@
   display: none;
 }
 
+.right .contents .links a:hover {
+  background: #747f86;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .right .contents .signInOut button:hover {
   background: #747f86;
   text-decoration: none;
   cursor: pointer;
 }
 
-@media only screen and (max-width: 1050px) {
+@media only screen and (max-width: 1750px) {
   .topnav {
     height: 60px;
   }

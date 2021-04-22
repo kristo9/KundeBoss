@@ -4,7 +4,9 @@ import '../../basicComp/basic.css';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { msalInstance } from '../../../azure/authRedirect';
 import HomePage from './HomePage';
+import Footer from './Footer'
 import Clouds from "./Clouds.mp4";
+import { SignInSignOutButton } from '../../basicComp/SignInOutButton';
 
 
 /**
@@ -39,6 +41,7 @@ import Clouds from "./Clouds.mp4";
 
 const WelcomePage = () => {
   return (
+    <div className='Page'>
     <div className="WelcomePage">
         <video playsInline autoPlay loop muted className="Video">
           <source src={Clouds} type="video/mp4"/>
@@ -47,9 +50,13 @@ const WelcomePage = () => {
         <div className='text'>
           <div className='text-box'>
             <h1> FLYT </h1>
-            <h3> Et kunderelasjonssystem utviklet for TietoEvry </h3>
+            <SignInSignOutButton />
           </div>
         </div>
+    </div>
+      <footer className='footer'>
+        <Footer />
+      </footer>
     </div>
   );
 };
