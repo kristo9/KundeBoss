@@ -135,7 +135,7 @@ const HomePage = () => {
 
     return (
         <div>
-            {(isError !== '') ? <div> Det er error </div>: 
+            {(isError !== '') ? <div> Det er feil </div>: 
              (Load) ? <Loading /> :
              (UserCase === 'NotConfigured') ? <NotConfigured />:
              (UserCase === 'CustomerFirstLogin') ? <Customer /> :
