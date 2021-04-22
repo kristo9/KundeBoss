@@ -3,13 +3,17 @@ body {
   margin-top: 45px;
   width: 100%;
   margin: 0 auto;
-  background-color: whitesmoke;
+  background-color: white;
 }
 
 /*css for the entire document */
 .app {
   display: flex;
   flex-wrap: wrap;
+}
+
+.navbar {
+  z-index: 1000;
 }
 
 /*Uses the Manrope font (manropefont.com)*/

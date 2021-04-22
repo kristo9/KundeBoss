@@ -1,4 +1,5 @@
 // Liberaries
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { useAccount } from '@azure/msal-react';
@@ -13,7 +14,7 @@ import { LanguageContext } from '../../language/LangContext';
 
 // CSS style
 import './Navbar.css';
-import { useContext } from 'react';
+
 
 
 const Authenticated = () => {
@@ -22,27 +23,29 @@ const Authenticated = () => {
   sessionStorage.setItem('UserName', accounts[0].username);
   console.log('UserName is set at sessionStorage "UserName":  ' + sessionStorage.getItem('UserName'));
 
+  const[showLink, setShowLink] = useState(false);
+
   return (
-    <div className='topnav'>
+    <header className='topnav'>
       <div className='left'>
-        <Link to='/' className='Logo'>
-          "Logo"
-        </Link>
+        <Link to='/' className='Logo' onClick={ () => showLink ? setShowLink(false) : ''}> "Logo" </Link>
       </div>
       <div className='right'>
-        <Link to='/contact' className='Link'>
-          {dictionary.contact}
-        </Link>
-        <Link to='/help' className='Link'>
-          {dictionary.help}
-        </Link>
-        <Link to='/about' className='Link'>
-          {dictionary.about}
-        </Link>
-        <SignInSignOutButton />
-        <LanguageSelector />
+        <div className='contents' id={ showLink ? 'hidden' : '' }>
+          <div className='links'>
+            <Link to='/contact' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.contact} </Link>
+            <Link to='/help' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.help} </Link>
+            <Link to='/about' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.about} </Link> 
+          </div>
+          <div className='signInOut'>
+            <SignInSignOutButton />
+          </div>
+        </div>
+        <div className='hamburgermenu'>
+          <button onClick={ () => setShowLink(!showLink)}> Open </button>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 
@@ -56,31 +59,34 @@ const Unauthenticated = () => {
   sessionStorage.removeItem('UserName');
   console.log('UserName is removed as no account is signed in');
 
+  const[showLink, setShowLink] = useState(false);
+
+  console.log(showLink);
   return (
     <header className='topnav'>
-    <div className='left'>
-      <Link to='/' className='Logo'>
-        "Logo"
-      </Link>
-    </div>
-    <div className='right'>
-      <Link to='/contact' className='Link'>
-        {dictionary.contact}
-      </Link>
-      <Link to='/help' className='Link'>
-        {dictionary.help}
-      </Link>
-      <Link to='/about' className='Link'>
-        {dictionary.about}
-      </Link>
-      <SignInSignOutButton />
-      <LanguageSelector />
-    </div>
+      <div className='left'>
+        <Link to='/' className='Logo' onClick={ () => showLink ? setShowLink(false) : ''}> "Logo" </Link>
+      </div>
+      <div className='right'>
+        <div className='contents' id={ showLink ? 'hidden' : '' }>
+          <div className='links'>
+            <Link to='/contact' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.contact} </Link>
+            <Link to='/help' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.help} </Link>
+            <Link to='/about' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.about} </Link> 
+          </div>
+          <div className='signInOut'>
+            <SignInSignOutButton />
+          </div>
+        </div>
+        <div className='hamburgermenu'>
+          <button onClick={ () => setShowLink(!showLink)}> Open </button>
+        </div>
+      </div>
     </header>
   );
 };
 
-const Navbar = () => {
+const Navba = () => {
   const isAuthenticated = useIsAuthenticated();
 
   console.log('Bruker er authentisert:  ' + isAuthenticated);
@@ -94,4 +100,4 @@ const Navbar = () => {
   return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
 };
 
-export default Navbar;
+export default Navba;

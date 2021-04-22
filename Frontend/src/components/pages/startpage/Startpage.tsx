@@ -40,12 +40,15 @@ import Clouds from "./Clouds.mp4";
 const WelcomePage = () => {
   return (
     <div className="WelcomePage">
-        <video autoPlay loop muted className="Video">
+        <video playsInline autoPlay loop muted className="Video">
           <source src={Clouds} type="video/mp4"/>
         </video>
-        <div className="text"> 
-          <h2> Flyt </h2>
-          <h3> Orden over kunder og bla bla bla </h3>
+        <div className='overlay'></div>
+        <div className='text'>
+          <div className='text-box'>
+            <h1> FLYT </h1>
+            <h3> Et kunderelasjonssystem utviklet for TietoEvry </h3>
+          </div>
         </div>
     </div>
   );

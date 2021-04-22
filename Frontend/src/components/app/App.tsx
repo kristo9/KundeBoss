@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { MsalProvider, useMsal } from '@azure/msal-react';
 
 // Components
-import Navbar from '../navbar/Navbar';
+import Navba from '../navbar/Navbar';
 import StartPage from '../pages/startpage/Startpage';
 import Contact from '../pages/contact/Contact';
 import Help from '../pages/help/Help';
@@ -54,7 +54,7 @@ const App = ({ pca }) => {
           </div>
           :
           <div className='app' style={{ height: '100vh' }}>
-              <Navbar />
+              <Navba />
             <div style={{ marginTop: '23px', width: '100%' }}>
               <Routes />
             </div>
