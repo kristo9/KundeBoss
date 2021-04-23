@@ -1,8 +1,9 @@
-const maxCacheSize = 10;
+const maxCacheSize = 20;
 const cacheTimeout = 300; /* Cache timout of objects in seconds */
 
 const millInSec = 1000;
 
+let cacheWeight = 0; /* Used to keep track of which objects should stay in the cache when cleanCahce() is called */
 let cache = new Map();
 
 /**
@@ -11,25 +12,8 @@ let cache = new Map();
  * @returns Object
  */
 export async function getFromCache(objId) {
-  /* Sets the age of objects called for to 0. Ads 1 to the age of all the other objects */
-  function adjustUsageAge() {
-    let keys = cache.keys();
-    let tempKey;
-    let temp;
-    for (let i = 0, range = cache.size; i < range; ++i) {
-      tempKey = keys.next().value;
-      temp = cache.get(tempKey);
-      if (tempKey != objId) {
-        temp.usageAge += 1;
-        cache.set(tempKey, temp);
-      } else {
-        temp.usageAge = 0;
-        cache.set(tempKey, temp);
-      }
-    }
-  }
-
-  /* Chechs if the object is in cache. Returns the object if status equals 200 and the age is less than the cacheTimout, otherwise removes it from the cache*/
+  /* Chechs if the object is in cache. Returns the object if status equals 200 and the age is less than the cacheTimout, 
+  otherwise removes it from the cache*/
   if (cache.has(objId)) {
     let objAgeSec = (new Date().getTime() - cache.get(objId)?.time) / millInSec || 0;
     let obj = await cache.get(objId).data;
@@ -42,7 +26,9 @@ export async function getFromCache(objId) {
           '\nCurrent cache size: ' +
           cache.size
       );
-      adjustUsageAge();
+      let temp = cache.get(objId);
+      temp.usageAge = ++cacheWeight;
+      cache.set(objId, temp);
       return obj;
     } else {
       deleteCache(objId);
@@ -65,7 +51,7 @@ export function addToCacheAndReturn(objId, data) {
   try {
     cache.set(objId, {
       data,
-      usageAge: 0,
+      usageAge: ++cacheWeight,
       time: new Date().getTime(),
     });
   } catch {
@@ -83,10 +69,11 @@ function cleanCache() {
   let arr = [cache.size];
   let median;
   let tempKey;
+  let tempData;
 
   /* Creates array with the age of obects in cache */
   for (let i = 0, range = cache.size; i < range; ++i) {
-    arr[i] = (cache.get(keys.next()).value).usageAge;
+    arr[i] = cache.get(keys.next().value).usageAge;
   }
   /* Finds the median of the age of the objects */
   //#Source https://bit.ly/2neWfJ2
@@ -98,12 +85,17 @@ function cleanCache() {
 
   median = findMedian(arr);
   keys = cache.keys();
+  cacheWeight = 0;
 
   /* Deletes all cached object with usageAge age higher or equal to the median */
   for (let i = 0, range = cache.size; i < range; ++i) {
     tempKey = keys.next().value;
-    if (cache.get(tempKey).usageAge >= median) {
+    tempData = cache.get(tempKey);
+    if (tempData.usageAge <= median) {
       cache.delete(tempKey);
+    } else {
+      tempData.usageAge = ++cacheWeight;
+      cache.set(tempKey, tempData);
     }
   }
   console.log('Cleaned cache. New cache size: ' + cache.size);
@@ -117,6 +109,7 @@ export function deleteCache(key = null) {
   if (key !== null) {
     cache.delete(key);
   } else {
+    cacheWeight = 0;
     cache.clear();
   }
 }
