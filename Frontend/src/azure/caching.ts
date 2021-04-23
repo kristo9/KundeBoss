@@ -1,35 +1,51 @@
 const maxCacheSize = 10;
-const cacheTimeout = 10;
+const cacheTimeout = 300; /* Cache timout of objects in seconds */
+
+const millInSec = 1000;
 
 let cache = new Map();
-let usage = new Map();
+let usageAge = new Map(); /* Keeps track of when an object in cache was last being used */
+let objectAge = new Map(); /* Keeps track of when an object in cache was created */
 
 /**
- * @desc Get object from cache map, and adjusts the usage frequenzy of the cached objects
+ * @desc Get object from cache map, and adjusts the usageAge of the cached objects
  * @param objId - key
  * @returns Object
  */
 export async function getFromCache(objId) {
   /* Sets the age of objects called for to 0. Ads 1 to the age of all the other objects */
-  function adjustUsage() {
-    let keys = usage.keys();
+  function adjustUsageAge() {
+    let keys = usageAge.keys();
     let tempKey;
     for (let i = 0, range = cache.size; i < range; ++i) {
       tempKey = keys.next().value;
       if (tempKey != objId) {
-        usage.set(tempKey, usage.get(tempKey) + 1);
+        usageAge.set(tempKey, usageAge.get(tempKey) + 1);
       } else {
-        usage.set(tempKey, 0);
+        usageAge.set(tempKey, 0);
       }
     }
   }
 
-  /* Ceches of the object is in cache. Returns the object if status equals 200, ot removes if it's not */
+  let objAgeSec = (new Date().getTime() - objectAge.get(objId)) / millInSec || 0;
+
+  /* Chechs if the object is in cache. Returns the object if status equals 200 and the age is less than the cacheTimout, otherwise removes it from the cache*/
   if (cache.has(objId)) {
     let obj = await cache.get(objId);
-    if (obj?.status === 200) {
-      adjustUsage();
-      console.log('Retrieved object from cache. ' + 'Cache size: ' + cache.size + ' ' + usage.size);
+    if (obj?.status === 200 && objAgeSec < cacheTimeout) {
+      console.log(
+        'Retrieved object from cache. Age(sec): ' +
+          Math.floor(objAgeSec) +
+          ' Timout(sec): ' +
+          Math.floor(cacheTimeout - objAgeSec) +
+          '\nCurrent cache size: ' +
+          cache.size +
+          ' ' +
+          objectAge.size +
+          ' ' +
+          usageAge.size
+      );
+      adjustUsageAge();
       return obj;
     } else {
       deleteCache(objId);
@@ -51,7 +67,8 @@ export function addToCacheAndReturn(objId, data) {
   }
   try {
     cache.set(objId, data);
-    usage.set(objId, 0);
+    usageAge.set(objId, 0);
+    objectAge.set(objId, new Date().getTime());
   } catch {
     deleteCache();
   }
@@ -63,14 +80,14 @@ export function addToCacheAndReturn(objId, data) {
  * The objects that was called the most recent, remains in the cache
  */
 function cleanCache() {
-  let keys = usage.keys();
-  let arr = [usage.size];
+  let keys = usageAge.keys();
+  let arr = [usageAge.size];
   let median;
   let tempKey;
 
   /* Creates array with the age of obects in cache */
-  for (let i = 0, range = usage.size; i < range; ++i) {
-    arr[i] = usage.get(keys.next().value);
+  for (let i = 0, range = usageAge.size; i < range; ++i) {
+    arr[i] = usageAge.get(keys.next().value);
   }
   /* Finds the median of the age of the objects */
   //#Source https://bit.ly/2neWfJ2
@@ -81,14 +98,15 @@ function cleanCache() {
   };
 
   median = findMedian(arr);
-  keys = usage.keys();
+  keys = usageAge.keys();
 
-  /* Deletes all cached object with usage age higher or equal to the median */
+  /* Deletes all cached object with usageAge age higher or equal to the median */
   for (let i = 0, range = cache.size; i < range; ++i) {
     tempKey = keys.next().value;
-    if (usage.get(tempKey) >= median) {
-      usage.delete(tempKey);
+    if (usageAge.get(tempKey) >= median) {
+      usageAge.delete(tempKey);
       cache.delete(tempKey);
+      objectAge.delete(tempKey);
     }
   }
 }
@@ -100,9 +118,11 @@ function cleanCache() {
 export function deleteCache(key = null) {
   if (key !== null) {
     cache.delete(key);
-    usage.delete(key);
+    usageAge.delete(key);
+    objectAge.delete(key);
   } else {
     cache.clear();
-    usage.clear();
+    usageAge.clear();
+    objectAge.clear();
   }
 }
