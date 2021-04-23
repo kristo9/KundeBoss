@@ -1,6 +1,7 @@
 import { apiConfig } from './apiConfig';
 import { getTokenRedirect, msalInstance } from './authRedirect';
 import { tokenRequest } from './authConfig';
+import { addToCacheAndReturn, deleteCache, getFromCache } from './caching';
 
 function callApi(endpoint, token, data) {
   const headers = new Headers();
@@ -38,7 +39,7 @@ function callApi(endpoint, token, data) {
   return fetch(endpoint, options)
     .then((response) => {
       status = response.status;
-      console.log(status)
+      console.log(status);
       return response.json();
     })
     .then((response) => {
@@ -80,13 +81,44 @@ async function prepareCall(apiName, data = null) {
       console.error(error);
     });
 }
+
+/**
+ * @desc Checks if the object called for has been stored in cache.
+ * Calls api and adds it to the cache if it isn't.
+ * @param apiName
+ * @param data
+ * @returns Object
+ */
+async function prepareCallWithCaching(apiName: string, data = null) {
+  let key = data?.id;
+  if (!key) {
+    key = apiName;
+  }
+  let cachedObject = await getFromCache(key);
+
+  if (cachedObject !== null) {
+    return cachedObject;
+  }
+  return addToCacheAndReturn(key, prepareCall(apiName, data));
+}
+/**
+ * @desc Calls the api and clears the cache.
+ * @param apiName
+ * @param key
+ * @returns Object
+ */
+function prepareCallAndDeleteCache(apiName: string, data = null, key = null) {
+  deleteCache(key);
+  return prepareCall(apiName, data);
+}
+
 /**
  * @description
  * @returns
  */
 export function callLogin() {
   console.log('callLogin');
-  return prepareCall('LoginTrigger').then((response) => {
+  return prepareCallWithCaching('LoginTrigger').then((response) => {
     return response;
   });
 }
@@ -145,7 +177,7 @@ export function newCustomer(
     infoReference,
     id,
   };
-  return prepareCall('NewCustomer', data);
+  return prepareCallAndDeleteCache('NewCustomer', data);
 }
 
 /*
@@ -179,7 +211,7 @@ export function newSupplier(
     id,
   };
 
-  return prepareCall('NewSupplier', data);
+  return prepareCallAndDeleteCache('NewSupplier', data);
 }
 
 /**
@@ -208,7 +240,7 @@ export function sendMailCustomer(
     subject,
     supplierIds,
   };
-  return prepareCall('SendMailCustomer', data);
+  return prepareCallAndDeleteCache('SendMailCustomer', data, customerId);
 }
 
 /*      <button onClick={async () => {
@@ -231,7 +263,7 @@ export function sendMailCustomer(
  *
  */
 export function getAllEmployees() {
-  return prepareCall('GetAllEmployees');
+  return prepareCallWithCaching('GetAllEmployees');
 }
 
 /**
@@ -241,7 +273,7 @@ export function getAllEmployees() {
  *  'name'                        - string<br>
  */
 export function getAllSuppliers() {
-  return prepareCall('GetAllSuppliers');
+  return prepareCallWithCaching('GetAllSuppliers');
 }
 
 /**
@@ -254,7 +286,7 @@ export function getAllSuppliers() {
  *  'customer.suppliers.name'           - string<br>
  */
 export function getCustomersAndSuppliers() {
-  return prepareCall('GetCustomersAndSuppliers');
+  return prepareCallWithCaching('GetCustomersAndSuppliers');
 }
 
 /**
@@ -266,7 +298,7 @@ export function getCustomer(id: string) {
   let customerId = {
     id: id,
   };
-  return prepareCall('GetCustomerData', customerId);
+  return prepareCallWithCaching('GetCustomerData', customerId);
 }
 /**
  * Gets information about a supplier
@@ -277,7 +309,7 @@ export function getSupplier(id: string) {
   let supplierId = {
     id: id,
   };
-  return prepareCall('GetSupplierData', supplierId);
+  return prepareCallWithCaching('GetSupplierData', supplierId);
 }
 
 /**
@@ -298,6 +330,10 @@ export function getEmployee(tag = null): Promise<any> {
   tag = {
     tag: tag,
   };
+  if (tag.tag === null) {
+    return prepareCallWithCaching('GetCustomers');
+  }
+
   return prepareCall('GetCustomers', tag);
 }
 
@@ -310,7 +346,7 @@ export function deleteEmployee(mail) {
   const data = {
     mail: mail,
   };
-  return prepareCall('DeleteEmployee', data);
+  return prepareCallAndDeleteCache('DeleteEmployee', data);
 }
 
 /**
@@ -322,7 +358,7 @@ export function deleteCustomer(mail) {
   const data = {
     mail: mail,
   };
-  return prepareCall('DeleteCustomer', data);
+  return prepareCallAndDeleteCache('DeleteCustomer', data);
 }
 
 /**
@@ -334,7 +370,7 @@ export function deleteSupplier(mail) {
   const data = {
     mail: mail,
   };
-  return prepareCall('DeleteSupplier', data);
+  return prepareCallAndDeleteCache('DeleteSupplier', data);
 }
 /**
  * @description Modifies employee data
@@ -361,7 +397,7 @@ export function modifyEmployeeData(
     customers: customers,
   };
 
-  return prepareCall('ModifyEmployeeData', data);
+  return prepareCallAndDeleteCache('ModifyEmployeeData', data);
 }
 
 export function logToken() {

@@ -9,9 +9,6 @@ import { useHistory } from 'react-router-dom';
 // CSS imports
 import './Dashboard.css';
 
-
-let customers = getEmployee();
-
 /**
  * A class that contains and renders the dashboard
  */
@@ -35,11 +32,9 @@ class Dashboard extends React.Component<{}, { customers: any, search: string, er
    */
   componentDidMount() {
     const fetchName = async () => {
-      customers = await customers;
+      let customers = await getEmployee();
       console.log(customers);
-      if (typeof customers !== 'object') {
-        customers = await getEmployee();
-      }
+
       this.setState({
         customers,
       });
