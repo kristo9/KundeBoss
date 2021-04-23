@@ -32,8 +32,6 @@ function callApi(endpoint, token, data) {
   /*   if (role !== null) options.role = role;
    */
 
-  console.log(options);
-
   console.log('Calling Web API...');
   let status = null;
   return fetch(endpoint, options)
@@ -69,7 +67,6 @@ async function prepareCall(apiName, data = null) {
         console.log('access_token acquired at: ' + new Date().toString());
         if (apiName === 'LoginTrigger') console.log(response.accessToken);
         //let role = response.account.idTokenClaims.roles[0];
-        console.log(response);
         try {
           return callApi(apiConfig.uri + apiName, response.accessToken, data); //,role);
         } catch (error) {
@@ -117,7 +114,6 @@ function prepareCallAndDeleteCache(apiName: string, data = null, key = null) {
  * @returns
  */
 export function callLogin() {
-  console.log('callLogin');
   return prepareCallWithCaching('LoginTrigger').then((response) => {
     return response;
   });

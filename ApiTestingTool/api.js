@@ -45,7 +45,7 @@ function runTest() {
         var _this = this;
         return __generator(this, function (_a) {
             res = [];
-            for (i = 0; i < 100; ++i) {
+            for (i = 0; i < 1; ++i) {
                 //res.push(callLogin());
                 res.push(getCustomer('60782f09d4cd6b141cad9288'));
                 //res.push(getEmployee());
