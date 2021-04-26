@@ -15,6 +15,28 @@ interface multipleInputField {
   text: string;
   children: React.ReactNode;
 }
+interface checkboxProps {
+  register: any; //ReturnType<typeof useForm>['register']; // gir register typen :)
+  labelText: string;
+  lableName: string;
+  value: string;
+  defaultValue: boolean;
+  required?: boolean;
+}
+
+interface SelectProps {
+  register: any;
+  name: string;
+  defaultValue: string | number;
+  defaultOption: {
+    name: string;
+    value: string | number;
+  };
+  options: {
+    name: string;
+    value: string | number;
+  }[];
+}
 
 export function MultipleInputField(props: multipleInputField) {
   return (
@@ -29,7 +51,7 @@ export function MultipleInputField(props: multipleInputField) {
 
 export function InputField(props: inputProps) {
   return (
-    <div>
+    <span>
       <label htmlFor={props.lableName}>{props.labelText}:</label>
       <input
         type={props.lableType}
@@ -40,13 +62,13 @@ export function InputField(props: inputProps) {
         required={props.required}
         {...props.register}
       />
-    </div>
+    </span>
   );
 }
 
 export function TextArea(props: inputProps) {
   return (
-    <div>
+    <span>
       <label htmlFor={props.lableName}>{props.labelText}:</label>
       <textarea
         name={props.lableName}
@@ -56,7 +78,7 @@ export function TextArea(props: inputProps) {
         required={props.required}
         {...props.register}
       />
-    </div>
+    </span>
   );
 }
 
@@ -66,5 +88,37 @@ export function MultipleInputField1(props: multipleInputField) {
       {props.text}
       <div>{props.children}</div>
     </div>
+  );
+}
+
+export function Checkbox(props: checkboxProps) {
+  return (
+    <span>
+      <label htmlFor={props.lableName}>{props.labelText}:</label>
+      <input
+        type='Checkbox'
+        name={props.lableName}
+        id={props.lableName}
+        required={props.required}
+        value={props.value}
+        // defaultValue={props.defaultValue}
+        {...props.register}
+      />
+    </span>
+  );
+}
+
+export function Select(props: SelectProps) {
+  return (
+    <select defaultValue={props.defaultValue} name={props.name} {...props.register}>
+      <option value={props.defaultOption.value}>{props.defaultOption.name}</option>
+      {props.options.map((option) => {
+        return (
+          <option key={option.value} value={option.value}>
+            {option.name}
+          </option>
+        );
+      })}
+    </select>
   );
 }

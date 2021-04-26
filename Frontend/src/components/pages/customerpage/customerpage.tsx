@@ -86,7 +86,14 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
     {
       text: 'Send mail',
       ID: 'sendMail',
-      onClick: () => this.setState({ pageState: <SendMail customerInfo={this.state.customerInfo} /> }),
+      onClick: () =>
+        this.setState({
+          pageState: (
+            <SendMail
+              customerID={[this.state.customerInfo._id, '604a7d3b0f085c17609e9187', '60705fc7b178af6350fd1645']}
+            />
+          ),
+        }),
     },
     {
       text: 'Notat',

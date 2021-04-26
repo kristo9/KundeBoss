@@ -1,13 +1,23 @@
-import react from 'react';
+import React, { useState, useEffect } from 'react';
 import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inputField';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { newCustomer } from '../../../../azure/api';
+import { getCustomersAndSuppliers, newCustomer } from '../../../../azure/api';
 
 /**
  * A page for editing customers.
  * @returns a react component with the edit-customer page.
  */
 function CustomerEditPage({ customerInfo }: any) {
+  const [supplierArrayState, setSupplierArrayState] = useState(null);
+
+  useEffect(() => {
+    const fetchAllSuppliers = async () => {
+      let customersAndSuppliers = await getCustomersAndSuppliers();
+    };
+
+    fetchAllSuppliers();
+  }, []);
+
   type FormValues = {
     customerName: string;
     contactName: string;
@@ -16,7 +26,15 @@ function CustomerEditPage({ customerInfo }: any) {
     note: string;
     infoReference: string;
     tags: { tag: string }[];
+    suppliers: {
+      id: string;
+      name: string;
+      phone: number;
+      mail: string;
+    }[];
   };
+
+  console.log(customerInfo);
 
   const {
     register,
@@ -27,16 +45,25 @@ function CustomerEditPage({ customerInfo }: any) {
     customerInfo //if customerInfo has data, add the tags
       ? {
           defaultValues: {
+            suppliers: customerInfo.suppliers,
             tags: customerInfo.tags,
           },
         }
       : {}
   );
 
+  console.log(customerInfo.suppliers);
+  console.log(control);
+
   // https://react-hook-form.com/api/usefieldarray
-  const { fields, append, prepend, remove } = useFieldArray({
+  const { fields: tagFields, append: tagAppend, remove: tagRemove } = useFieldArray({
     control,
     name: 'tags',
+  });
+
+  const { fields: suppleirFields, append: supplierAppend, remove: supplierRemove } = useFieldArray({
+    control,
+    name: 'suppliers',
   });
 
   return (
@@ -44,17 +71,19 @@ function CustomerEditPage({ customerInfo }: any) {
       <h1>{customerInfo ? 'Redigere kunden' : 'Ny kunde'}</h1>
       <form
         onSubmit={handleSubmit((data) => {
-          newCustomer(
-            customerInfo ? customerInfo._id : null,
-            data.customerName,
-            data.contactMail,
-            data.contactPhone,
-            data.contactName,
-            null,
-            getTagsArray(data.tags),
-            data.note,
-            data.infoReference
-          );
+          console.log(data);
+
+          //   newCustomer(
+          //     customerInfo ? customerInfo._id : null,
+          //     data.customerName,
+          //     data.contactMail,
+          //     data.contactPhone,
+          //     data.contactName,
+          //     null,
+          //     getTagsArray(data.tags),
+          //     data.note,
+          //     data.infoReference
+          //   );
         })}
       >
         <InputField
@@ -118,7 +147,7 @@ function CustomerEditPage({ customerInfo }: any) {
         />
 
         <MultipleInputField text={'Tags'}>
-          {fields.map(({ id }, index) => {
+          {tagFields.map(({ id }, index) => {
             return (
               <div key={id}>
                 <InputField
@@ -128,17 +157,57 @@ function CustomerEditPage({ customerInfo }: any) {
                   register={register(`tags.${index}.tag` as const)}
                   defaultValue={customerInfo.tags[index]}
                 />
-                <button onClick={() => remove(index)}>x</button>
+                <button onClick={() => tagRemove(index)}>x</button>
               </div>
             );
           })}
 
-          <button type='button' onClick={() => append({})}>
+          <button type='button' onClick={() => tagAppend({})}>
             Legg til tag
           </button>
         </MultipleInputField>
 
-        <p>Suppliers []</p>
+        <MultipleInputField text={'Leverandører'}>
+          {suppleirFields.map(({ id }, index) => {
+            return (
+              <div key={id}>
+                <InputField
+                  labelText={'Leverandør ' + (index + 1)}
+                  lableType={'text'}
+                  lableName={`suppliers[${index}].id`}
+                  register={register(`suppliers.${index}.id` as const)}
+                  defaultValue={customerInfo.suppliers[index]?.id}
+                />
+                <InputField
+                  labelText={'Navn '}
+                  lableType={'text'}
+                  lableName={`suppliers[${index}].name`}
+                  register={register(`suppliers.${index}.name` as const)}
+                  defaultValue={customerInfo.suppliers[index]?.name}
+                />
+                <InputField
+                  labelText={'Telefon '}
+                  lableType={'text'}
+                  lableName={`suppliers[${index}].phone`}
+                  register={register(`suppliers.${index}.phone` as const)}
+                  defaultValue={customerInfo.suppliers[index]?.phone}
+                />
+                <InputField
+                  labelText={'Mail '}
+                  lableType={'text'}
+                  lableName={`suppliers[${index}].mail`}
+                  register={register(`suppliers.${index}.mail` as const)}
+                  defaultValue={customerInfo.suppliers[index]?.mail}
+                />
+                <button onClick={() => supplierRemove(index)}>x</button>
+              </div>
+            );
+          })}
+
+          <button type='button' onClick={() => supplierAppend({})}>
+            Legg til leverandør
+          </button>
+        </MultipleInputField>
 
         {customerInfo ? (
           <button
