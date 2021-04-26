@@ -81,53 +81,62 @@ const HomePage = () => {
     console.log("Inne i homepage")
     const [UserCase, setUserCase] = useState(null);
     const [Load, setLoading] = useState(true);
+    const [isError, setIsError] = useState(null);
     
     useEffect(() => {
         async function fetchAccountInfo() {
           setLoading(true) 
-          let info= await callLogin();
-          console.log(info)
-          //await new Promise(r => setTimeout(r, 2000));
-          console.log(info);
+          setIsError('');
+          try {
+            let info= await callLogin();
+            console.log(info)
+            //await new Promise(r => setTimeout(r, 2000));
+            console.log(info);
+            
 
-          if (info.isConfigured) {
-            if (info.isCustomer) {
-              if (info.firstLogin) {
-                setUserCase('CustomerFirstLogin')
-              }
-              else setUserCase('CustomerNotFirst')
-            }
-            else if (info.admin !== null) {
-              if (info.admin === "write") {
-                if (info.firstLogin) {
-                  setUserCase('AdminWriteFirst')
+              if (info.isConfigured) {
+                if (info.isCustomer) {
+                  if (info.firstLogin) {
+                    setUserCase('CustomerFirstLogin')
+                  }
+                  else setUserCase('CustomerNotFirst')
                 }
-                else setUserCase('AdminWriteNotFirst')
-              }
-              else {
-                if (info.firstLogin) {
-                  setUserCase('AdminReadFirst')
+                else if (info.admin !== null) {
+                  if (info.admin === "write") {
+                    if (info.firstLogin) {
+                      setUserCase('AdminWriteFirst')
+                    }
+                    else setUserCase('AdminWriteNotFirst')
+                  }
+                  else {
+                    if (info.firstLogin) {
+                      setUserCase('AdminReadFirst')
+                    }
+                    else setUserCase('AdminReadNotFirst')
+                  }
                 }
-                else setUserCase('AdminReadNotFirst')
+                else {
+                  if (info.firstLogin) {
+                    setUserCase('EmployeeFirst')
+                  }
+                  else setUserCase('EmployeeNotFirst')
+                }
               }
-            }
-            else {
-              if (info.firstLogin) {
-                setUserCase('EmployeeFirst')
-              }
-              else setUserCase('EmployeeNotFirst')
-            }
+              else { setUserCase('NotConfigured') }
+      
+          } catch (error) {
+            setIsError(true);
           }
-          else { setUserCase('NotConfigured') }
 
-          setLoading(false)
-        }
+            setLoading(false)
+          }  
         fetchAccountInfo()
       }, [])
 
     return (
         <div>
-            {(Load) ? <Loading /> :
+            {(isError !== '') ? <div> Det er feil </div>: 
+             (Load) ? <Loading /> :
              (UserCase === 'NotConfigured') ? <NotConfigured />:
              (UserCase === 'CustomerFirstLogin') ? <Customer /> :
              (UserCase === 'CustomerNotFirst') ? <Customer /> :

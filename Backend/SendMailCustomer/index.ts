@@ -131,7 +131,7 @@ export default (context: Context, req: HttpRequest): any => {
                 'type': 'customer',
               });
             }
-
+            
             if (req.body.supplierIds) {
               excpectedReceiverCount += req.body.supplierIds.length;
               customer.suppliers
@@ -140,7 +140,7 @@ export default (context: Context, req: HttpRequest): any => {
                   {
                     replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
                     receiverMail.push({
-                      'to': [{ 'email': supplier.contact.mail }],
+                      'to': [{ 'email': supplier.mail }],
                       'subject': req.body.subject,
                       'substitutions': {
                         '%replyUrl%': replyUrl + replyId,
@@ -150,7 +150,7 @@ export default (context: Context, req: HttpRequest): any => {
                     receiverInformation.push({
                       'replyId': replyId,
                       'id': supplier.id,
-                      'name': supplier.contact.name,
+                      'name': supplier.name,
                       'reply': null,
                       'type': 'supplier',
                     });
@@ -161,7 +161,7 @@ export default (context: Context, req: HttpRequest): any => {
             if (excpectedReceiverCount === receiverMail.length) {
               connectWrite(context, updateReplyCount);
             } else {
-              errorQuery(context, 'User dont have access to given receivers');
+              errorUnauthorized(context, 'User dont have access to given receivers');
               return context.done();
             }
           });
@@ -202,7 +202,7 @@ export default (context: Context, req: HttpRequest): any => {
             'value':
               '<p>' +
               req.body.text +
-              '</p><p>Følg linken eller svar på emailen for godkjenne.</p><a href=%replyUrl%>Acknowledge</a>',
+              '</p><p>Følg linken for å svare</p><a href=%replyUrl%>Svar</a>',
           },
         ],
       };

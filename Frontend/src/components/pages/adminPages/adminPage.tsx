@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
-import Searchfield from '../../basicComp/searchfield';
 import LoadingSymbol from '../../basicComp/loading';
-import { SBElementProps, SBProps, Sidebar } from '../../basicComp/sidebar';
+import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 
 //pages
-import NewCustomer from './newCustomer';
-import ViewRights from './viewRights';
-import NewSupplier from './newSupplier';
-import { getAllEmployees } from '../../../azure/api';
-import CustomerEditPage from '../customerpage/subPages/customerEditPage';
-import SupplierEditPage from '../supplierPages/subPages/SupplierEditPage';
 
-class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any; search: any }> {
+import ViewRights from './subPages/viewRights';
+import { getAllEmployees } from '../../../azure/api';
+import NewCustomer from './subPages/newCustomer';
+import NewSupplier from './subPages/newSupplier';
+import NewEntry from './subPages/NewEntry';
+
+class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class.
@@ -23,7 +22,6 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     this.state = {
       pageState: <LoadingSymbol />,
       adminInfo: null,
-      search: ' ',
     };
   }
 
@@ -35,8 +33,9 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     // Loades the data from the API
     const fetchCustomerInfo = async () => {
       //Gets information about the customer based on the id in the URL
-      await new Promise((r) => setTimeout(r, 500));
+      //await new Promise((r) => setTimeout(r, 500));
       let adminI = await getAllEmployees();
+      console.log(adminI);
       this.setState({
         adminInfo: adminI,
         pageState: <ViewRights adminData={adminI} />,
@@ -67,34 +66,19 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     {
       text: 'Ny kunde',
       ID: 'newCustomer',
-      onClick: () => this.setState({ pageState: <CustomerEditPage /> }),
+      onClick: () => this.setState({ pageState: <NewCustomer /> }),
     },
     {
       text: 'Ny leverandør',
       ID: 'newSupplier',
-      onClick: () => this.setState({ pageState: <SupplierEditPage /> }),
+      onClick: () => this.setState({ pageState: <NewSupplier /> }),
     },
     {
       text: 'Nyinnlogget',
       ID: 'newLogin',
-      onClick: () => this.setState({ pageState: <ViewRights adminData={this.state.adminInfo} /> }),
+      onClick: () => this.setState({ pageState: <NewEntry /> }),
     }, //TODO: lage side for nyinnlogget
   ];
 }
-
-// interface userInfo {
-//   name: string;
-//   type?: string;
-// }
-
-// function DisplayInfo(props: userInfo) {
-//   return (
-//     <p>
-//       <b>{props.name} </b>
-
-//       {props.type === 'customer' ? 'Kunde' : 'Ansatt'}
-//     </p>
-//   );
-// }
 
 export default AdminPage;

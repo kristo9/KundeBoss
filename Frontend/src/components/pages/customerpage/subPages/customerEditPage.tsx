@@ -147,7 +147,7 @@ function CustomerEditPage({ customerInfo }: any) {
         />
 
         <MultipleInputField text={'Tags'}>
-          {tagFields.map(({ id }, index) => {
+          {tagFields.forEach(({ id }, index) => {
             return (
               <div key={id}>
                 <InputField

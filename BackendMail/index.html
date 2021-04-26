@@ -1,46 +1,52 @@
 <!DOCTYPE html>
 <html>
   <body>
-    <h1>Svar</h1>
-    <input type="text" id="data" name="data" textarea="200" /><br /><br />
-    <button id="Button" onclick="sendReply()">Send svar</button>
-    <p id="demo"></p>
     <script defer>
       function sendReply() {
-        document.getElementById('Button').disabled = true;
-        var data = document.getElementById('data').value;
+
+        document.getElementById('replyButton').disabled = true;
+
+        var data = document.getElementById('responseText').value;
         var loading = true;
         var loadingBar = '';
         var options = {
           method: 'POST',
-          body: JSON.stringify({ replyText: data, replyId: ' + '"' + replyId +  '"' + '
+          body: JSON.stringify({ replyText: data, replyId:"noe" //' + '"' + replyId +  '"' + '
         }),
         };
-        fetch(' + '"' + process.env['ReceiveMailUrl'] + '"' + ', options)
-          .then(async (response) => {
-            loading = false;
-            console.log(response);
-            var text = (await response.json()).text;
-            console.log(text);
-            return { text, response };
-          })
+        fetch("noe", options)//' + '"' + process.env['ReceiveMailUrl'] + '"' + '
           .then((response) => {
-            console.log(response);
-            document.getElementById('demo').innerHTML = response.text;
-          })
+            loading = false;
+            console.log(response);var data = document.getElementById("responseText").value;
+            if (response.status === 400){ document.getElementById("replyButton").disabled = false;}
+            var text = (await response.json()).text;
+            return { text, response };})
+            .then((response) => {console.log(response);
+              document.getElementById("demo").innerHTML = response.text;})
           .catch(() => {
             loading = false;
-            document.getElementById("demo").innerHTML = "Connection failed";
+            document.getElementById('demo').innerHTML = 'Connection failed';
           });
+
         async function loadingb() {
           while (loading) {
             loadingBar += '=';
             document.getElementById('demo').innerHTML = loadingBar;
             await new Promise((r) => setTimeout(r, 100));
+            if (loadingBar.length > 4) {
+              loadingBar = '';
+            }
           }
         }
         loadingb();
       }
     </script>
+
+    <h1>Svar</h1>
+    <textarea id="responseText" name="responseText" rows="8" cols="50" style="resize: none"></textarea> <br /><br />
+
+    <button id="replyButton" onclick="sendReply()">Send svar</button>
+
+    <p id="demo"></p>
   </body>
 </html>

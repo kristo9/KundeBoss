@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { MsalProvider, useMsal } from '@azure/msal-react';
 
 // Components
-import Navbar from '../navbar/Navbar';
+import Navba from '../navbar/Navbar';
 import StartPage from '../pages/startpage/Startpage';
 import Contact from '../pages/contact/Contact';
 import Help from '../pages/help/Help';
@@ -13,6 +13,7 @@ import CustomerPage from '../pages/customerpage/customerpage';
 import PageNotFound from '../pages/pageNotFound/pageNotFound';
 import AdminPage from '../pages/adminPages/adminPage';
 import SupplierPage from '../pages/supplierPages/supplierPage';
+import HttpError from '../pages/pageNotFound/HttpErrorPage'
 
 // Context 
 import { LanguageProvider } from '../../language/LangContext';
@@ -34,6 +35,7 @@ const Routes = () => {
       <Route path='/admin' component={AdminPage} />
       <Route path='/supplier' component={SupplierPage} />
       <Route path='*' exact={true} component={PageNotFound} />
+      <Route path='/error' component={HttpError} />
     </Switch>
   );
 };
@@ -52,7 +54,7 @@ const App = ({ pca }) => {
           </div>
           :
           <div className='app' style={{ height: '100vh' }}>
-              <Navbar />
+              <div className='navbar'> <Navba /> </div>
             <div style={{ marginTop: '23px', width: '100%' }}>
               <Routes />
             </div>

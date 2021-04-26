@@ -2,9 +2,11 @@ import './Startpage.css';
 import { Link } from 'react-router-dom';
 import '../../basicComp/basic.css';
 import { useIsAuthenticated } from '@azure/msal-react';
-import { msalInstance } from '../../..';
+import { msalInstance } from '../../../azure/authRedirect';
 import HomePage from './HomePage';
+import Footer from './Footer'
 import Clouds from "./Clouds.mp4";
+import { SignInSignOutButton } from '../../basicComp/SignInOutButton';
 
 
 /**
@@ -39,14 +41,22 @@ import Clouds from "./Clouds.mp4";
 
 const WelcomePage = () => {
   return (
+    <div className='Page'>
     <div className="WelcomePage">
-        <video autoPlay loop muted className="Video">
+        <video playsInline autoPlay loop muted className="Video">
           <source src={Clouds} type="video/mp4"/>
         </video>
-        <div className="text"> 
-          <h2> Flyt </h2>
-          <h3> Orden over kunder og bla bla bla </h3>
+        <div className='overlay'></div>
+        <div className='text'>
+          <div className='text-box'>
+            <h1> FLYT </h1>
+            <SignInSignOutButton />
+          </div>
         </div>
+    </div>
+      <footer className='footer'>
+        <Footer />
+      </footer>
     </div>
   );
 };

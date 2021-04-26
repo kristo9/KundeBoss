@@ -16,7 +16,6 @@ export default (context: Context, req: HttpRequest): any => {
   if (req.body === null) {
     return context.done();
   }
-  context.log(req.body);
 
   let replyId = null;
   let replyText = null;
@@ -43,8 +42,12 @@ export default (context: Context, req: HttpRequest): any => {
           };
         } else {
           context.log('No document found');
-          context.res.status = 400;
-          context.res.body = { text: 'Error, not found' };
+          context.res = {
+            status: 400,
+            body: {
+              text: 'Error, not found',
+            },
+          };
         }
         context.done();
       }
@@ -53,8 +56,18 @@ export default (context: Context, req: HttpRequest): any => {
 
   if (req.body.replyId) {
     replyId = req.body.replyId;
-    if (req.body.replyText) {
-      replyText = req.body.replyText;
+    if (req.body?.replyText) {
+      if (req.body.replyText.length < 1000) {
+        replyText = req.body.replyText;
+      } else {
+        context.res = {
+          status: 400,
+          body: {
+            text: 'Feil, hold svartekst under 1000 tegn',
+          },
+        };
+        return context.done();
+      }
     }
     connectWrite(context, functionQuery);
   } else {

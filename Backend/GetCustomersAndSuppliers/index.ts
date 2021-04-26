@@ -76,13 +76,19 @@ export default (context: Context, req: HttpRequest): any => {
         },
         { '$project': projection },
       ])
-      .toArray((error: any, docs: JSON) => {
+      .toArray((error: any, docs: JSON[]) => {
         if (error) {
           errorQuery(context);
           return context.done();
         } else {
-          docs = JSON.parse(JSON.stringify(docs).replace(/"customers":/g, '"customer":'));
-          returnResult(context, docs);
+          //docs = JSON.parse(JSON.stringify(docs).replace(/"customers":/g, '"customer":'));
+          let customers: any = [];
+          docs.forEach((customer) => {
+            customer = JSON.parse(JSON.stringify(customer).replace('"customers":', '"customer":'));
+            delete customer['_id'];
+            customers.push(customer);
+          });
+          returnResult(context, customers);
           context.done();
         }
       });

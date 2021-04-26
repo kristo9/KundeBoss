@@ -24,6 +24,7 @@ class Dashboard extends React.Component<{}, { customers: any; search: string }> 
     this.state = {
       customers: null,
       search: '',
+      // error: '',
     };
   }
 

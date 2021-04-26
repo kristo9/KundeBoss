@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead } from '../SharedFiles/dataBase';
+import { collections, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -37,6 +37,32 @@ export default (context: Context, req: HttpRequest): any => {
     }
   };
 
+  /**
+   * @description Finds all customer ids in the database
+   * @returns promise that resolves to array of customer ids
+   */
+  const customerIdExist = (db) => {
+    return new Promise((resolve) => {
+      db.collection(collections.customer).findOne(
+        { _id: ObjectId(req.body.id) },
+        { 'projection': { '_id': 1 } },
+        (error, docs) => {
+          if (error) {
+            errorQuery(context);
+            resolve(false);
+          } else {
+            if (docs != null) {
+              resolve(true);
+            } else {
+              errorWrongInput(context, 'No customer found');
+              resolve(false);
+            }
+          }
+        }
+      );
+    });
+  };
+
   let isCustomer = true;
   /**
    * @description validates token and that client has permission to get data about the customer
@@ -48,6 +74,9 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
+        /*Check that customerid exists*/
+        let customerIds = customerIdExist(db);
+
         db.collection('employee').findOne(
           {
             'employeeId': decoded.preferred_username,
@@ -55,11 +84,14 @@ export default (context: Context, req: HttpRequest): any => {
           {
             'customers': 1,
           },
-          (error: any, docs) => {
+          async (error: any, docs) => {
             if (error) {
               errorQuery(context);
               return context.done();
             } else {
+              if (!(await customerIds)) {
+                return context.done();
+              }
               let cust = docs.customers.find(
                 (customer) =>
                   customer.id == req.body.id && (customer.permission === 'read' || customer.permission === 'write')
@@ -74,7 +106,7 @@ export default (context: Context, req: HttpRequest): any => {
                 return;
               }
 
-              errorUnauthorized(context, 'User dont have permission to see customer or no customer found');
+              errorUnauthorized(context, 'User dont have permission to see customer');
               return context.done();
             }
           }

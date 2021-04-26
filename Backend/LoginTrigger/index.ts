@@ -13,6 +13,8 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 export default (context: Context, req: HttpRequest): any => {
   checkDbConnection(context, clientRead);
 
+  connectWrite(context,()=>{})
+
   let decodedToken = null;
   let isCustomer = null;
 
