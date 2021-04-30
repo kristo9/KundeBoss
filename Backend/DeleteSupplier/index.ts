@@ -1,5 +1,5 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, mailVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
+import { prepInput, mailVal, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
@@ -23,10 +23,11 @@ export default (context: Context, req: HttpRequest): any => {
     let errMsg = 'Error: ';
     let validInput = true;
 
-    if (!mailVal(req.body?.mail)) {
-      errMsg += 'Not valid mail.';
+    if (!_idVal(req.body?.id)) {
+      errMsg += 'Not valid supplier ID.';
       validInput = false;
     }
+
     if (validInput) {
       connectRead(context, authorize);
     } else {
@@ -64,12 +65,12 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   let query = {
-    'contact.mail': req.body.mail,
+    '_id': ObjectId(req.body.id),
   };
 
   const functionQuery = (db: Db) => {
     db.collection('supplier')
-      .find({ 'contact.mail': req.body.mail })
+      .find({ '_id': ObjectId(req.body.id) })
       .toArray((error: any, docs: any) => {
         if (error) {
           errorQuery(context);

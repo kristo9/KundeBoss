@@ -17,8 +17,6 @@ async function runTest() {
   });
 }
 
-runTest();
-
 function callApi(endpoint: string, token: string, data: {} | null) {
   //const headers = new Headers();
   const bearer = `Bearer ${token}`;
@@ -46,7 +44,7 @@ function callApi(endpoint: string, token: string, data: {} | null) {
       console.log('error');
     }
     const res = { body, stat };
-    return stat;
+    return body;
   });
 }
 
@@ -87,7 +85,12 @@ export function newCustomer(
   mail: string,
   phone: number = null,
   contactName: string = null,
-  suppliers: [] = null,
+  suppliers: {
+    id: string;
+    contactName: string;
+    mail: string;
+    phone: number;
+  }[] = null,
   tags: string[] = null,
   comment: string = null,
   //types: [] = null,
@@ -265,12 +268,12 @@ export function deleteCustomer(mail: any) {
 
 /**
  * @description Deletes a supplier, the suppliers mails and mailGroup from the database
- * @param mail Mail to the supplier which is to be deleted
+ * @param id Mongodb id of the supplier which is to be deleted
  * @returns returns result. if result.n = 1 the supplier is deleted.
  */
-export function deleteSupplier(mail: any) {
+export function deleteSupplier(id: any) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCall('DeleteSupplier', data);
 }
@@ -301,3 +304,10 @@ export function modifyEmployeeData(
 
   return prepareCall('ModifyEmployeeData', data);
 }
+
+async function callFunctions() {
+  let x = await getAllEmployees();
+  console.log(x);
+}
+
+callFunctions();

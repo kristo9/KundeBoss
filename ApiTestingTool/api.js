@@ -71,7 +71,6 @@ function runTest() {
         });
     });
 }
-runTest();
 function callApi(endpoint, token, data) {
     var _this = this;
     //const headers = new Headers();
@@ -106,7 +105,7 @@ function callApi(endpoint, token, data) {
                     return [3 /*break*/, 4];
                 case 4:
                     res = { body: body, stat: stat };
-                    return [2 /*return*/, stat];
+                    return [2 /*return*/, body];
             }
         });
     }); });
@@ -317,12 +316,12 @@ function deleteCustomer(mail) {
 exports.deleteCustomer = deleteCustomer;
 /**
  * @description Deletes a supplier, the suppliers mails and mailGroup from the database
- * @param mail Mail to the supplier which is to be deleted
+ * @param id Mongodb id of the supplier which is to be deleted
  * @returns returns result. if result.n = 1 the supplier is deleted.
  */
-function deleteSupplier(mail) {
+function deleteSupplier(id) {
     var data = {
-        mail: mail
+        id: id
     };
     return prepareCall('DeleteSupplier', data);
 }
@@ -352,3 +351,32 @@ function modifyEmployeeData(employeeId, name, admin, isCustomer, customers) {
     return prepareCall('ModifyEmployeeData', data);
 }
 exports.modifyEmployeeData = modifyEmployeeData;
+var suppliers = [
+    {
+        'id': '605b42ee425cc56cf089a7ff',
+        'contactName': 'Padmé Amidala Naberrie',
+        'mail': 'Padme@NC.com',
+        'phone': 74839283
+    },
+    {
+        'id': '605b37b56c35ab18d8c49da9',
+        'contactName': null,
+        'mail': 'didbje@gmail.com',
+        'phone': null
+    },
+];
+function callFunctions() {
+    return __awaiter(this, void 0, void 0, function () {
+        var x;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, newCustomer(null, 'Lando Traveling Agency', 'lando.cal@LTA.net', 48101993, 'Lando Calrissian', suppliers)];
+                case 1:
+                    x = _a.sent();
+                    console.log(x);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+callFunctions();
