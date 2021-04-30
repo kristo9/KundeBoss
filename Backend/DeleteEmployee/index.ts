@@ -1,5 +1,5 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, mailVal, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
+import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
