@@ -329,36 +329,36 @@ export function getEmployee(tag = null): Promise<any> {
 
 /**
  * @description Deletes a employee, the employees mails and mailGroup from the database
- * @param mail Mail to the employee which is to be deleted
+ * @param id Mail to the employee which is to be deleted
  * @returns returns result. if result.n = 1 the employee is deleted.
  */
-export function deleteEmployee(mail) {
+export function deleteEmployee(id: string) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCallAndDeleteCache('DeleteEmployee', data);
 }
 
 /**
  * @description Deletes a customer, the customers mails and mailGroup from the database
- * @param mail Mail to the customer which is to be deleted
+ * @param id Mail to the customer which is to be deleted
  * @returns returns result. if result.n = 1 the customer is deleted.
  */
-export function deleteCustomer(mail) {
+export function deleteCustomer(id: string) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCallAndDeleteCache('DeleteCustomer', data);
 }
 
 /**
  * @description Deletes a supplier, the suppliers mails and mailGroup from the database
- * @param mail Mail to the supplier which is to be deleted
+ * @param id Mail to the supplier which is to be deleted
  * @returns returns result. if result.n = 1 the supplier is deleted.
  */
-export function deleteSupplier(mail) {
+export function deleteSupplier(id: string) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCallAndDeleteCache('DeleteSupplier', data);
 }
