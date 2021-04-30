@@ -243,13 +243,13 @@ export function getEmployee(tag = null): Promise<any> {
 }
 
 /**
- * @description Deletes a employee, the employees mails and mailGroup from the database
- * @param mail Mail to the employee which is to be deleted
+ * @description Deletes an employee
+ * @param id Mail to the employee which is to be deleted
  * @returns returns result. if result.n = 1 the employee is deleted.
  */
-export function deleteEmployee(mail: any) {
+export function deleteEmployee(id: any) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCall('DeleteEmployee', data);
 }
@@ -259,9 +259,9 @@ export function deleteEmployee(mail: any) {
  * @param mail Mail to the customer which is to be deleted
  * @returns returns result. if result.n = 1 the customer is deleted.
  */
-export function deleteCustomer(mail: any) {
+export function deleteCustomer(id: any) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCall('DeleteCustomer', data);
 }

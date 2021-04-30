@@ -291,13 +291,13 @@ function getEmployee(tag) {
 }
 exports.getEmployee = getEmployee;
 /**
- * @description Deletes a employee, the employees mails and mailGroup from the database
- * @param mail Mail to the employee which is to be deleted
+ * @description Deletes an employee
+ * @param id Mail to the employee which is to be deleted
  * @returns returns result. if result.n = 1 the employee is deleted.
  */
-function deleteEmployee(mail) {
+function deleteEmployee(id) {
     var data = {
-        mail: mail
+        id: id
     };
     return prepareCall('DeleteEmployee', data);
 }
@@ -307,9 +307,9 @@ exports.deleteEmployee = deleteEmployee;
  * @param mail Mail to the customer which is to be deleted
  * @returns returns result. if result.n = 1 the customer is deleted.
  */
-function deleteCustomer(mail) {
+function deleteCustomer(id) {
     var data = {
-        mail: mail
+        id: id
     };
     return prepareCall('DeleteCustomer', data);
 }
@@ -351,26 +351,12 @@ function modifyEmployeeData(employeeId, name, admin, isCustomer, customers) {
     return prepareCall('ModifyEmployeeData', data);
 }
 exports.modifyEmployeeData = modifyEmployeeData;
-var suppliers = [
-    {
-        'id': '605b42ee425cc56cf089a7ff',
-        'contactName': 'Padmé Amidala Naberrie',
-        'mail': 'Padme@NC.com',
-        'phone': 74839283
-    },
-    {
-        'id': '605b37b56c35ab18d8c49da9',
-        'contactName': null,
-        'mail': 'didbje@gmail.com',
-        'phone': null
-    },
-];
 function callFunctions() {
     return __awaiter(this, void 0, void 0, function () {
         var x;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, newCustomer(null, 'Lando Traveling Agency', 'lando.cal@LTA.net', 48101993, 'Lando Calrissian', suppliers)];
+                case 0: return [4 /*yield*/, deleteCustomer('608bd927b7d353100cbc09df')];
                 case 1:
                     x = _a.sent();
                     console.log(x);
