@@ -52,14 +52,14 @@ function SendMail(props: customerIDProp) {
     const value = useWatch({
       control,
       name: `receivers.${index}.customerID`,
+      defaultValue: { customerID },
     });
 
-    console.log(customerID + ' er trykket index ' + index);
-    console.log(value);
+    if (allCustomerAndSupplierIDs) {
+      let supplierIDs = getValues(`receivers.${index}.customerID` as const);
 
-    if (allCustomerAndSupplierIDs && customerID) {
-      let suppliers = allCustomerAndSupplierIDs.customers?.filter(({ customer }) => {
-        return customer._id == customerID;
+      let suppliers = allCustomerAndSupplierIDs.customers.filter(({ customer }) => {
+        return supplierIDs === customer._id;
       })[0]?.customer?.suppliers;
 
       return (
@@ -120,31 +120,6 @@ function SendMail(props: customerIDProp) {
     fetchAllCustomerAndSuppliers();
   }, []);
 
-  //watch
-
-  console.log(control);
-
-  console.log(
-    allCustomerAndSupplierIDs?.customers
-      .filter(({ customer }) => {
-        var match = false;
-        selectedCustomerIDs?.customerID.map((id) => {
-          if (customer._id === id) {
-            match = true;
-          }
-        });
-        return match;
-      })
-      .map(({ customer }) => {
-        return {
-          customerID: customer._id,
-          suppliersIDs: customer.suppliers.map((supplier) => {
-            return supplier._id;
-          }),
-        };
-      })
-  );
-
   // https: react-hook-form.com/api/usefieldarray
   const { fields, append, remove } = useFieldArray({
     control: control,
@@ -201,35 +176,40 @@ function SendMail(props: customerIDProp) {
 
       <form
         onSubmit={handleSubmit((data) => {
-          console.log(data);
           // let promisses = [];
-          // let supplierIDs;
+          let supplierIDs;
 
-          // data.receivers.forEach((reciver, index) => {
-          //   //removes false from the array
-          //   supplierIDs = null;
-          //   if (reciver.suppliersIDs) {
-          //     supplierIDs = reciver.suppliersIDs.filter((supplier) => {
-          //       return supplier;
-          //     });
-          //     if (supplierIDs.length === 0) {
-          //       supplierIDs = null;
-          //     }
-          //   }
+          //filtrer ut default fra customerID og false fra supplierIDs[]
 
-          //   // prepare all the mails in a promis-array
-          //   if (reciver.customerID || supplierIDs) {
-          //     promisses.push(
-          //       sendMailCustomer(
-          //         selectedCustomerIDs.customerID[index],
-          //         typeof reciver.customerID == 'string',
-          //         data.text,
-          //         data.subject,
-          //         supplierIDs
-          //       )
-          //     );
-          //   }
-          // });
+          data.receivers.forEach((reciver, index) => {
+            //removes false from the array
+            supplierIDs = null;
+            if (reciver.suppliersIDs) {
+              supplierIDs = reciver.suppliersIDs.filter((supplier) => {
+                return supplier;
+              });
+              if (supplierIDs.length === 0) {
+                supplierIDs = null;
+              }
+            }
+
+            // prepare all the mails in a promis-array
+            if ((reciver.customerID && reciver.customerID != 'default') || supplierIDs) {
+              console.log('Send mail');
+              console.log(reciver);
+              console.log(supplierIDs);
+
+              //     promisses.push(
+              //       sendMailCustomer(
+              //         selectedCustomerIDs.customerID[index],
+              //         typeof reciver.customerID == 'string',
+              //         data.text,
+              //         data.subject,
+              //         supplierIDs
+              //       )
+              //     );
+            }
+          });
 
           // // exevutes all the promisses (send all the mails)
           // promisses.forEach(async (propmis) => {
