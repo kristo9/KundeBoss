@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead } from '../SharedFiles/dataBase';
+import { collections, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -57,25 +57,16 @@ export default (context: Context, req: HttpRequest): any => {
    * @param db : db connection
    */
   const functionQuery = (db: Db) => {
-    let suppliers = null;
-    db.collection('supplier')
+    db.collection(collections.customerCategory)
       .find()
-      .project({'name':1})
       .toArray((error: any, docs: any) => {
         if (error) {
           errorQuery(context, 'Cant query supplier collection');
           return context.done();
-        } else {
-          suppliers = docs;
-
-          if (suppliers == null) {
-            errorWrongInput(context, 'No supplier found');
-            return context.done();
-          }
-
-          returnResult(context, suppliers);
-          context.done();
         }
+
+        returnResult(context, docs);
+        context.done();
       });
   };
 

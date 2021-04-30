@@ -72,28 +72,7 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    let val = [];
     let mailGroup = null;
-
-    const getTypeValues = () => {
-      db.collection(collections.customerType)
-        .find({ 'name': { '$in': req.body.typeValues } })
-        .project({ '_id': 0 })
-        .toArray((error: any, docs: any) => {
-          if (error) {
-            errorQuery(context);
-            return context.done();
-          } else {
-            docs.forEach((doc) => {
-              doc.values.forEach((value) => {
-                val.push(value);
-              });
-            });
-            console.log(val);
-            updateOrUpsertCustomer();
-          }
-        });
-    };
 
     const updateOrUpsertCustomer = () => {
       const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
@@ -113,38 +92,13 @@ export default (context: Context, req: HttpRequest): any => {
           'comment': req.body.comment || null,
           'customerAgreements': req.body.customerAgreements || [],
           'infoReference': req.body.infoReference || null,
-          'types': req.body.typeValues,
-          'values': [],
+          'categories': req.body.categories,
         },
       };
-
-      val.forEach((value, index, values) => {
-        update.$set.values.push({
-          [values[index]]: null,
-        });
-      });
-
-      if (req.body.values) {
-        console.log(req.body.values);
-
-        req.body.values.forEach((value) => {
-          for (let i = 0, l = update.$set.values.length; i < l; ++i) {
-            console.log(update.$set.values[i] + '  ' + Object.keys(value)[0]);
-
-            if (Object.keys(update.$set.values[i])[0] == Object.keys(value)[0]) {
-              update.$set.values[i] = value;
-
-              break;
-            }
-            console.log(update.$set.values[i]);
-          }
-        });
-      }
 
       if (mailGroup) {
         update.$set['mailGroup'] = mailGroup;
       }
-      console.log(JSON.stringify(update, null, 2));
 
       db.collection(collections.customer).updateOne(query, update, queryOptions, (error: any, docs: any) => {
         if (error) {
@@ -164,18 +118,11 @@ export default (context: Context, req: HttpRequest): any => {
         }
 
         mailGroup = ObjectId(docs.insertedId);
-        if (req.body.typeValues) {
-          getTypeValues();
-        } else {
-          updateOrUpsertCustomer();
-        }
+
+        updateOrUpsertCustomer();
       });
     } else {
-      if (req.body.typeValues) {
-        getTypeValues();
-      } else {
-        updateOrUpsertCustomer();
-      }
+      updateOrUpsertCustomer();
     }
   };
 

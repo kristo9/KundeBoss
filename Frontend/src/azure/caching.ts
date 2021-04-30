@@ -96,7 +96,7 @@ function cleanCache() {
 }
 
 /**
- * @desc Clear cache, or delete one object from cache
+ * @desc Clear cache or delete one object from cache
  * @param key - key to the object to be deleted from cache: optional
  */
 export function deleteCache(key = null) {

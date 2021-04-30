@@ -19,7 +19,7 @@ export const collections = {
   mail: 'mail',
   mailGroup: 'mailGroup',
   supplier: 'supplier',
-  customerType: 'customerType',
+  customerCategory: 'customerCategory'
 };
 
 export let clientRead = null;
