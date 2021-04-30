@@ -69,7 +69,6 @@ function cleanCache() {
   let arr = [cache.size];
   let median;
   let tempKey;
-  let tempData;
 
   /* Creates array with the age of obects in cache */
   for (let i = 0, range = cache.size; i < range; ++i) {
@@ -85,17 +84,12 @@ function cleanCache() {
 
   median = findMedian(arr);
   keys = cache.keys();
-  cacheWeight = 0;
 
   /* Deletes all cached object with usageAge age higher or equal to the median */
   for (let i = 0, range = cache.size; i < range; ++i) {
     tempKey = keys.next().value;
-    tempData = cache.get(tempKey);
-    if (tempData.usageAge <= median) {
+    if (cache.get(tempKey).usageAge <= median) {
       cache.delete(tempKey);
-    } else {
-      tempData.usageAge = ++cacheWeight;
-      cache.set(tempKey, tempData);
     }
   }
   console.log('Cleaned cache. New cache size: ' + cache.size);
