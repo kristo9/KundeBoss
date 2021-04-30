@@ -8,11 +8,11 @@ import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 
 import ViewRights from './subPages/viewRights';
 import { getAllEmployees } from '../../../azure/api';
-import NewCustomer from './subPages/newCustomer'
+import NewCustomer from './subPages/newCustomer';
 import NewSupplier from './subPages/newSupplier';
 import NewEntry from './subPages/NewEntry';
 
-class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any; }> {
+class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class.
@@ -76,7 +76,7 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     {
       text: 'Nyinnlogget',
       ID: 'newLogin',
-      onClick: () => this.setState({ pageState: <NewEntry/> }),
+      onClick: () => this.setState({ pageState: <NewEntry /> }),
     }, //TODO: lage side for nyinnlogget
   ];
 }

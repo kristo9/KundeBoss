@@ -9,10 +9,12 @@ import { useHistory } from 'react-router-dom';
 // CSS imports
 import './Dashboard.css';
 
+let customers = getEmployee();
+
 /**
  * A class that contains and renders the dashboard
  */
-class Dashboard extends React.Component<{}, { customers: any, search: string, error: string }> {
+class Dashboard extends React.Component<{}, { customers: any; search: string }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class
@@ -22,7 +24,7 @@ class Dashboard extends React.Component<{}, { customers: any, search: string, er
     this.state = {
       customers: null,
       search: '',
-      error: '',
+      // error: '',
     };
   }
 
@@ -32,9 +34,10 @@ class Dashboard extends React.Component<{}, { customers: any, search: string, er
    */
   componentDidMount() {
     const fetchName = async () => {
-      let customers = await getEmployee();
-      console.log(customers);
-
+      customers = await customers;
+      if (typeof customers !== 'object') {
+        customers = await getEmployee();
+      }
       this.setState({
         customers,
       });
@@ -47,19 +50,17 @@ class Dashboard extends React.Component<{}, { customers: any, search: string, er
    */
 
   updateSearch(event) {
-    this.setState({search: event.target.value.substr(0,20)});
+    this.setState({ search: event.target.value.substr(0, 20) });
   }
-
 
   render() {
     let filteredCustomers = null;
 
-    if(this.state.customers){
-    filteredCustomers = this.state.customers.customerInformation.filter(
-        (customer) => { 
-          const tag = customer.tags.toString().toLowerCase();
-          return tag.indexOf(this.state.search.toLowerCase()) !== -1}
-    );
+    if (this.state.customers) {
+      filteredCustomers = this.state.customers.customerInformation.filter((customer) => {
+        const tag = customer.tags.toString().toLowerCase();
+        return tag.indexOf(this.state.search.toLowerCase()) !== -1;
+      });
     }
 
     return (
@@ -67,11 +68,12 @@ class Dashboard extends React.Component<{}, { customers: any, search: string, er
         <div className='page'>
           {this.displayGreeting()}
           <div style={{ float: 'right' }}>
-            <input type="text"
-              placeholder="Search tag"
+            <input
+              type='text'
+              placeholder='Search tag'
               value={this.state.search}
-              onChange={this.updateSearch.bind(this)}> 
-            </input>
+              onChange={this.updateSearch.bind(this)}
+            ></input>
           </div>
           <div>{this.displayCustomers(filteredCustomers)}</div>
         </div>
@@ -141,16 +143,16 @@ function InfoBox(prop: customerProp) {
       className='rad'
       onClick={() => {
         history.push('/customerpage/' + prop.id);
-      }}>
+      }}
+    >
       <td>
         <b>{prop.customerName}</b>
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
-      <td> { (tags.length === 0) ? "Ingen Tags" : prop.tags.toString().split(',').join(', ')} </td>
+      <td> {tags.length === 0 ? 'Ingen Tags' : prop.tags.toString().split(',').join(', ')} </td>
     </tr>
   );
 }
-
 
 export default Dashboard;

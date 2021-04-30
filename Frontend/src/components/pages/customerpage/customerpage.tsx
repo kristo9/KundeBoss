@@ -20,7 +20,7 @@ import SendMail from './subPages/customerSendMail';
  * Contains the customer page and all the info needed by the subpages.
  * Subpages are also loaded/viewed from here.
  */
-class CustomerPage extends React.Component<RouteComponentProps, { pageState: any; customerInfo: any, error: string }> {
+class CustomerPage extends React.Component<RouteComponentProps, { pageState: any; customerInfo: any; error: string }> {
   /**
    * @constructor
    * @param {props} props contains infomation about the class.
@@ -42,9 +42,8 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
     // Loades the data from the API
 
     const fetchCustomerInfo = async () => {
-
       //Gets information about the customer based on the id in the URL
-     // await new Promise((r) => setTimeout(r, 500));
+      // await new Promise((r) => setTimeout(r, 500));
       let customerI = await getCustomer(window.location.pathname.split('/')[2]);
       this.setState({
         customerInfo: customerI,
@@ -59,8 +58,7 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
    * @returns a react component with the customer page
    */
   render() {
-
-    console.log(this.state.error)
+    console.log(this.state.error);
 
     return (
       <div className='margin-right H100'>
@@ -92,7 +90,10 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
     {
       text: 'Send mail',
       ID: 'sendMail',
-      onClick: () => this.setState({ pageState: <SendMail customerInfo={this.state.customerInfo} /> }),
+      onClick: () =>
+        this.setState({
+          pageState: <SendMail customerID={[this.state.customerInfo._id]} />,
+        }),
     },
     {
       text: 'Notat',

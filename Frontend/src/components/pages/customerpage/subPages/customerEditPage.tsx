@@ -1,13 +1,30 @@
-import react from 'react';
+import React, { useState, useEffect } from 'react';
 import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inputField';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { newCustomer } from '../../../../azure/api';
+import { getAllSuppliers, getCustomersAndSuppliers, newCustomer } from '../../../../azure/api';
+import { Select } from '../../../basicComp/inputField';
+
+interface NameAndID {
+  _id: string;
+  name: string;
+}
 
 /**
  * A page for editing customers.
  * @returns a react component with the edit-customer page.
  */
 function CustomerEditPage({ customerInfo }: any) {
+  const [supplierArrayState, setSupplierArrayState] = useState<NameAndID[]>(null);
+
+  useEffect(() => {
+    const fetchAllSuppliers = async () => {
+      let suppliersInfo = await getAllSuppliers();
+      setSupplierArrayState(suppliersInfo);
+    };
+
+    fetchAllSuppliers();
+  }, []);
+
   type FormValues = {
     customerName: string;
     contactName: string;
@@ -16,6 +33,12 @@ function CustomerEditPage({ customerInfo }: any) {
     note: string;
     infoReference: string;
     tags: { tag: string }[];
+    suppliers: {
+      id: string;
+      name: string;
+      phone: number;
+      mail: string;
+    }[];
   };
 
   const {
@@ -24,9 +47,10 @@ function CustomerEditPage({ customerInfo }: any) {
     formState: { errors },
     control,
   } = useForm<FormValues>(
-    customerInfo
+    customerInfo //if customerInfo has data, add the tags
       ? {
           defaultValues: {
+            suppliers: customerInfo.suppliers,
             tags: customerInfo.tags,
           },
         }
@@ -34,27 +58,36 @@ function CustomerEditPage({ customerInfo }: any) {
   );
 
   // https://react-hook-form.com/api/usefieldarray
-  const { fields, append, prepend, remove } = useFieldArray({
+  const { fields: tagFields, append: tagAppend, remove: tagRemove } = useFieldArray({
     control,
     name: 'tags',
   });
+
+  const { fields: suppleirFields, append: supplierAppend, remove: supplierRemove } = useFieldArray({
+    control,
+    name: 'suppliers',
+  });
+
+  console.log(customerInfo);
 
   return (
     <div>
       <h1>{customerInfo ? 'Redigere kunden' : 'Ny kunde'}</h1>
       <form
         onSubmit={handleSubmit((data) => {
-          newCustomer(
-            customerInfo ? customerInfo._id : null,
-            data.customerName,
-            data.contactMail,
-            data.contactPhone,
-            data.contactName,
-            null,
-            getTagsArray(data.tags),
-            data.note,
-            data.infoReference
-          );
+          console.log(data.suppliers);
+
+          //   newCustomer(
+          //     customerInfo ? customerInfo._id : null,
+          //     data.customerName,
+          //     data.contactMail,
+          //     data.contactPhone,
+          //     data.contactName,
+          //     null,        //gjør om denne til at den tar imot {_id, name, phone, mail}
+          //     getTagsArray(data.tags),
+          //     data.note,
+          //     data.infoReference
+          //   );
         })}
       >
         <InputField
@@ -118,7 +151,7 @@ function CustomerEditPage({ customerInfo }: any) {
         />
 
         <MultipleInputField text={'Tags'}>
-          {fields.forEach(({ id }, index) => {
+          {tagFields.map(({ id }, index) => {
             return (
               <div key={id}>
                 <InputField
@@ -128,17 +161,59 @@ function CustomerEditPage({ customerInfo }: any) {
                   register={register(`tags.${index}.tag` as const)}
                   defaultValue={customerInfo.tags[index]}
                 />
-                <button onClick={() => remove(index)}>x</button>
+                <button onClick={() => tagRemove(index)}>x</button>
               </div>
             );
           })}
 
-          <button type='button' onClick={() => append({})}>
+          <button type='button' onClick={() => tagAppend({})}>
             Legg til tag
           </button>
         </MultipleInputField>
 
-        <p>Suppliers []</p>
+        <MultipleInputField text={'Leverandører'}>
+          {suppleirFields.map(({ id }, index, supplier) => {
+            return (
+              <div key={id}>
+                <Select
+                  register={register(`suppliers.${index}.id` as const)}
+                  name={`suppliers[${index}].id`}
+                  defaultOption={{ name: 'Velg leverandør', value: 'default' }}
+                  defaultValue={supplier[index].id}
+                  options={supplierArrayState?.map(({ name, _id }) => {
+                    return { name: name, value: _id };
+                  })}
+                />
+                <InputField
+                  labelText={'Navn '}
+                  lableType={'text'}
+                  lableName={`suppliers[${index}].name`}
+                  register={register(`suppliers.${index}.name` as const)}
+                  defaultValue={customerInfo.suppliers[index]?.contact?.name}
+                />
+                <InputField
+                  labelText={'Telefon '}
+                  lableType={'text'}
+                  lableName={`suppliers[${index}].phone`}
+                  register={register(`suppliers.${index}.phone` as const)}
+                  defaultValue={customerInfo.suppliers[index]?.contact?.phone}
+                />
+                <InputField
+                  labelText={'Mail '}
+                  lableType={'text'}
+                  lableName={`suppliers[${index}].mail`}
+                  register={register(`suppliers.${index}.mail` as const)}
+                  defaultValue={customerInfo.suppliers[index]?.contact?.mail}
+                />
+                {console.log(customerInfo.suppliers[index]?.contact?.mail)}
+                <button onClick={() => supplierRemove(index)}>x</button>
+              </div>
+            );
+          })}
+          <button type='button' onClick={() => supplierAppend({})}>
+            Legg til leverandør
+          </button>
+        </MultipleInputField>
 
         {customerInfo ? (
           <button
