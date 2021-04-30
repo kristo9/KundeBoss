@@ -1,10 +1,16 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, mailVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
+import { prepInput, mailVal, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
+import { ObjectId } from 'mongodb';
 
+/**
+ * @description Deletes an employee
+ * @param contect : Context
+ * @param req : HttpRequest
+ */
 export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
@@ -18,8 +24,8 @@ export default (context: Context, req: HttpRequest): any => {
     let errMsg = 'Error: ';
     let validInput = true;
 
-    if (!mailVal(req.body?.mail)) {
-      errMsg += 'Not valid mail.';
+    if (!_idVal(req.body?.id)) {
+      errMsg += 'Not valid employee ID.';
       validInput = false;
     }
     if (validInput) {
@@ -59,11 +65,11 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   let query = {
-    'employeeId': req.body.mail,
+    '_id': ObjectId(req.body.id),
   };
 
   const functionQuery = (db: Db) => {
-    db.collection('employee').deleteOne(query, (error: any, docs: any) => {
+    db.collection('employee').findOne(query, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
         return context.done();
@@ -72,6 +78,8 @@ export default (context: Context, req: HttpRequest): any => {
         errorWrongInput(context, 'No employee found');
         return context.done();
       }
+
+      console.log('Employee deleted!');
       returnResult(context, docs);
       context.done();
     });
