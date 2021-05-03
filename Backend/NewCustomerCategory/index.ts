@@ -8,11 +8,15 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
-  if (req.body === null) return context.done();
+  if (req.body === null) {
+    return context.done();
+  }
 
   let token = prepToken(context, req.headers.authorization);
 
-  if (token === null) return context.done();
+  if (token === null) {
+    return context.done();
+  }
 
   const inputValidation = () => {
     let errMsg = 'Error: ';
@@ -55,7 +59,8 @@ export default (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs.admin === 'write') {
+              console.log(docs);
+              if (docs?.admin === 'write') {
                 connectWrite(context, updateCategory);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
