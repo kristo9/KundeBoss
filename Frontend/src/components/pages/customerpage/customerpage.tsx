@@ -8,7 +8,6 @@ import { getCustomer } from '../../../azure/api';
 //pages:
 import CustomerMailPage from './subPages/customerMailPage';
 import { CustomerInfoPage } from './subPages/customerInfoPage';
-import CustomerNotesPage from './subPages/customerNotesPage';
 import CustomerSupplierPage from './subPages/customerSupplierPage';
 import CustomerEditPage from './subPages/customerEditPage';
 import LoadingSymbol from '../../basicComp/loading';
@@ -61,13 +60,13 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
     console.log(this.state.error);
 
     return (
-      <div className='margin-right H100'>
+      <section className='margin-right H100'>
         <Sidebar
           text={this.state.customerInfo && this.state.customerInfo.name ? this.state.customerInfo.name : 'Kundenavn'}
           buttons={this.buttons}
         />
-        {this.state.customerInfo ? this.state.pageState : <LoadingSymbol />}
-      </div>
+        <div className='notSidebar'>{this.state.customerInfo ? this.state.pageState : <LoadingSymbol />}</div>
+      </section>
     );
   }
 
@@ -94,11 +93,6 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
         this.setState({
           pageState: <SendMail customerID={[this.state.customerInfo._id]} />,
         }),
-    },
-    {
-      text: 'Notat',
-      ID: 'note',
-      onClick: () => this.setState({ pageState: <CustomerNotesPage customerInfo={this.state.customerInfo} /> }),
     },
     {
       text: 'Rediger',

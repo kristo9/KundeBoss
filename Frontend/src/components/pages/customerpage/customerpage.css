@@ -1,16 +1,13 @@
+/* Sidebar styling */
 .sidebar {
-  height: 100%;
-  /* display: 'flex'; */
-  /* flex-direction: 'colum'; */
-  /* align-items: 'stretch'; */
   background-color: white;
-  width: 15vw;
-  float: left;
+  height: 100%;
+  width: 10em;
   align-items: center;
+  position: fixed;
 
-  padding-left: 1vw;
-  padding-right: 1vw;
-  margin-right: 3vw;
+  padding-left: 2%;
+  padding-right: 2%;
 }
 
 /*Styling*/
@@ -49,4 +46,8 @@
 
 .buttonNotActive:hover {
   background-color: gray;
+}
+
+.notSidebar {
+  margin-left: 17em;
 }
