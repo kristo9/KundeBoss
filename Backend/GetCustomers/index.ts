@@ -1,5 +1,5 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { returnResult } from '../SharedFiles/dataValidation';
+import { errorWrongInput, returnResult } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { checkDbConnection, clientRead, connectRead } from '../SharedFiles/dataBase';
@@ -76,8 +76,13 @@ export default (context: Context, req: HttpRequest): any => {
           return context.done();
         } else {
           let result = docs[0];
-          let customers = result.customerInformation;
+          let customers = result?.customerInformation;
           let allTags = [];
+
+          if(!customers){
+            errorWrongInput(context);
+            return context.done();
+          }
 
           customers.forEach((customer) => (allTags = allTags.concat(customer.tags)));
 
