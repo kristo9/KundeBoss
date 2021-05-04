@@ -28,9 +28,11 @@ export default (context: Context, req: HttpRequest): any => {
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       if (err) {
+        console.log("if")
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
+        console.log("else")
         employeeId = decoded.preferred_username;
         db.collection('employee') // query to find users permission level
           .find({ 'employeeId': employeeId })

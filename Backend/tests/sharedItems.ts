@@ -9,7 +9,7 @@ export function prepareContext() {
 
   context = {
     res: { status: null, body: null },
-    log: (txt) => console.log(txt),
+    log: (txt) => null,
     done: () => (context.done = true),
   };
   return context;
