@@ -1,4 +1,4 @@
-import GetAllEmployees from '../GetAllEmployees/index';
+import GetAllSuppliers from '../GetAllSuppliers';
 import { prepareContext, httpRequest, timeout } from './sharedItems';
 
 describe('User credentials', () => {
@@ -7,7 +7,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'oyvind.husveg@kundeboss.onmicrosoft.com';
 
-    GetAllEmployees(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, httpRequest as any);
     await timeout(context);
 
     expect(context.res.status).toEqual(200);
@@ -20,7 +20,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'timTest@flyt.cloud';
 
-    GetAllEmployees(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, httpRequest as any);
     await timeout(context);
 
     expect(context.res.status).toBe(401);
@@ -32,7 +32,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'timTest333@gmail.net';
 
-    GetAllEmployees(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, httpRequest as any);
     await timeout(context);
 
     expect(context.res.status).toBe(401);
@@ -44,7 +44,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = '';
 
-    GetAllEmployees(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, httpRequest as any);
     await timeout(context);
     expect(context.res.status).toBe(401);
     done();
@@ -55,7 +55,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'test';
 
-    GetAllEmployees(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, httpRequest as any);
     await timeout(context);
 
     expect(context.res.status).toBe(401);

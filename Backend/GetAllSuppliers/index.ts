@@ -40,7 +40,7 @@ export default (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs[0].admin === 'write' || docs[0].admin === 'read') {
+              if (docs[0]?.admin === 'write' || docs[0]?.admin === 'read') {
                 functionQuery(db);
               } else {
                 errorUnauthorized(context, 'User dont have admin-write permission');
@@ -60,7 +60,7 @@ export default (context: Context, req: HttpRequest): any => {
     let suppliers = null;
     db.collection('supplier')
       .find()
-      .project({'name':1})
+      .project({ 'name': 1 })
       .toArray((error: any, docs: any) => {
         if (error) {
           errorQuery(context, 'Cant query supplier collection');
