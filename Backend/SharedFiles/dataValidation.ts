@@ -73,14 +73,14 @@ export const returnResult = (context: Context, data: JSON | JSON[]) => {
  * @returns JSON | JSON[] or null
  */
 export const prepInput = (context: Context, input: JSON | JSON[]) => {
-  if (input) {
-    return sanitizeHtmlJson(input);
-  } else {
+  if (input === null || Object.keys(input).length == 0) {
     context.res = {
       'status': 400,
       'body': 'no body',
     };
     return null;
+  } else {
+    return sanitizeHtmlJson(input);
   }
 };
 

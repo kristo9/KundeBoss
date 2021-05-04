@@ -9,7 +9,7 @@ export function prepareContext() {
 
   context = {
     res: { status: null, body: null },
-    log: (txt) => null,
+    log: (txt) => null, //console.log(txt),
     done: () => (context.done = true),
   };
   return context;
@@ -17,6 +17,7 @@ export function prepareContext() {
 
 export let httpRequest = {
   headers: { authorization: '' },
+  body: {},
 };
 
 export async function timeout(context) {

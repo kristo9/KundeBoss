@@ -7,7 +7,7 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
 /**
- * @description Get alle data about a supplier
+ * @description Get all data about a supplier
  * @param contect : Context
  * @param req : HttpRequest
  */
@@ -32,14 +32,14 @@ export default (context: Context, req: HttpRequest): any => {
     if (_idVal(req.body?.id)) {
       connectRead(context, authorize);
     } else {
-      errorWrongInput(context, 'id recieved not valid format');
+      errorWrongInput(context, 'ID recieved not valid format');
       return context.done();
     }
   };
 
   /**
    * @description validates token
-   * @param db : db connection
+   * @param db : db connectiondd
    */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {

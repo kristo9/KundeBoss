@@ -10,6 +10,7 @@ describe('User credentials', () => {
     GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
 
+    expect(context.done).toEqual(true);
     expect(context.res.status).toEqual(200);
     expect(context.res.body.length).toBeGreaterThanOrEqual(1);
     done();
@@ -23,6 +24,7 @@ describe('User credentials', () => {
     GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
 
+    expect(context.done).toEqual(true);
     expect(context.res.status).toBe(401);
     done();
   });
@@ -35,6 +37,7 @@ describe('User credentials', () => {
     GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
 
+    expect(context.done).toEqual(true);
     expect(context.res.status).toBe(401);
     done();
   });
@@ -46,11 +49,13 @@ describe('User credentials', () => {
 
     GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
+
+    expect(context.done).toEqual(true);
     expect(context.res.status).toBe(401);
     done();
   });
 
-  test('Not valid token', async (done) => {
+  test('Token invalid', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'test';
@@ -58,6 +63,7 @@ describe('User credentials', () => {
     GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
 
+    expect(context.done).toEqual(true);
     expect(context.res.status).toBe(401);
     done();
   });
