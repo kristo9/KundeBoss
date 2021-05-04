@@ -1,0 +1,56 @@
+/* Sidebar styling */
+.sidebar {
+  background-color: white;
+  height: 100%;
+  width: 10em;
+  align-items: center;
+  position: fixed;
+
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+.sidebar .sidebarHederText {
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+/*Styling*/
+.sidebar button {
+  background-color: white;
+  color: #063752;
+
+  font-weight: bold;
+  font-size: 1em;
+
+  width: 100%;
+  margin-bottom: 0.5em;
+  padding: 0.5em 1em;
+
+  border-radius: 1em;
+  border-width: 0px;
+
+  text-align: left;
+}
+
+/* Focusing the buttons */
+.sidebar button:focus {
+  box-shadow: 0px 0px 0px 2px #063752;
+  outline: none;
+}
+
+/*Button active*/
+.sidebar .buttonActive {
+  background-color: #063752;
+  color: white;
+}
+
+.sidebar .buttonNotActive:hover {
+  background-color: #063752;
+  color: white;
+}
+
+.addMarginToNotSidebar {
+  margin-left: 17em;
+}

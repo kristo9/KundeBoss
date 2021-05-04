@@ -3,7 +3,7 @@ import { closeConnections } from '../SharedFiles/dataBase';
 export function prepareContext() {
   let context = {
     res: { status: null, body: null },
-    log: (txt) => console.log(txt),
+    log: (txt) => null, //console.log(txt),
     done: null,
   };
 

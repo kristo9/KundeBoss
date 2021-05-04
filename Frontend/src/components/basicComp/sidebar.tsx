@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent } from 'react';
-import '../pages/customerpage/customerpage.css';
+import './sidebar.css';
 
 export interface SBProps {
   buttons: SBElementProps;
@@ -24,32 +24,33 @@ export function Sidebar(props: SBProps) {
 
   return (
     <div className='sidebar'>
-      {props.text ? props.text : props.altText}
-
-      {props.buttons.map((button) => {
-        return (
-          <SidebarItem
-            text={button.text}
-            onClick={() => {
-              button.onClick();
-              setButtonState(button.ID);
-            }}
-            ID={button.ID}
-            currentlyActiveID={buttonState}
-            key={button.ID}
-          />
-        );
-      })}
+      <h2 className='sidebarHederText'>{props.text ? props.text : props.altText}</h2>
+      <div>
+        {props.buttons.map((button) => {
+          return (
+            <SidebarItem
+              text={button.text}
+              onClick={() => {
+                button.onClick();
+                setButtonState(button.ID);
+              }}
+              ID={button.ID}
+              currentlyActiveID={buttonState}
+              key={button.ID}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
 
 export function SidebarItem(props: SBButtonProp) {
-  let classNameName = props.currentlyActiveID === props.ID ? 'b buttonActive' : 'b buttonNotActive';
+  let classNameName = props.currentlyActiveID === props.ID ? 'buttonActive' : 'buttonNotActive';
 
   return (
-    <div className={classNameName} onClick={props.onClick}>
-      <button>{props.text}</button>
-    </div>
+    <button onClick={props.onClick} className={classNameName}>
+      {props.text}
+    </button>
   );
 }

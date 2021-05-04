@@ -13,14 +13,13 @@ import CustomerPage from '../pages/customerpage/customerpage';
 import PageNotFound from '../pages/pageNotFound/pageNotFound';
 import AdminPage from '../pages/adminPages/adminPage';
 import SupplierPage from '../pages/supplierPages/supplierPage';
-import HttpError from '../pages/pageNotFound/HttpErrorPage'
+import HttpError from '../pages/pageNotFound/HttpErrorPage';
 
-// Context 
+// Context
 import { LanguageProvider } from '../../language/LangContext';
 
 // CSS Styling
 import './App.css';
-
 
 const Routes = () => {
   return (
@@ -48,18 +47,21 @@ const App = ({ pca }) => {
     <LanguageProvider>
       <Router>
         <MsalProvider instance={pca}>
-          {(inProgress === 'login') ? 
-          <div>
-            <h6> Loading Login......... </h6>
-          </div>
-          :
-          <div className='app' style={{ height: '100vh' }}>
-              <div className='navbar'> <Navba /> </div>
-            <div style={{ marginTop: '23px', width: '100%' }}>
-              <Routes />
+          {inProgress === 'login' ? (
+            <div>
+              <h6> Loading Login......... </h6>
             </div>
-          </div>
-          }
+          ) : (
+            <div className='app' style={{ height: '100vh' }}>
+              <div className='navbar'>
+                {' '}
+                <Navba />{' '}
+              </div>
+              <div style={{ marginTop: '75px', width: '100%' }}>
+                <Routes />
+              </div>
+            </div>
+          )}
         </MsalProvider>
       </Router>
     </LanguageProvider>
