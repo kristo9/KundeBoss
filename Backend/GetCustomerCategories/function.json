@@ -15,5 +15,5 @@
             "name": "res"
         }
     ],
-    "scriptFile": "../dist/NewCustomerType/index.js"
+    "scriptFile": "../dist/GetCustomerCategories/index.js"
 }

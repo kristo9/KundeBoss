@@ -19,7 +19,7 @@ export const collections = {
   mail: 'mail',
   mailGroup: 'mailGroup',
   supplier: 'supplier',
-  customerType: 'customerType',
+  customerCategory: 'customerCategory',
 };
 
 export let clientRead = null;
@@ -106,4 +106,11 @@ export const encryptReplyId = (id: number) => {
   const encrypted = Buffer.concat([cipher.update(id.toString()), cipher.final()]);
 
   return encrypted.toString('hex');
+};
+
+export const closeConnections = () => {
+  clientRead?.close();
+  clientWrite?.close();
+  clientRead = null;
+  clientWrite = null;
 };

@@ -2,6 +2,7 @@ import { apiConfig } from './apiConfig';
 import { getTokenRedirect, msalInstance } from './authRedirect';
 import { tokenRequest } from './authConfig';
 import { addToCacheAndReturn, deleteCache, getFromCache } from './caching';
+import { ArrayDestructuringAssignment } from 'typescript';
 
 function callApi(endpoint, token, data) {
   const headers = new Headers();
@@ -10,27 +11,11 @@ function callApi(endpoint, token, data) {
 
   headers.append('Authorization', bearer);
 
-  /*   interface pre {
-    method: string;
-    headers: any;
-    body: any;
-    role?: boolean;
-  }
-  let options: pre;
-  options = {
-    method: 'POST',
-    headers: headers,
-    body: data,
-  }; */
-
   let options = {
     method: 'POST',
     headers: headers,
     body: data,
   };
-
-  /*   if (role !== null) options.role = role;
-   */
 
   console.log('Calling Web API...');
   let status = null;
@@ -120,21 +105,25 @@ export function callLogin() {
 }
 
 /*     const suppliers = [
-      {
-        'id' : '604a7ba6fe05bd49dcb6b7a3',
-        'name': "t"
-       },
-       {
-         'id':'604a7e8f4ce34420cc732813',
-         'name': "t"
-       }
-    ];
+  {
+    'id': '605b42ee425cc56cf089a7ff',
+    'contactName': 'Padmé Amidala Naberrie',
+    'mail': 'Padme@NC.com',
+    'phone': 74839283,
+  },
+  {
+    'id': '605b37b56c35ab18d8c49da9',
+    'contactName': null,
+    'mail': 'didbje@gmail.com',
+    'phone': null,
+  },
+];
     const tags = [
       "Viktig Kunde",
       "Gjerrig"
     ];
     var suppliersObject = JSON.parse(JSON.stringify(suppliers));
-    newCustomer('Timinski Corp.', 'Timain@timinski.gg', 12312312, "Timain", suppliersObject, tags, "CC Corp", "inforRef??" ) */
+    await newCustomer(null,'Lando Traveling Agency', 'lando.cal@LTA.net',48101993,'Lando Calrissian',  suppliers, tags, "CC Corp", "inforRef??" ) */
 /**
  * @description Creates new customer
  * @param id id of the customer you want to change. Use null to create a new customer
@@ -142,7 +131,7 @@ export function callLogin() {
  * @param mail mail to contact person
  * @param phone phone number to contact person
  * @param contactName name of contactperson
- * @param suppliers array, contains json objects (id, name) of suppliers
+ * @param suppliers array of json objects (id, contactName, mail, phone) of suppliers
  * @param tags array, contains strings of tags
  * @param comment string,
  * @param infoReference
@@ -154,7 +143,12 @@ export function newCustomer(
   mail: string,
   phone: number = null,
   contactName: string = null,
-  suppliers: [] = null,
+  suppliers: {
+    id: string;
+    contactName: string;
+    mail: string;
+    phone: number;
+  }[] = null,
   tags: string[] = null,
   comment: string = null,
   //types: [] = null,
@@ -335,36 +329,36 @@ export function getEmployee(tag = null): Promise<any> {
 
 /**
  * @description Deletes a employee, the employees mails and mailGroup from the database
- * @param mail Mail to the employee which is to be deleted
+ * @param id Mail to the employee which is to be deleted
  * @returns returns result. if result.n = 1 the employee is deleted.
  */
-export function deleteEmployee(mail) {
+export function deleteEmployee(id: string) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCallAndDeleteCache('DeleteEmployee', data);
 }
 
 /**
  * @description Deletes a customer, the customers mails and mailGroup from the database
- * @param mail Mail to the customer which is to be deleted
+ * @param id Mail to the customer which is to be deleted
  * @returns returns result. if result.n = 1 the customer is deleted.
  */
-export function deleteCustomer(mail) {
+export function deleteCustomer(id: string) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCallAndDeleteCache('DeleteCustomer', data);
 }
 
 /**
  * @description Deletes a supplier, the suppliers mails and mailGroup from the database
- * @param mail Mail to the supplier which is to be deleted
+ * @param id Mail to the supplier which is to be deleted
  * @returns returns result. if result.n = 1 the supplier is deleted.
  */
-export function deleteSupplier(mail) {
+export function deleteSupplier(id: string) {
   const data = {
-    mail: mail,
+    id: id,
   };
   return prepareCallAndDeleteCache('DeleteSupplier', data);
 }

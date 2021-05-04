@@ -1,61 +1,79 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
-import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
+import { prepInput, returnResult, errorWrongInput} 
+  from '../SharedFiles/dataValidation';
+import { getKey, options, prepToken, errorQuery, errorUnauthorized, }
+  from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { collections, connectRead, connectWrite,} 
+  from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
 export = (context: Context, req: HttpRequest): any => {
+  /* All medlsendt data kjøres gjennom en funksjon for html og javascript
+     desinfisering */
   req.body = prepInput(context, req.body);
 
   if (req.body === null) {
     return context.done();
   }
-
+  /* Funksjon som klargjør access-token for autentisering/autorisering */
   let token = prepToken(context, req.headers.authorization);
-
+  /* Funksjonen brytes med feilkode 400 hvis det ikke sendes med en access 
+     token */
   if (token === null) {
     return context.done();
   }
 
   const inputValidation = () => {
     let validInput = true;
-
-    /*TODO: Create cheks */
-
+    /* Her legges tester for sjekke at dataen som sendes i http forspørselen
+       er på riktig format */
     if (validInput) {
+      /* Funksjon som sender henter en tilkobling til databasen med 
+         eserettigheter. Funksjonen authorize() kalles som en callback 
+         funksjon. Funksjonen returnerer med feilkode 500 hvis tilkobling 
+         til databasen feilet.  */
       connectRead(context, authorize);
     } else {
-      errorWrongInput(context); /*TODO: appropriate error message, optional */
+      /* Returnerer feilkode 400 hvis med sendt data er på feil format */
+      errorWrongInput(context);
       return context.done();
     }
   };
 
   const authorize = (db: Db) => {
+    /* Access token verifiseres og dekrypteres */
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       if (err) {
-        errorUnauthorized(context, 'Token not valid'); /*TODO: appropriate error message, optional */
+        errorUnauthorized(
+          context,
+          'Token not valid'
+        ); 
         return context.done();
       } else {
-        /* TODO: Verify that user has permission to do what is asked
-                    example for checking if user have admin-write permission */
-
-        db.collection('employee').findOne(
+        /* Eksempel på hvordan api'et sjekker at en ansatt har admin 
+          rettigheter */
+        db.collection(collections.employee).findOne(
           {
-            'employeeId': decoded.preferred_username
+            'employeeId': decoded.preferred_username,
           },
           {
-            'admin': 1
+            'admin': 1,
           },
           (error: any, docs: { admin: string }) => {
             if (error) {
-              errorQuery(context); /*TODO: appropriate error message, optional */
+            /* Returnerer feilkode 500 hvis tilkobling til databasen feilet*/
+              errorQuery(context);
               return context.done();
             } else {
               if (docs.admin === 'write') {
+                /* Hvis brukeren har de rikgtige rettigheten kalles 
+                  funksjonen functionQuery. Den får en databasetilkobling med
+                  skriverettigheter hvis den trenger det. */
                 connectWrite(context, functionQuery);
               } else {
-                /*TODO: appropriate error message, optional */
+                /* Returnerer statuskode 401 hvis brukeren ikke har riktige
+                  rettigheter */
                 errorUnauthorized(context, 'User dont have admin permission');
                 return context.done();
               }
@@ -66,30 +84,25 @@ export = (context: Context, req: HttpRequest): any => {
     });
   };
 
-  const query = {
-    /* TODO: query */
-  };
-
-  const projection = {
-    /* TODO: projection */
-  };
-
+  const query = {};
+  /* Brukes når det hentes data */
+  const projection = {};
+  /* Ekspel på å lage ny kunde */
   const functionQuery = (db: Db) => {
-    /*  TODO: read or write */
-    /* client.db(DBName).collection("customer").insertOne(query, (error: any, docs: JSON | JSON[]) => {   */
-    db.collection('Collection Name')
-      .find(query)
-      .project(projection)
-      .toArray((error: any, docs: JSON) => {
+    db.collection(collections.customer).insertOne(
+      query,
+      (error: any, docs: JSON | JSON[]) => {
         if (error) {
-          errorQuery(context); /*TODO: appropriate error message, optional */
+          errorQuery(context);
           return context.done();
         }
-        /* TODO:  return docs[0] to not return array of json*/
+        /* Returnerer statuskode 200 hvis alt gikk som det skulle.
+        All dataen som returneres desinfisering for html og javascript kode*/
         returnResult(context, docs);
         context.done();
-      });
+      }
+    );
   };
-
+  /* Første funksjon som kalles */
   inputValidation();
 };

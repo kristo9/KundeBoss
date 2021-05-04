@@ -1,62 +1,40 @@
-//jest.mock('../SharedFiles/dataBase');
-import { invalidToken, prepareContext, token, timeout, readerToken, expectStuff } from './sharedItems';
+import GetAllEmployees from '../GetAllEmployees/index';
+import { prepareContext, httpRequest, timeout } from './sharedItems';
 
-const config = require('.././local.settings.json');
-let GetAllEmployees = null;
-
-beforeEach(async () => {
-  process.env = Object.assign(process.env, {
-    ...config.Values,
-  });
-  GetAllEmployees = require('../GetAllEmployees');
-});
-
-let request = {
-  method: 'POST', // HTTP request method used to invoke this function.
-  url: null, // Request URL
-  headers: { 'authorization': 'Bearer ' + token }, // HTTP request headers.
-  query: {}, // Query string parameter keys and values from the URL.
-  params: null, // Route parameter keys and values.
-  body: null, // The HTTP request body.
-};
-
-describe('GetAllEmployees function', () => {
-  test('status should return 200, no problems', async () => {
+describe('User credentials', () => {
+  test('Should work as expected', async (done) => {
     let context = prepareContext();
-    console.log(context.res);
-    GetAllEmployees(context, request);
+    let request = httpRequest;
+    request.headers.authorization = 'oyvind.husveg@kundeboss.onmicrosoft.com';
+
+    GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
 
-    expectStuff(context, 200, 'Token is null');
+    expect(context.res.status).toEqual(200);
+    done();
   });
 
-  test('status should return 401. Invalid token', async () => {
+  it('Userid doesnt have sufficient permission', async (done) => {
     let context = prepareContext();
-    request.headers = { 'authorization': 'Bearer ' + invalidToken };
+    let request = httpRequest;
+    request.headers.authorization = 'timTest@flyt.cloud';
 
-    GetAllEmployees(context, request);
+    GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
 
-    expectStuff(context, 401, 'Token not valid');
+    expect(context.res.status).toBe(401);
+    done();
   });
 
-  test('status should return 401. Token is null', async () => {
+  it('Userid not in database', async (done) => {
     let context = prepareContext();
-    request.headers = { 'authorization': null };
+    let request = httpRequest;
+    request.headers.authorization = 'timTest333@gmail.net';
 
-    GetAllEmployees(context, request);
+    GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
 
-    expectStuff(context, 401, 'Token is null');
-  });
-
-  test('status should return 401. User dont have admin-write permission', async () => {
-    let context = prepareContext();
-    request.headers = { 'authorization': 'Bearer ' + readerToken };
-
-    GetAllEmployees(context, request);
-    await timeout(context);
-
-    expectStuff(context, 401, 'User dont have admin-write permission');
+    expect(context.res.status).toBe(401);
+    done();
   });
 });

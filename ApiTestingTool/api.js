@@ -71,7 +71,6 @@ function runTest() {
         });
     });
 }
-runTest();
 function callApi(endpoint, token, data) {
     var _this = this;
     //const headers = new Headers();
@@ -106,7 +105,7 @@ function callApi(endpoint, token, data) {
                     return [3 /*break*/, 4];
                 case 4:
                     res = { body: body, stat: stat };
-                    return [2 /*return*/, stat];
+                    return [2 /*return*/, body];
             }
         });
     }); });
@@ -292,13 +291,13 @@ function getEmployee(tag) {
 }
 exports.getEmployee = getEmployee;
 /**
- * @description Deletes a employee, the employees mails and mailGroup from the database
- * @param mail Mail to the employee which is to be deleted
+ * @description Deletes an employee
+ * @param id Mail to the employee which is to be deleted
  * @returns returns result. if result.n = 1 the employee is deleted.
  */
-function deleteEmployee(mail) {
+function deleteEmployee(id) {
     var data = {
-        mail: mail
+        id: id
     };
     return prepareCall('DeleteEmployee', data);
 }
@@ -308,21 +307,21 @@ exports.deleteEmployee = deleteEmployee;
  * @param mail Mail to the customer which is to be deleted
  * @returns returns result. if result.n = 1 the customer is deleted.
  */
-function deleteCustomer(mail) {
+function deleteCustomer(id) {
     var data = {
-        mail: mail
+        id: id
     };
     return prepareCall('DeleteCustomer', data);
 }
 exports.deleteCustomer = deleteCustomer;
 /**
  * @description Deletes a supplier, the suppliers mails and mailGroup from the database
- * @param mail Mail to the supplier which is to be deleted
+ * @param id Mongodb id of the supplier which is to be deleted
  * @returns returns result. if result.n = 1 the supplier is deleted.
  */
-function deleteSupplier(mail) {
+function deleteSupplier(id) {
     var data = {
-        mail: mail
+        id: id
     };
     return prepareCall('DeleteSupplier', data);
 }
@@ -352,3 +351,18 @@ function modifyEmployeeData(employeeId, name, admin, isCustomer, customers) {
     return prepareCall('ModifyEmployeeData', data);
 }
 exports.modifyEmployeeData = modifyEmployeeData;
+function callFunctions() {
+    return __awaiter(this, void 0, void 0, function () {
+        var x;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, deleteCustomer('608bd927b7d353100cbc09df')];
+                case 1:
+                    x = _a.sent();
+                    console.log(x);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+callFunctions();
