@@ -3,13 +3,13 @@ import { closeConnections } from '../SharedFiles/dataBase';
 export function prepareContext() {
   let context = {
     res: { status: null, body: null },
-    log: (txt) => null,
+    log: (txt) => null, //console.log(txt),
     done: null,
   };
 
   context = {
     res: { status: null, body: null },
-    log: (txt) => null,
+    log: (txt) => null, //console.log(txt),
     done: () => (context.done = true),
   };
   return context;

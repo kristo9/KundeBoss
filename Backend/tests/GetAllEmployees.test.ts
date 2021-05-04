@@ -11,6 +11,7 @@ describe('User credentials', () => {
     await timeout(context);
 
     expect(context.res.status).toEqual(200);
+    expect(context.res.body.length).toBeGreaterThanOrEqual(1);
     done();
   });
 
@@ -30,6 +31,29 @@ describe('User credentials', () => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'timTest333@gmail.net';
+
+    GetAllEmployees(context as any, httpRequest as any);
+    await timeout(context);
+
+    expect(context.res.status).toBe(401);
+    done();
+  });
+
+  it('Token is null', async (done) => {
+    let context = prepareContext();
+    let request = httpRequest;
+    request.headers.authorization = '';
+
+    GetAllEmployees(context as any, httpRequest as any);
+    await timeout(context);
+    expect(context.res.status).toBe(401);
+    done();
+  });
+
+  test('Not valid token', async (done) => {
+    let context = prepareContext();
+    let request = httpRequest;
+    request.headers.authorization = 'test';
 
     GetAllEmployees(context as any, httpRequest as any);
     await timeout(context);
