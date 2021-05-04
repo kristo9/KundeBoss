@@ -13,6 +13,7 @@ describe('User credentials', () => {
     await timeout(context);
 
     expect(context.done).toEqual(true);
+    expect(context.res.body).toHaveProperty('_id', '605b37ae6c35ab18d8c49da7');
     expect(context.res.status).toBe(200);
     done();
   });
@@ -27,6 +28,7 @@ describe('User credentials', () => {
     await timeout(context);
 
     expect(context.done).toEqual(true);
+    expect(context.res.body).toBe('no token');
     expect(context.res.status).toBe(400);
     done();
   });
@@ -41,6 +43,7 @@ describe('User credentials', () => {
     await timeout(context);
 
     expect(context.done).toEqual(true);
+    expect(context.res.body).toBe('Token not valid');
     expect(context.res.status).toBe(401);
     done();
   });
