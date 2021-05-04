@@ -1,9 +1,8 @@
 /*css for the body of the document*/
 body {
-  margin-top: 45px;
   width: 100%;
   margin: 0 auto;
-  background-color: white;
+  background-color: #f8f8f8;
 }
 
 /*css for the entire document */

@@ -1,4 +1,5 @@
 import react from 'react';
+import '../../../basicComp/basic.css';
 
 /**
  * Displayes the customer information.
@@ -6,16 +7,24 @@ import react from 'react';
  * @returns a react-component with the customer information.
  */
 export function CustomerInfoPage({ customerInfo }: any) {
+  let info = customerInfo.comment ? customerInfo.comment : 'Det er ingen notater om kunden';
+
   return (
     <div>
-      <h1>Infomasjon</h1>
-      <DisplayTextAndInfo text={'Navn'} information={customerInfo.name} />
+      <h1 className='color-dark'>Infomasjon</h1>
+      <div className='displayInfoDiv'>
+        <DisplayTextAndInfo text={'Navn'} information={customerInfo.name} />
+      </div>
       <ContactPersonInfo
         name={customerInfo.contact.name}
         mail={customerInfo.contact.mail}
         phone={customerInfo.contact.phone}
       />
       <DisplayTags tags={customerInfo.tags} />
+
+      <div className='displayInfoDiv'>
+        <DisplayTextAndInfo text={'Notat'} information={info} />
+      </div>
     </div>
   );
 }
@@ -29,7 +38,10 @@ export function CustomerInfoPage({ customerInfo }: any) {
 function DisplayTextAndInfo(props: { text: string; information: any }) {
   return (
     <div>
-      {props.text}: {props.information}
+      <span style={{ display: 'inline-block', width: '5em' }}>
+        <b>{props.text}: </b>
+      </span>
+      {props.information}
     </div>
   );
 }
@@ -43,9 +55,9 @@ function DisplayTextAndInfo(props: { text: string; information: any }) {
  */
 export function ContactPersonInfo(props: { name: string; phone: number; mail: string }) {
   return (
-    <div style={{ borderStyle: 'solid' }}>
+    <div className='displayInfoDiv'>
       <h3>Kontaktperson</h3>
-      <div style={{ paddingLeft: '250 px' }}>
+      <div className='addMarginLeft'>
         <DisplayTextAndInfo text={'Navn'} information={props.name} />
         <DisplayTextAndInfo text={'Telefon'} information={props.phone} />
         <DisplayTextAndInfo text={'Mail'} information={props.mail} />
@@ -60,22 +72,18 @@ export function ContactPersonInfo(props: { name: string; phone: number; mail: st
  * @returns a react component with the tags.
  */
 function DisplayTags(props: { tags: any }) {
-  //the customer doesn't have any tags, display a "error"-message
-  if (props.tags.length === 0) {
-    return (
-      <div>
-        <h3>Tags</h3>
-        <div>Denne kunden har ingen tags</div>
-      </div>
-    );
-  }
-  //the customer have tags, display them
   return (
-    <div>
+    <div className='displayInfoDiv'>
       <h3>Tags</h3>
-      {props.tags.map((tag) => (
-        <div key={tag}>{tag}</div>
-      ))}
+      {props?.tags ? (
+        <ul className='listStyle addMarginLeft'>
+          {props.tags.map((tag) => (
+            <li key={tag}>{tag}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>Denne kunden har ingen tags</p>
+      )}
     </div>
   );
 }

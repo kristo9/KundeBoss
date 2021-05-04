@@ -6,10 +6,16 @@
   color: antiquewhite;
 }
 
+.add-padding {
+  padding-left: 2%;
+  padding-right: 2%;
+  width: 96%;
+}
+
 .add-margins {
-  margin-left: 1%;
-  margin-right: 1%;
-  width: '86%';
+  margin-left: 2%;
+  margin-right: 2%;
+  width: 96%;
 }
 
 .margin-right {
@@ -21,7 +27,7 @@
   height: 100%;
 }
 
-.loading {
+/* .loading {
   animation: rotation 4s infinite linear;
   background-color: aquamarine;
   width: 100px;
@@ -38,7 +44,7 @@
   to {
     transform: rotate(359deg);
   }
-}
+} */
 
 .Loader {
   text-align: center;
@@ -48,4 +54,62 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+/*
+  Searchbox
+*/
+.search {
+  background-color: white;
+  color: #063752;
+  border-color: white;
+  border: 5px;
+  padding: 0.5em;
+  padding-left: 1.5em;
+  border-radius: 50px 0px 0px 50px;
+}
+
+.search::placeholder {
+  color: #063752;
+}
+
+.search:focus {
+  box-shadow: 0px 0px 0px 2px #063752;
+  outline: none;
+}
+
+/* Styles displayboxes */
+.displayInfoDiv {
+  background-color: white;
+  color: #063752;
+  width: 100%;
+
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+.displayInfoDiv h3 {
+  background-color: white;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.addMarginLeft {
+  margin-left: 1em;
+}
+
+.color-dark {
+  color: #063752;
+}
+
+.listStyle {
+  list-style-type: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
 }

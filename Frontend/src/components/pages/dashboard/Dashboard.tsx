@@ -8,6 +8,8 @@ import { useHistory } from 'react-router-dom';
 
 // CSS imports
 import './Dashboard.css';
+import '../../basicComp/basic.css';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 let customers = getEmployee();
 
@@ -65,18 +67,17 @@ class Dashboard extends React.Component<{}, { customers: any; search: string }> 
 
     return (
       <div className='add-margins'>
-        <div className='page'>
-          {this.displayGreeting()}
-          <div style={{ float: 'right' }}>
-            <input
-              type='text'
-              placeholder='Search tag'
-              value={this.state.search}
-              onChange={this.updateSearch.bind(this)}
-            ></input>
-          </div>
-          <div>{this.displayCustomers(filteredCustomers)}</div>
+        {this.displayGreeting()}
+        <div style={{ float: 'right' }}>
+          <input
+            className='search'
+            type='text'
+            placeholder='Search tag'
+            value={this.state.search}
+            onChange={this.updateSearch.bind(this)}
+          ></input>
         </div>
+        <div>{this.displayCustomers(filteredCustomers)}</div>
       </div>
     );
   }
@@ -140,6 +141,7 @@ function InfoBox(prop: customerProp) {
 
   return (
     <tr
+      tabIndex={0}
       className='rad'
       onClick={() => {
         history.push('/customerpage/' + prop.id);

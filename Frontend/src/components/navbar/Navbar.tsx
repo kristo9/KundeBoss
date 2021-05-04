@@ -14,8 +14,7 @@ import { LanguageContext } from '../../language/LangContext';
 
 // CSS style
 import './Navbar.css';
-
-
+import '../basicComp/basic.css';
 
 const Authenticated = () => {
   const { dictionary } = useContext(LanguageContext);
@@ -23,27 +22,31 @@ const Authenticated = () => {
   sessionStorage.setItem('UserName', accounts[0].username);
   console.log('UserName is set at sessionStorage "UserName":  ' + sessionStorage.getItem('UserName'));
 
-  const[showLink, setShowLink] = useState(false);
+  const [showLink, setShowLink] = useState(false);
 
   return (
-    <header className='topnav'>
+    <header className='topnav add-padding'>
       <div className='left'>
-        <Link to='/' className='Logo' onClick={ () => showLink ? setShowLink(false) : ''}> "Logo" </Link>
+        <Link to='/' onClick={() => (showLink ? setShowLink(false) : '')}>
+          "Logo"
+        </Link>
       </div>
-      <div className='right'>
-        <div className='contents' id={ showLink ? 'hidden' : '' }>
-          <div className='links'>
-            <Link to='/contact' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.contact} </Link>
-            <Link to='/help' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.help} </Link>
-            <Link to='/about' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.about} </Link> 
-          </div>
-          <div className='signInOut'>
-            <SignInSignOutButton />
-          </div>
+      <div className='contents' id={showLink ? 'hidden' : ''}>
+        <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {dictionary.contact}
+        </Link>
+        <Link to='/help' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {dictionary.help}
+        </Link>
+        <Link to='/about' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {dictionary.about}
+        </Link>
+        <div className='coloredNavButton'>
+          <SignInSignOutButton />
         </div>
-        <div className='hamburgermenu'>
-          <button onClick={ () => setShowLink(!showLink)}> Open </button>
-        </div>
+      </div>
+      <div className='hamburgermenu coloredNavButton'>
+        <button onClick={() => setShowLink(!showLink)}> Open </button>
       </div>
     </header>
   );
@@ -53,33 +56,44 @@ const Authenticated = () => {
 
 */
 
-
 const Unauthenticated = () => {
   const { dictionary } = useContext(LanguageContext);
   sessionStorage.removeItem('UserName');
   console.log('UserName is removed as no account is signed in');
 
-  const[showLink, setShowLink] = useState(false);
+  const [showLink, setShowLink] = useState(false);
 
   console.log(showLink);
   return (
     <header className='topnav'>
       <div className='left'>
-        <Link to='/' className='Logo' onClick={ () => showLink ? setShowLink(false) : ''}> "Logo" </Link>
+        <Link to='/' className='Logo' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {' '}
+          "Logo"{' '}
+        </Link>
       </div>
       <div className='right'>
-        <div className='contents' id={ showLink ? 'hidden' : '' }>
+        <div className='contents' id={showLink ? 'hidden' : ''}>
           <div className='links'>
-            <Link to='/contact' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.contact} </Link>
-            <Link to='/help' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.help} </Link>
-            <Link to='/about' className='Link' onClick={ () => showLink ? setShowLink(false) : ''}> {dictionary.about} </Link> 
+            <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+              {' '}
+              {dictionary.contact}{' '}
+            </Link>
+            <Link to='/help' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+              {' '}
+              {dictionary.help}{' '}
+            </Link>
+            <Link to='/about' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+              {' '}
+              {dictionary.about}{' '}
+            </Link>
           </div>
           <div className='signInOut'>
             <SignInSignOutButton />
           </div>
         </div>
         <div className='hamburgermenu'>
-          <button onClick={ () => setShowLink(!showLink)}> Open </button>
+          <button onClick={() => setShowLink(!showLink)}> Open </button>
         </div>
       </div>
     </header>
