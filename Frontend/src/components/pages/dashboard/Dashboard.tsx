@@ -11,8 +11,6 @@ import './Dashboard.css';
 import '../../basicComp/basic.css';
 import { propTypes } from 'react-bootstrap/esm/Image';
 
-let customers = getEmployee();
-
 /**
  * A class that contains and renders the dashboard
  */
@@ -36,10 +34,8 @@ class Dashboard extends React.Component<{}, { customers: any; search: string }> 
    */
   componentDidMount() {
     const fetchName = async () => {
-      customers = await customers;
-      if (typeof customers !== 'object') {
-        customers = await getEmployee();
-      }
+      let customers = await getEmployee();
+
       this.setState({
         customers,
       });
