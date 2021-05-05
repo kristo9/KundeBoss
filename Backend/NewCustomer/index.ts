@@ -83,7 +83,7 @@ export default (context: Context, req: HttpRequest): any => {
         /*  req.body.suppliers.forEach((supplier) => {
 
         }); */
-        req.body.suppliers = req.body.supplier.map((id) => ObjectId(id));
+        req.body.suppliers = req.body.suppliers.map((id) => ObjectId(id));
       }
 
       let update = {
