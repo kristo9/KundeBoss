@@ -58,7 +58,7 @@ describe('User credentials', () => {
     await timeout(context);
 
     expect(context.done).toEqual(true);
-    expect(context.res.body).toBe('User dont have admin-write/read permission');
+    expect(context.res.body).toBe('User invalid');
     expect(context.res.status).toBe(401);
     done();
   });

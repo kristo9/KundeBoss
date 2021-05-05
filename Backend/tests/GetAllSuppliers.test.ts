@@ -16,21 +16,7 @@ describe('User credentials', () => {
     done();
   });
 
-  it('Userid doesnt have sufficient permission', async (done) => {
-    let context = prepareContext();
-    let request = httpRequest;
-    request.headers.authorization = 'timTest@flyt.cloud';
-
-    GetAllSuppliers(context as any, request as any);
-    await timeout(context);
-
-    expect(context.done).toEqual(true);
-    expect(context.res.body).toBe('User dont have admin-write permission');
-    expect(context.res.status).toBe(401);
-    done();
-  });
-
-  it('Userid not in database', async (done) => {
+  test('Userid not in database', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'timTest333@gmail.net';
@@ -39,12 +25,12 @@ describe('User credentials', () => {
     await timeout(context);
 
     expect(context.done).toEqual(true);
-    expect(context.res.body).toBe('User dont have admin-write permission');
+    expect(context.res.body).toBe('User invalid');
     expect(context.res.status).toBe(401);
     done();
   });
 
-  it('Token is empty/null', async (done) => {
+  test('Token is empty/null', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = '';
