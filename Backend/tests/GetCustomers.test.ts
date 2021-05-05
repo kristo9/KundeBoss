@@ -13,28 +13,27 @@ describe('GetCustomers function', () => {
     expect(context.res.status).toEqual(200);
     expect(Object.keys(context.res.body.customerInformation).length).toBeGreaterThanOrEqual(1);
     expect(context.done).toEqual(true);
-    expect(context.res.body.customerInformation.length).toEqual(5);
+    expect(context.res.body.customerInformation.length).toBeGreaterThan(1);
     done();
   });
 });
 
 describe('GetCustomers function', () => {
-  test('status should return 200, one or more customers', async (done) => {
+  test('made up mail', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'madeup@mail';
-
+//console.log(context)
     GetCustomers(context as any, request as any);
     await timeout(context);
 
-    expect(context.res.status).toEqual(400);
-    expect(context.done).toEqual(true);
+    expect(context.res.status).toEqual(401);
     done();
   });
 });
 
 describe('GetCustomers function', () => {
-  test('status should return 200, one or more customers', async (done) => {
+  test('status should return 200, 0 cust', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'didrik.bjerk@live.no';

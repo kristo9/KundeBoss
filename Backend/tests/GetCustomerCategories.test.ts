@@ -7,7 +7,7 @@ describe('GetCustomerCategories', () => {
     let request = httpRequest;
     request.headers.authorization = 'bjerk.diden.didrik@gmail.com';
 
-    GetCustomerCategories(context as any, httpRequest as any);
+    GetCustomerCategories(context as any, request as any);
     await timeout(context);
    
     expect(context.res.status).toEqual(401);
@@ -19,7 +19,7 @@ describe('GetCustomerCategories', () => {
     let request = httpRequest;
     request.headers.authorization = 'madeup@Mail.com';
 
-    GetCustomerCategories(context as any, httpRequest as any);
+    GetCustomerCategories(context as any, request as any);
     await timeout(context);
 
     expect(context.res.status).toEqual(401);
@@ -31,7 +31,7 @@ describe('GetCustomerCategories', () => {
     let request = httpRequest;
     request.headers.authorization = 'test';
 
-    GetCustomerCategories(context as any, httpRequest as any);
+    GetCustomerCategories(context as any, request as any);
     await timeout(context);
 
     expect(context.res.status).toEqual(401);

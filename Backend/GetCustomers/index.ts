@@ -1,8 +1,8 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { errorWrongInput, returnResult } from '../SharedFiles/dataValidation';
+import { returnResult } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { checkDbConnection, clientRead, connectRead } from '../SharedFiles/dataBase';
+import { checkDbConnection, clientRead, collections, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
 /**
@@ -36,69 +36,53 @@ export default (context: Context, req: HttpRequest): any => {
     });
   };
 
-  // Which information is to be recieved
-  const projection = {
-    'name': 1,
-    'employeeId': 1,
-    'customerInformation._id': 1,
-    'customerInformation.name': 1,
-    'customerInformation.contact.name': 1,
-    'customerInformation.contact.mail': 1,
-    'customerInformation.tags': 1,
-  };
-
   /**
    * Query that asks for customers that a user has access to
    * @param db read access to database, needed to recieve customers
    * @return potential new tags and all the customers the user has access to
    */
   const functionQuery = (db: Db) => {
-    db.collection('employee') // Query to recieve information about one employee and his customers
-      .aggregate([
-        {
-          '$match': {
-            'employeeId': employeeId,
-          },
-        },
-        {
-          '$lookup': {
-            'from': 'customer',
-            'localField': 'customers.id',
-            'foreignField': '_id',
-            'as': 'customerInformation',
-          },
-        },
-        { '$project': projection },
-      ])
-      .toArray((error: any, docs: JSON) => {
+    db.collection(collections.employee).findOne(
+      { 'employeeId': employeeId },
+      { 'projection': { 'name': 1, 'employeeId': 1, 'customers': 1, 'admin': 1 } },
+      (error: any, docs: any) => {
         if (error) {
           errorQuery(context);
           return context.done();
-        } else {
-          let result = docs[0];
-          let customers = result?.customerInformation;
-          let allTags = [];
-
-          if(!customers){
-            errorWrongInput(context);
-            return context.done();
-          }
-
-          customers.forEach((customer) => (allTags = allTags.concat(customer.tags)));
-
-          result['allTags'] = allTags.filter((tag, index) => allTags.indexOf(tag) === index);
-
-          if (req.body && req.body.tag) {
-            // Search for custoemrs that matches tag search
-            result.customerInformation = customers.filter((customer) =>
-              customer.tags.map((tag) => tag.toLowerCase().includes(req.body.tag.toLowerCase())).includes(true)
-            );
-          }
-
-          returnResult(context, result);
-          context.done();
         }
-      });
+        if (!docs) {
+          errorUnauthorized(context);
+          return context.done();
+        }
+        let employee = docs;
+        let query = null;
+
+        if (employee?.admin === 'write' || employee?.admin === 'read') {
+          query = {};
+        } else {
+          query = { '_id': { '$in': employee?.customers.map((customer) => customer?.id) } };
+        }
+        delete employee?.customers;
+
+        db.collection(collections.customer)
+          .find(query)
+          .project({ '_id': 1, 'name': 1, 'contact.name': 1, 'contact.mail': 1, 'tags': 1 })
+          .toArray((error: any, docs: any) => {
+            if (error) {
+              errorQuery(context);
+              return context.done();
+            }
+            let allTags = [];
+
+            employee['customerInformation'] = docs;
+            employee.customerInformation.forEach((customer) => (allTags = allTags.concat(customer.tags)));
+            employee['allTags'] = allTags.filter((tag, index) => allTags.indexOf(tag) === index);
+
+            returnResult(context, employee);
+            context.done();
+          });
+      }
+    );
   };
 
   connectRead(context, authorize);
