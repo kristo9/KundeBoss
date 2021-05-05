@@ -12,6 +12,7 @@ import { ObjectId } from 'mongodb';
  * @param req : HttpRequest
  */
 export default (context: Context, req: HttpRequest): any => {
+  let employeeId: any;
   /* Sanitizes input. Returns if there are no request body */
   req.body = prepInput(context, req.body);
   if (req.body === null) {
@@ -47,7 +48,24 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        functionQuery(db);
+        employeeId = decoded.preferred_username;
+
+        db.collection('employee') // query to find users permission level
+          .find({ 'employeeId': employeeId })
+          .project({ 'admin': 1 })
+          .toArray((error: any, docs: JSON | JSON[]) => {
+            if (error) {
+              errorQuery(context);
+              return context.done();
+            } else {
+              if (docs[0]?.admin === 'write' || docs[0]?.admin === 'read') {
+                functionQuery(db);
+              } else {
+                errorUnauthorized(context, 'User dont have admin-write/read permission');
+                return context.done();
+              }
+            }
+          });
       }
     });
   };

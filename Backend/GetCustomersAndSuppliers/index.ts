@@ -31,7 +31,23 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       } else {
         employeeId = decoded.preferred_username;
-        functionQuery(db);
+
+        db.collection('employee') // query to find users permission level
+          .find({ 'employeeId': employeeId })
+          .project({ 'admin': 1 })
+          .toArray((error: any, docs: JSON | JSON[]) => {
+            if (error) {
+              errorQuery(context);
+              return context.done();
+            } else {
+              if (docs[0]?.admin === 'write' || docs[0]?.admin === 'read') {
+                functionQuery(db);
+              } else {
+                errorUnauthorized(context, 'User dont have admin-write/read permission');
+                return context.done();
+              }
+            }
+          });
       }
     });
   };

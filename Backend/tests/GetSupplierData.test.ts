@@ -9,7 +9,7 @@ describe('User credentials', () => {
     request.headers.authorization = 'oyvind.husveg@kundeboss.onmicrosoft.com';
     request.body['id'] = '605b37ae6c35ab18d8c49da7';
 
-    GetSupplierData(context as any, httpRequest as any);
+    GetSupplierData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -24,7 +24,7 @@ describe('User credentials', () => {
     request.headers.authorization = '';
     request.body['id'] = '605b37ae6c35ab18d8c49da7';
 
-    GetSupplierData(context as any, httpRequest as any);
+    GetSupplierData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -39,11 +39,26 @@ describe('User credentials', () => {
     request.headers.authorization = 'test';
     request.body['id'] = '605b37ae6c35ab18d8c49da7';
 
-    GetSupplierData(context as any, httpRequest as any);
+    GetSupplierData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
     expect(context.res.body).toBe('Token not valid');
+    expect(context.res.status).toBe(401);
+    done();
+  });
+
+  test('User not in database', async (done) => {
+    let context = prepareContext();
+    let request = httpRequest;
+    request.headers.authorization = 'tim@gmail.org';
+    request.body['id'] = '605b37ae6c35ab18d8c49da7';
+
+    GetSupplierData(context as any, request as any);
+    await timeout(context);
+
+    expect(context.done).toEqual(true);
+    expect(context.res.body).toBe('User dont have admin-write/read permission');
     expect(context.res.status).toBe(401);
     done();
   });
@@ -56,7 +71,7 @@ describe('Body checks', () => {
     request.headers.authorization = token;
     request.body = {};
 
-    GetSupplierData(context as any, httpRequest as any);
+    GetSupplierData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -71,7 +86,7 @@ describe('Body checks', () => {
     request.headers.authorization = token;
     request.body = null;
 
-    GetSupplierData(context as any, httpRequest as any);
+    GetSupplierData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -87,7 +102,7 @@ describe('Body checks', () => {
     request.body = {};
     request.body['id'] = 'tulleId';
 
-    GetSupplierData(context as any, httpRequest as any);
+    GetSupplierData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -103,7 +118,7 @@ describe('Body checks', () => {
     request.body = {};
     request.body['id'] = '123456789123456789123456';
 
-    GetSupplierData(context as any, httpRequest as any);
+    GetSupplierData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);

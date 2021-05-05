@@ -27,7 +27,6 @@ export default (context: Context, req: HttpRequest): any => {
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // Verified and decoded token
-      let i = 0;
       if (err) {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
@@ -45,7 +44,7 @@ export default (context: Context, req: HttpRequest): any => {
               if (docs[0]?.admin === 'write' || docs[0]?.admin === 'read') {
                 functionQuery(db);
               } else {
-                errorUnauthorized(context, 'User dont have admin-write permission');
+                errorUnauthorized(context, 'User dont have admin-write/read permission');
                 return context.done();
               }
             }

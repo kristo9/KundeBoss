@@ -7,7 +7,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'oyvind.husveg@kundeboss.onmicrosoft.com';
 
-    GetAllSuppliers(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -21,10 +21,11 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'timTest@flyt.cloud';
 
-    GetAllSuppliers(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
+    expect(context.res.body).toBe('User dont have admin-write permission');
     expect(context.res.status).toBe(401);
     done();
   });
@@ -34,10 +35,11 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'timTest333@gmail.net';
 
-    GetAllSuppliers(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
+    expect(context.res.body).toBe('User dont have admin-write permission');
     expect(context.res.status).toBe(401);
     done();
   });
@@ -47,10 +49,11 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = '';
 
-    GetAllSuppliers(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
+    expect(context.res.body).toBe('Token is null');
     expect(context.res.status).toBe(401);
     done();
   });
@@ -60,10 +63,11 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'test';
 
-    GetAllSuppliers(context as any, httpRequest as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
+    expect(context.res.body).toBe('Token not valid');
     expect(context.res.status).toBe(401);
     done();
   });
