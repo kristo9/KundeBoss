@@ -89,6 +89,10 @@ export default (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
+              if (!docs) {
+                errorUnauthorized(context);
+                return context.done();
+              }
               if (!(await customerIds)) {
                 return context.done();
               }
