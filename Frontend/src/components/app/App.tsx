@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { MsalProvider, useMsal } from '@azure/msal-react';
 
 // Components
-import Navba from '../navbar/Navbar';
+import Navbar from '../navbar/Navbar';
 import StartPage from '../pages/startpage/Startpage';
 import Contact from '../pages/contact/Contact';
 import Help from '../pages/help/Help';
@@ -16,8 +16,9 @@ import SupplierPage from '../pages/supplierPages/supplierPage';
 import HttpError from '../pages/pageNotFound/HttpErrorPage';
 
 // Context
-import { LanguageProvider } from '../../Context/language/LangContext';
-import { UserTypeProvider } from '../../Context/UserType/UserTypeContext';
+import { LanguageProvider } from '../../context/language/LangContext';
+import { UserTypeProvider } from '../../context/UserType/UserTypeContext';
+import LanguageSelector from '../../context/language/LangContext';
 
 // CSS Styling
 import './App.css';
@@ -57,7 +58,7 @@ const App = ({ pca }) => {
             ) : (
               <div className='app W100'>
                 <div className='navbar'>
-                  <Navba />
+                  <Navbar />
                 </div>
                 <div className='startDocumentUnderNavbar W100'>
                   <Routes />

@@ -1,5 +1,5 @@
 // Libraries
-import React from 'react';
+import { useEffect, useState, useContext } from 'react';
 import LoadingSymbol from '../../basicComp/loading';
 
 // Component and function imports
@@ -9,149 +9,128 @@ import { useHistory } from 'react-router-dom';
 // CSS imports
 import './Dashboard.css';
 import '../../basicComp/basic.css';
-import { propTypes } from 'react-bootstrap/esm/Image';
+import { LanguageContext } from '../../../context/language/LangContext';
+import { stringify } from 'querystring';
 
 /**
  * A class that contains and renders the dashboard
  */
-class Dashboard extends React.Component<{}, { customers: any; search: string }> {
-  /**
-   * @constructor
-   * @param {props} props contains infomation about the class
-   */
-  constructor(props) {
-    super(props);
-    this.state = {
-      customers: null,
-      search: '',
-      // error: '',
-    };
-  }
 
-  /**
-   * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
-   * Gets the customer information from backend and updates the display.
-   */
-  componentDidMount() {
+const Dashboard = () => {
+  const { dictionary } = useContext(LanguageContext);
+
+  const [customers, setCustomers] = useState(null);
+  const [name, setName] = useState(null);
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState(null);
+
+  useEffect(() => {
     const fetchName = async () => {
       let customers = await getEmployee();
-
-      this.setState({
-        customers,
-      });
+      setCustomers(customers);
+      setFilter(customers.customerInformation);
+      setName(customers.name);
     };
     fetchName();
-  }
+  }, []);
 
-  /**
-   * Rendre the dashboard page
-   */
-
-  updateSearch(event) {
-    this.setState({ search: event.target.value.substr(0, 20) });
-  }
-
-  render() {
-    let filteredCustomers = null;
-
-    if (this.state.customers) {
-      filteredCustomers = this.state.customers.customerInformation.filter((customer) => {
+  useEffect(() => {
+    const filtered = (e) => {
+      const filtered = customers.customerInformation.filter((customer) => {
         const tag = customer.tags.toString().toLowerCase();
         const name = customer.name.toString().toLowerCase();
         const currsearch = tag + name;
-        return currsearch.indexOf(this.state.search.toLowerCase()) !== -1;
+        return currsearch.indexOf(search.toLowerCase()) !== -1;
       });
+      setFilter(filtered);
+    };
+    if (name !== null) {
+      filtered(search);
     }
+  }, [search]);
 
-    return (
+  return (
+    <>
       <div className='add-margins'>
-        {this.displayGreeting()}
+        {displayGreeting({ name }, { dictionary })}
         <div style={{ float: 'right' }}>
           <input
+            type='search'
             className='search'
-            type='text'
-            placeholder='Search name or tag'
-            value={this.state.search}
-            onChange={this.updateSearch.bind(this)}
+            placeholder={dictionary.search_Name_Tag}
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
           />
         </div>
-        <div>{this.displayCustomers(filteredCustomers)}</div>
+        <div>{displayCustomers({ filter }, { name }, { dictionary })}</div>
       </div>
-    );
-  }
-
-  /**
-   * Displays a greeting if the user is logged in.
-   */
-  private displayGreeting() {
-    let greetingName = '';
-
-    if (this.state.customers && this.state.customers.name) {
-      greetingName = this.state.customers.name.split(' ')[0];
-    }
-
-    return <h1 className='heading'>Velkommen {greetingName}</h1>;
-  }
-
-  /**
-   * Displays the emplyees customers
-   */
-  private displayCustomers(filteredCustomers) {
-    if (this.state.customers) {
-      return (
-        <table className='diasplayTable'>
-          <thead>
-            <tr className='tableHeader'>
-              <td>
-                <b>Navn</b>
-              </td>
-              <td>
-                <b>Kontaktperson</b>
-              </td>
-              <td>
-                <b>Epost</b>
-              </td>
-              <td>
-                <b>Tags</b>
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              //Creates a table entry for each customer returned from the database.
-              filteredCustomers.map((customer) => (
-                <InfoBox
-                  customerName={customer.name}
-                  contactName={customer.contact.name}
-                  mail={customer.contact.mail}
-                  tags={customer.tags}
-                  key={customer._id}
-                  id={customer._id}
-                />
-              ))
-            }
-          </tbody>
-        </table>
-      );
-    } else {
-      return <LoadingSymbol />;
-    }
-  }
-}
-
-interface customerProp {
-  customerName: string;
-  contactName: string;
-  mail: string;
-  tags?: any;
-  id: string;
-}
+    </>
+  );
+};
 
 /**
- * @param {customerProp} prop contains the informastion about the customer
- * @returns A react component with a table row contaning customer information
+ * Displays a greeting if the user is logged in.
  */
-function InfoBox(prop: customerProp) {
+const displayGreeting = ({ name }, { dictionary }) => {
+  if (name !== null) {
+    return (
+      <h1>
+        {dictionary.welcome}
+        {name.split(' ')[0]}
+      </h1>
+    );
+  } else {
+    return <h1>{dictionary.welcome}</h1>;
+  }
+};
+
+const displayCustomers = ({ filter }, { name }, { dictionary }) => {
+  const tag = dictionary.noTag;
+  if (name !== null) {
+    return (
+      <table className='diasplayTable'>
+        <thead>
+          <tr className='tableHeader'>
+            <td>
+              <b>Navn</b>
+            </td>
+            <td>
+              <b>Kontaktperson</b>
+            </td>
+            <td>
+              <b>Epost</b>
+            </td>
+            <td>
+              <b>Tags</b>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            //Creates a table entry for each customer returned from the database.
+            filter.map((customer) => (
+              <InfoBox
+                customerName={customer.name}
+                contactName={customer.contact.name}
+                mail={customer.contact.mail}
+                tags={customer.tags}
+                key={customer._id}
+                id={customer._id}
+                noTag={tag}
+              />
+            ))
+          }
+        </tbody>
+      </table>
+    );
+  } else {
+    return <LoadingSymbol />;
+  }
+};
+
+const InfoBox = (prop) => {
   let history = useHistory();
   const tags = prop.tags;
 
@@ -168,9 +147,9 @@ function InfoBox(prop: customerProp) {
       </td>
       <td>{prop.contactName}</td>
       <td>{prop.mail}</td>
-      <td> {tags.length === 0 ? 'Ingen Tags' : prop.tags.toString().split(',').join(', ')} </td>
+      <td> {tags.length === 0 ? prop.noTag : prop.tags.toString().split(',').join(', ')} </td>
     </tr>
   );
-}
+};
 
 export default Dashboard;

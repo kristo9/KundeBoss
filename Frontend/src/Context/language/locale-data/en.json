@@ -1,5 +1,8 @@
 {
     "contact": "Contact",
     "about": "About",
-    "help": "Help"
+    "help": "Help",
+    "noTag": "No tags ",
+    "welcome": "Welcome ",
+    "search_Name_Tag": "Search name or tag "
 }
