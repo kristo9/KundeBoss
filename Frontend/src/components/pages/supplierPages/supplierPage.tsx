@@ -7,7 +7,7 @@ import { getSupplier } from '../../../azure/api';
 import SupplierCustomerPage from './subPages/SupplierCustomerPage';
 import SupplierNotesPage from './subPages/SupplierNotesPage';
 import LoadingSymbol from '../../basicComp/loading';
-import { SBElementProps, SBProps, Sidebar } from '../../basicComp/sidebar';
+import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 import SupplierInfoPage from './supplierInfoPage';
 import SupplierEditPage from './subPages/SupplierEditPage';
 

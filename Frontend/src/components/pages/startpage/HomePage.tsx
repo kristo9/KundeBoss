@@ -1,43 +1,39 @@
 // Libraries
-import react, { useEffect, useState } from 'react'
+import react, { createContext, useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 
 // Components and Function Calls 
 import Loading from '../../basicComp/loading';
-import PageNotFound from '../pageNotFound/pageNotFound'
+import PageNotFound from '../pageNotFound/pageNotFound';
+import CustomerPage from '../customerpage/customerpage';
 import { callLogin } from '../../../azure/api';
+
+import { TypeContext } from '../../../Context/UserType/UserTypeContext'
+import Dashboard from '../dashboard/Dashboard';
+import adminIMG from '../../../bilder/admin.jpg';
+import dashboardIMG from '../../../bilder/dashboard.jpg';
+
+import './HomePage.css';
+
 
 
 
 const Employee = () => {
 
     return (
-        <div className='add-margins'>
-          <div>
-          <h6> HEI {localStorage.getItem("UserName")}</h6>
-          <h6> Employee </h6>
-            <Link to='/dashboard'>
-                <u>Dashboard</u>
-            </Link>
-          </div>
-        </div>
+      <>
+        <Dashboard />
+      </>
     )
 }
-
 
 
 const Customer = () => {
     
     return (
-        <div className='add-margins'>
-          <div>
-          <h6> HEI {localStorage.getItem("UserName")}</h6>
-          <h6> Customer </h6>
-            <Link to='/dashboard'>
-                <u>Dashboard</u>
-            </Link>
-          </div>
-        </div>
+      <>
+        <CustomerPage />
+      </>
     )
 
 }
@@ -45,21 +41,24 @@ const Customer = () => {
 const Admin = () => {
 
     return (
-        <div className='add-margins'>
-          <div>
-          <h6> HEI {localStorage.getItem("UserName")}</h6>
-          <h6> Admin </h6>
-            <Link to='/dashboard'>
-                <u>Dashboard</u>
-            </Link>
+      <>
+        <div className='admin'>
+        <div className='adminLink'>
             <Link to='/admin'>
-                <br/>
-                <u>Admin</u>
+              <img src={adminIMG} className="adminIMG" alt="Admin"/>
             </Link>
+            <div className='adminTekst'> ADMIN </div>
+          </div>
+          <div className='dashboardLink'>
+            <Link to='/dashboard'>
+              <img src={dashboardIMG} className="dashboardIMG" alt="Dashboard"/> 
+            </Link>
+            <div className='dashboardTekst'>KUNDER</div>
+            <div className='overlayDashboard'></div>
           </div>
         </div>
+      </>
     )
-
 }
 
 const NotConfigured = () => {
@@ -79,6 +78,7 @@ const NotConfigured = () => {
 const HomePage = () => {
 
     console.log("Inne i homepage")
+    const { userType , userTypeChange } = useContext(TypeContext);
     const [UserCase, setUserCase] = useState(null);
     const [Load, setLoading] = useState(true);
     const [isError, setIsError] = useState(null);
@@ -89,63 +89,38 @@ const HomePage = () => {
           setIsError('');
           try {
             let info= await callLogin();
-            console.log(info)
-            //await new Promise(r => setTimeout(r, 2000));
-            console.log(info);
-            
-
-              if (info.isConfigured) {
-                if (info.isCustomer) {
-                  if (info.firstLogin) {
-                    setUserCase('CustomerFirstLogin')
-                  }
-                  else setUserCase('CustomerNotFirst')
-                }
-                else if (info.admin !== null) {
-                  if (info.admin === "write") {
-                    if (info.firstLogin) {
-                      setUserCase('AdminWriteFirst')
-                    }
-                    else setUserCase('AdminWriteNotFirst')
-                  }
-                  else {
-                    if (info.firstLogin) {
-                      setUserCase('AdminReadFirst')
-                    }
-                    else setUserCase('AdminReadNotFirst')
-                  }
-                }
-                else {
-                  if (info.firstLogin) {
-                    setUserCase('EmployeeFirst')
-                  }
-                  else setUserCase('EmployeeNotFirst')
-                }
-              }
-              else { setUserCase('NotConfigured') }
-      
+            switch (true) {
+              case (info.isConfigured && info.isCustomer && info.firstLogin): userTypeChange('CustomerFirstLogin'); break;
+              case (info.isConfigured && info.isCustomer && !info.firstLogin): setUserCase('CustomerNotFirst'); break;
+              case (info.isConfigured && info.admin === "write" && info.firstLogin): userTypeChange('AdminWriteFirst'); break;
+              case (info.isConfigured && info.admin === "write" && !info.firstLogin): userTypeChange('AdminWriteNotFirst'); break;
+              case (info.isConfigured && info.admin === "read" && info.firstLogin): userTypeChange('AdminReadFirst'); break;
+              case (info.isConfigured && info.admin === "read" && !info.firstLogin): userTypeChange('AdminReadNotFirst'); break;
+              case (info.isConfigured && !info.isCustomer && info.admin === null && info.firstLogin): userTypeChange('EmployeeFirst'); break;
+              case (info.isConfigured && !info.isCustomer && info.admin === null && !info.firstLogin): userTypeChange('EmployeeNotFirst'); break;
+              default: userTypeChange('NotConfigured');
+            }
           } catch (error) {
             setIsError(true);
           }
-
             setLoading(false)
           }  
         fetchAccountInfo()
       }, [])
-
+    
     return (
         <div>
             {(isError !== '') ? <div> Det er feil </div>: 
              (Load) ? <Loading /> :
-             (UserCase === 'NotConfigured') ? <NotConfigured />:
-             (UserCase === 'CustomerFirstLogin') ? <Customer /> :
-             (UserCase === 'CustomerNotFirst') ? <Customer /> :
-             (UserCase === 'AdminReadFirst') ? <Admin /> :
-             (UserCase === 'AdminReadNotFirst') ? <Admin /> :
-             (UserCase === 'AdminWriteFirst') ? <Admin /> :
-             (UserCase === 'AdminWriteNotFirst') ? <Admin /> :
-             (UserCase === 'EmployeeFirst') ? <Employee /> :
-             (UserCase === 'EmployeeNotFirst') ? <Employee /> :
+             (userType === 'NotConfigured') ? <NotConfigured />:
+             (userType === 'CustomerFirstLogin') ? <Customer /> :
+             (userType === 'CustomerNotFirst') ? <Customer /> :
+             (userType === 'AdminReadFirst') ? <Admin /> :
+             (userType === 'AdminReadNotFirst') ? <Admin /> :
+             (userType === 'AdminWriteFirst') ? <Admin /> :
+             (userType === 'AdminWriteNotFirst') ? <Admin /> :
+             (userType === 'EmployeeFirst') ? <Employee /> :
+             (userType === 'EmployeeNotFirst') ? <Employee /> :
                 <PageNotFound />}
         </div>
     );
