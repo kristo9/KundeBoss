@@ -257,6 +257,16 @@ export function getAllEmployees() {
 }
 
 /**
+ * @description Gets all the customers id and names
+ * @returns an array of JSON objects with:<br>
+ *  '_id'                               - objectId<br>
+ *  'name'                              - string<br>
+ */
+export function getAllCustomer() {
+  return prepareCallWithCaching('GetAllCustomers');
+}
+
+/**
  * @description Gets all the suppliers
  * @returns an array of JSON objects with:<br>
  *  '_id'                         - string<br>
