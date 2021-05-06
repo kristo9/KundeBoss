@@ -7,13 +7,11 @@ import '../../../basicComp/basic.css';
  * @returns a react-component with the customer information.
  */
 export function CustomerInfoPage({ customerInfo }: any) {
-  let info = customerInfo.comment ? customerInfo.comment : 'Det er ingen notater om kunden';
-
   return (
     <div>
-      <h1 className='color-dark'>Infomasjon</h1>
+      <h1 className='color-dark heading'>Infomasjon</h1>
       <div className='displayInfoDiv'>
-        <DisplayTextAndInfo text={'Navn'} information={customerInfo.name} />
+        <DisplayTextAndInfo text={'Navn'} information={customerInfo.name} altText={'Mangler navn'} />
       </div>
       <ContactPersonInfo
         name={customerInfo.contact.name}
@@ -23,7 +21,15 @@ export function CustomerInfoPage({ customerInfo }: any) {
       <DisplayTags tags={customerInfo.tags} />
 
       <div className='displayInfoDiv'>
-        <DisplayTextAndInfo text={'Notat'} information={info} />
+        <DisplayTextAndInfo text={'Notat'} information={customerInfo.comment} altText={'Kunden har ikke notat'} />
+      </div>
+
+      <div className='displayInfoDiv'>
+        <DisplayTextAndInfo
+          text={'Referanser'}
+          information={customerInfo.infoReference}
+          altText={'Kunden har ikke referanser'}
+        />
       </div>
     </div>
   );
@@ -35,13 +41,13 @@ export function CustomerInfoPage({ customerInfo }: any) {
  * @param {string} information is displayed after the information.
  * @returns A react component with the formated text.
  */
-function DisplayTextAndInfo(props: { text: string; information: any }) {
+function DisplayTextAndInfo(props: { text: string; information: any; altText: string }) {
   return (
     <div>
       <span style={{ display: 'inline-block', width: '5em' }}>
         <b>{props.text}: </b>
       </span>
-      {props.information}
+      {props.information ? props.information : props.altText}
     </div>
   );
 }
@@ -58,9 +64,9 @@ export function ContactPersonInfo(props: { name: string; phone: number; mail: st
     <div className='displayInfoDiv'>
       <h3>Kontaktperson</h3>
       <div className='addMarginLeft'>
-        <DisplayTextAndInfo text={'Navn'} information={props.name} />
-        <DisplayTextAndInfo text={'Telefon'} information={props.phone} />
-        <DisplayTextAndInfo text={'Mail'} information={props.mail} />
+        <DisplayTextAndInfo text={'Navn'} information={props.name} altText={'Mangler'} />
+        <DisplayTextAndInfo text={'Telefon'} information={props.phone} altText={'Mangler'} />
+        <DisplayTextAndInfo text={'Mail'} information={props.mail} altText={'Mangler'} />
       </div>
     </div>
   );

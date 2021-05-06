@@ -113,7 +113,7 @@ export function Select(props: SelectProps) {
     <select defaultValue={props.defaultValue} name={props.name} {...props.register}>
       <option value={props.defaultOption?.value}>{props.defaultOption.name}</option>
       {props.options?.map((option) => {
-        console.log(props.defaultValue === option.value);
+        // console.log(props.defaultValue === option.value);
         return (
           <option key={option.value} value={option.value}>
             {option.name}

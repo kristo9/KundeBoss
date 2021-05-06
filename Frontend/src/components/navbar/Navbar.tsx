@@ -52,10 +52,6 @@ const Authenticated = () => {
   );
 };
 
-/*
-
-*/
-
 const Unauthenticated = () => {
   const { dictionary } = useContext(LanguageContext);
   sessionStorage.removeItem('UserName');
@@ -68,8 +64,7 @@ const Unauthenticated = () => {
     <header className='topnav'>
       <div className='left'>
         <Link to='/' className='Logo' onClick={() => (showLink ? setShowLink(false) : '')}>
-          {' '}
-          "Logo"{' '}
+          "Logo"
         </Link>
       </div>
       <div className='right'>

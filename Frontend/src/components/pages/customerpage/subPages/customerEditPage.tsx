@@ -3,6 +3,9 @@ import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inp
 import { useForm, useFieldArray } from 'react-hook-form';
 import { getAllSuppliers, getCustomersAndSuppliers, newCustomer } from '../../../../azure/api';
 import { Select } from '../../../basicComp/inputField';
+import { deleteCustomer } from '../../../../azure/api';
+
+// import { Test } from '../../../../interfaces';
 
 interface NameAndID {
   _id: string;
@@ -35,9 +38,11 @@ function CustomerEditPage({ customerInfo }: any) {
     tags: { tag: string }[];
     suppliers: {
       id: string;
-      name: string;
-      phone: number;
-      mail: string;
+      contact: {
+        name: string;
+        phone: number;
+        mail: string;
+      };
     }[];
   };
 
@@ -67,27 +72,26 @@ function CustomerEditPage({ customerInfo }: any) {
     control,
     name: 'suppliers',
   });
-
-  console.log(customerInfo);
+  console.log(suppleirFields);
 
   return (
     <div>
       <h1>{customerInfo ? 'Redigere kunden' : 'Ny kunde'}</h1>
       <form
         onSubmit={handleSubmit((data) => {
-          console.log(data.suppliers);
+          console.log(data);
 
-          //   newCustomer(
-          //     customerInfo ? customerInfo._id : null,
-          //     data.customerName,
-          //     data.contactMail,
-          //     data.contactPhone,
-          //     data.contactName,
-          //     null,        //gjør om denne til at den tar imot {_id, name, phone, mail}
-          //     getTagsArray(data.tags),
-          //     data.note,
-          //     data.infoReference
-          //   );
+          newCustomer(
+            customerInfo ? customerInfo._id : null,
+            data.customerName,
+            data.contactMail,
+            data.contactPhone,
+            data.contactName,
+            data.suppliers,
+            getTagsArray(data.tags),
+            data.note,
+            data.infoReference
+          );
         })}
       >
         <InputField
@@ -98,7 +102,6 @@ function CustomerEditPage({ customerInfo }: any) {
           defaultValue={customerInfo && customerInfo.name ? customerInfo.name : ''}
           register={register('customerName')}
         />
-
         <MultipleInputField text='Kontaktperson'>
           <InputField
             labelText={'Navn'}
@@ -131,25 +134,22 @@ function CustomerEditPage({ customerInfo }: any) {
             register={register('contactMail')}
           />
         </MultipleInputField>
-
         <TextArea
           labelText={'Notat'}
           lableType={'text'}
           lableName={'note'}
           placeholderText={'Notat om kunden'}
-          defaultValue={customerInfo && customerInfo.note ? customerInfo.note : ''}
+          defaultValue={customerInfo && customerInfo.comment ? customerInfo.comment : ''}
           register={register('note')}
         />
-
         <TextArea
           labelText={'Referanser'}
           lableType={'text'}
           lableName={'reference'}
           placeholderText={'Referer til andre ting :)'}
-          defaultValue={customerInfo && customerInfo.note ? customerInfo.note : ''}
+          defaultValue={customerInfo && customerInfo.infoReference ? customerInfo.infoReference : ''}
           register={register('infoReference')}
         />
-
         <MultipleInputField text={'Tags'}>
           {tagFields.map(({ id }, index) => {
             return (
@@ -170,7 +170,6 @@ function CustomerEditPage({ customerInfo }: any) {
             Legg til tag
           </button>
         </MultipleInputField>
-
         <MultipleInputField text={'Leverandører'}>
           {suppleirFields.map(({ id }, index, supplier) => {
             return (
@@ -188,24 +187,23 @@ function CustomerEditPage({ customerInfo }: any) {
                   labelText={'Navn '}
                   lableType={'text'}
                   lableName={`suppliers[${index}].name`}
-                  register={register(`suppliers.${index}.name` as const)}
+                  register={register(`suppliers.${index}.contact.name` as const)}
                   defaultValue={customerInfo.suppliers[index]?.contact?.name}
                 />
                 <InputField
                   labelText={'Telefon '}
                   lableType={'text'}
                   lableName={`suppliers[${index}].phone`}
-                  register={register(`suppliers.${index}.phone` as const)}
+                  register={register(`suppliers.${index}.contact.phone` as const)}
                   defaultValue={customerInfo.suppliers[index]?.contact?.phone}
                 />
                 <InputField
                   labelText={'Mail '}
                   lableType={'text'}
                   lableName={`suppliers[${index}].mail`}
-                  register={register(`suppliers.${index}.mail` as const)}
+                  register={register(`suppliers.${index}.contact.mail` as const)}
                   defaultValue={customerInfo.suppliers[index]?.contact?.mail}
                 />
-                {console.log(customerInfo.suppliers[index]?.contact?.mail)}
                 <button onClick={() => supplierRemove(index)}>x</button>
               </div>
             );
@@ -215,10 +213,23 @@ function CustomerEditPage({ customerInfo }: any) {
           </button>
         </MultipleInputField>
 
+        {/* Delete button */}
         {customerInfo ? (
           <button
+            type='button'
             onClick={() => {
-              //slett kunde funksjon her (er du sikker boks?)
+              //popup-window asking the user if they want to delete the customer
+              let respond = window.confirm('Er du sikker på at du vil slette kunden?');
+
+              // Yes, delete customer
+              if (respond) {
+                console.log('Kunde slettet');
+                deleteCustomer(customerInfo._id);
+              }
+              // No, dont delete customer
+              else {
+                console.log('Kunde ikke slettet');
+              }
             }}
           >
             Slett kunde

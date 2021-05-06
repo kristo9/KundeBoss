@@ -20,6 +20,7 @@ import { LanguageProvider } from '../../language/LangContext';
 
 // CSS Styling
 import './App.css';
+import '../basicComp/basic.css';
 
 const Routes = () => {
   return (
@@ -52,12 +53,11 @@ const App = ({ pca }) => {
               <h6> Loading Login......... </h6>
             </div>
           ) : (
-            <div className='app' style={{ height: '100vh' }}>
+            <div className='app W100'>
               <div className='navbar'>
-                {' '}
-                <Navba />{' '}
+                <Navba />
               </div>
-              <div style={{ marginTop: '75px', width: '100%' }}>
+              <div className='startDocumentUnderNavbar W100'>
                 <Routes />
               </div>
             </div>

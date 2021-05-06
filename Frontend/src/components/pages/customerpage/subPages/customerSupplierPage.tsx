@@ -9,10 +9,8 @@ import { useHistory } from 'react-router-dom';
 function CustomerSupplierPage({ customerInfo }: any) {
   return (
     <div>
-      <h1>Her er det Leverandører</h1>
-      <p>
-        <DisplaySupplier suppliers={customerInfo.suppliers} />
-      </p>
+      <h1 className='color-dark heading'>Her er det Leverandører</h1>
+      <DisplaySupplier suppliers={customerInfo.suppliers} />
     </div>
   );
 }
@@ -35,6 +33,7 @@ function DisplaySupplier(props: { suppliers: any }) {
       <div>
         {props.suppliers.map((supplier) => (
           <div
+            key={supplier?.id}
             onClick={() => {
               history.push('/supplierpage/' + supplier.id.toString());
             }}

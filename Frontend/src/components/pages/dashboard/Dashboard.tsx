@@ -86,11 +86,13 @@ class Dashboard extends React.Component<{}, { customers: any; search: string }> 
    * Displays a greeting if the user is logged in.
    */
   private displayGreeting() {
+    let greetingName = '';
+
     if (this.state.customers && this.state.customers.name) {
-      return <h1>Velkommen {this.state.customers.name.split(' ')[0]}</h1>;
-    } else {
-      return <h1>Velkommen</h1>;
+      greetingName = this.state.customers.name.split(' ')[0];
     }
+
+    return <h1 className='heading'>Velkommen {greetingName}</h1>;
   }
 
   /**
@@ -100,6 +102,22 @@ class Dashboard extends React.Component<{}, { customers: any; search: string }> 
     if (this.state.customers) {
       return (
         <table className='diasplayTable'>
+          <thead>
+            <tr className='tableHeader'>
+              <td>
+                <b>Navn</b>
+              </td>
+              <td>
+                <b>Kontaktperson</b>
+              </td>
+              <td>
+                <b>Epost</b>
+              </td>
+              <td>
+                <b>Tags</b>
+              </td>
+            </tr>
+          </thead>
           <tbody>
             {
               //Creates a table entry for each customer returned from the database.

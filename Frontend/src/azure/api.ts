@@ -145,9 +145,11 @@ export function newCustomer(
   contactName: string = null,
   suppliers: {
     id: string;
-    contactName: string;
-    mail: string;
-    phone: number;
+    contact: {
+      name: string;
+      mail: string;
+      phone: number;
+    };
   }[] = null,
   tags: string[] = null,
   comment: string = null,
@@ -167,6 +169,7 @@ export function newCustomer(
     infoReference,
     id,
   };
+  console.log(data.suppliers);
   return prepareCallAndDeleteCache('NewCustomer', data);
 }
 
