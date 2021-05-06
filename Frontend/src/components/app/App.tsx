@@ -16,12 +16,13 @@ import SupplierPage from '../pages/supplierPages/supplierPage';
 import HttpError from '../pages/pageNotFound/HttpErrorPage';
 
 // Context
-import { LanguageProvider } from '../../Context/language/LangContext';
-import { UserTypeProvider } from '../../Context/UserType/UserTypeContext';
-import LanguageSelector from '../../Context/language/LangContext';
+import { LanguageProvider } from '../../context/language/LangContext';
+import { UserTypeProvider } from '../../context/UserType/UserTypeContext';
+import LanguageSelector from '../../context/language/LangContext';
 
 // CSS Styling
 import './App.css';
+import '../basicComp/basic.css';
 
 const Routes = () => {
   return (
@@ -55,12 +56,11 @@ const App = ({ pca }) => {
                 <h6> Loading Login......... </h6>
               </div>
             ) : (
-              <div className='app' style={{ height: '100vh' }}>
+              <div className='app W100'>
                 <div className='navbar'>
-                  {' '}
-                  <Navbar />{' '}
+                  <Navbar />
                 </div>
-                <div style={{ marginTop: '75px', width: '100%' }}>
+                <div className='startDocumentUnderNavbar W100'>
                   <Routes />
                 </div>
               </div>

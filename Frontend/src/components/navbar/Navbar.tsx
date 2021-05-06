@@ -7,14 +7,14 @@ import { useAccount } from '@azure/msal-react';
 // Components
 import { SignInSignOutButton } from '../basicComp/SignInOutButton';
 import { msalInstance } from '../../azure/authRedirect';
-import LanguageSelector from '../../Context/language/LangContext';
+import LanguageSelector from '../../context/language/LangContext';
 
 // Context
-import { LanguageContext } from '../../Context/language/LangContext';
-import { TypeContext } from '../../Context/UserType/UserTypeContext';
+import { LanguageContext } from '../../context/language/LangContext';
+import { TypeContext } from '../../context/UserType/UserTypeContext';
 
 // Image
-import logo from '../../bilder/logo-ferdig.png'
+import logo from '../../bilder/logo-ferdig.png';
 
 // CSS style
 import './Navbar.css';
@@ -33,7 +33,7 @@ const Authenticated = () => {
     <header className='topnav add-padding'>
       <div className='left'>
         <Link to='/' onClick={() => (showLink ? setShowLink(false) : '')}>
-          <img src={logo} alt="Logo" className="logo"/>
+          <img src={logo} alt='Logo' className='logo' />
         </Link>
       </div>
       <div className='contents' id={showLink ? 'hidden' : ''}>
@@ -57,10 +57,6 @@ const Authenticated = () => {
   );
 };
 
-/*
-
-*/
-
 const Unauthenticated = () => {
   const { dictionary } = useContext(LanguageContext);
   sessionStorage.removeItem('UserName');
@@ -73,7 +69,7 @@ const Unauthenticated = () => {
     <header className='topnav add-padding'>
       <div className='left'>
         <Link to='/' onClick={() => (showLink ? setShowLink(false) : '')}>
-          <img src={logo} alt="Logo" className="logo"/>
+          <img src={logo} alt='Logo' className='logo' />
         </Link>
       </div>
       <div className='contents' id={showLink ? 'hidden' : ''}>
@@ -87,7 +83,7 @@ const Unauthenticated = () => {
           <SignInSignOutButton />
         </div>
         <div className='langSel'>
-        <LanguageSelector />
+          <LanguageSelector />
         </div>
       </div>
       <div className='hamburgermenu coloredNavButton'>

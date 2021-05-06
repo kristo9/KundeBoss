@@ -1,3 +1,7 @@
+.startDocumentUnderNavbar {
+  padding-top: 3em;
+}
+
 /* Add background color to the top navigation, and set size */
 .topnav {
   background-color: white;

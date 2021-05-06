@@ -12,6 +12,10 @@ import NewCustomer from './subPages/newCustomer';
 import NewSupplier from './subPages/newSupplier';
 import NewEntry from './subPages/NewEntry';
 
+//CSS
+import '../../basicComp/sidebar.css';
+import '../customerpage/customerpage.css';
+
 class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any }> {
   /**
    * @constructor
@@ -52,7 +56,7 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     return (
       <div className='margin-right H100'>
         <Sidebar text='Admin side' buttons={this.buttons} />
-        {this.state.adminInfo ? this.state.pageState : <LoadingSymbol />}
+        <div className='notSidebar'>{this.state.adminInfo ? this.state.pageState : <LoadingSymbol />}</div>
       </div>
     );
   }

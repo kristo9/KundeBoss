@@ -12,81 +12,73 @@ import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 import { getCustomer, getEmployee } from '../../../azure/api';
 
 // Context
-import { TypeContext } from '../../../Context/UserType/UserTypeContext';
+import { TypeContext } from '../../../context/UserType/UserTypeContext';
 
 // CSS
 import './customerpage.css';
 import '../../basicComp/basic.css';
 
-
-
 /**
  * Contains the customer page and all the info needed by the subpages.
  * Subpages are also loaded/viewed from here.
-*/
+ */
 
+const CustomerPage = () => {
+  const { userType } = useContext(TypeContext);
 
-const CustomerPage = () =>  {
-
-  const { userType } = useContext(TypeContext)
-  
   const [pageState, setPageState] = useState(<LoadingSymbol />);
   const [customerInfo, setCustomerInfo] = useState(null);
   const [buttons, setButtons] = useState(null);
   const [error, setError] = useState('');
 
-  useEffect (() => {
+  useEffect(() => {
     const FetchCustomerInfo = async () => {
-
       let customerI;
-      console.log(userType + ' Det er det jeg er ;)')
+      console.log(userType + ' Det er det jeg er ;)');
 
-      if(userType === 'CustomerFirstLogin' || userType === 'CustomerNotFirst') {
+      if (userType === 'CustomerFirstLogin' || userType === 'CustomerNotFirst') {
         console.log('Inne');
         const customerSelf = await getEmployee();
-        console.log(customerSelf.customerInformation[0]._id)
+        console.log(customerSelf.customerInformation[0]._id);
         customerI = await getCustomer(customerSelf.customerInformation[0]._id);
         setButtons('ButtonsRead');
-      }
-      else {
+      } else {
         console.log('Ute :(');
         customerI = await getCustomer(window.location.pathname.split('/')[2]);
         setButtons('Buttons');
       }
       setCustomerInfo(customerI);
-      setPageState(<CustomerInfoPage customerInfo={customerI}/> )
-    } 
+      setPageState(<CustomerInfoPage customerInfo={customerI} />);
+    };
 
     FetchCustomerInfo();
-    
-  }, [])
-
+  }, []);
 
   return (
     <>
-    {(buttons === null) ? 
-      <div></div>
-      :
-      <section className='margin-right H100'>
-        {(buttons == 'ButtonsRead') ? 
-          <Sidebar
-            text={customerInfo && customerInfo.name ? customerInfo.name : 'Kundenavn'}
-            buttons={ButtonsRead({setPageState}, {customerInfo})}
-          /> :
-          <Sidebar
-            text={customerInfo && customerInfo.name ? customerInfo.name : 'Kundenavn'}
-            buttons={Buttons({setPageState}, {customerInfo})}
-          />
-        }
-        <div className='notSidebar'>{customerInfo ? pageState : <LoadingSymbol />}</div>
-      </section>
-    }
+      {buttons === null ? (
+        <div></div>
+      ) : (
+        <section className='margin-right H100'>
+          {buttons == 'ButtonsRead' ? (
+            <Sidebar
+              text={customerInfo && customerInfo.name ? customerInfo.name : 'Kundenavn'}
+              buttons={ButtonsRead({ setPageState }, { customerInfo })}
+            />
+          ) : (
+            <Sidebar
+              text={customerInfo && customerInfo.name ? customerInfo.name : 'Kundenavn'}
+              buttons={Buttons({ setPageState }, { customerInfo })}
+            />
+          )}
+          <div className='notSidebar'>{customerInfo ? pageState : <LoadingSymbol />}</div>
+        </section>
+      )}
     </>
   );
-}
+};
 
-const Buttons = ({setPageState}, {customerInfo} ) => {
-
+const Buttons = ({ setPageState }, { customerInfo }) => {
   const buttons: SBElementProps = [
     {
       text: 'Infomasjon',
@@ -106,21 +98,19 @@ const Buttons = ({setPageState}, {customerInfo} ) => {
     {
       text: 'Send mail',
       ID: 'sendMail',
-      onClick: () =>
-        setPageState(<SendMail customerID={[customerInfo._id]} /> ),
+      onClick: () => setPageState(<SendMail customerID={[customerInfo._id]} />),
     },
     {
       text: 'Rediger',
       ID: 'edit',
-      onClick: () => setPageState(<CustomerEditPage customerInfo={customerInfo} /> ),
+      onClick: () => setPageState(<CustomerEditPage customerInfo={customerInfo} />),
     },
   ];
 
   return buttons;
-}
+};
 
-
-const ButtonsRead = ({setPageState}, {customerInfo}) => {
+const ButtonsRead = ({ setPageState }, { customerInfo }) => {
   const buttonsRead: SBElementProps = [
     {
       text: 'Infomasjon',
@@ -139,13 +129,9 @@ const ButtonsRead = ({setPageState}, {customerInfo}) => {
     },
   ];
   return buttonsRead;
-}
+};
 
 export default CustomerPage;
-
-
-
-
 
 /*
 class CustomerPage extends React.Component<RouteComponentProps, { pageState: any; customerInfo: any; error: string; customer: boolean }> {
@@ -153,7 +139,7 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
    * @constructor
    * @param {props} props contains infomation about the class.
    */
-  /*
+/*
   constructor(props) {
     super(props);
     this.state = {
@@ -199,7 +185,7 @@ class CustomerPage extends React.Component<RouteComponentProps, { pageState: any
    * @returns a react component with the customer page
    */
 
-   /*
+/*
   render() {
     console.log(this.state.error);
 

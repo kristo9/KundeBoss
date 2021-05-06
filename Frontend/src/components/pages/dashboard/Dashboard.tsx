@@ -9,25 +9,22 @@ import { useHistory } from 'react-router-dom';
 // CSS imports
 import './Dashboard.css';
 import '../../basicComp/basic.css';
-import { LanguageContext } from '../../../Context/language/LangContext';
+import { LanguageContext } from '../../../context/language/LangContext';
 import { stringify } from 'querystring';
-
 
 /**
  * A class that contains and renders the dashboard
  */
 
-
 const Dashboard = () => {
-
   const { dictionary } = useContext(LanguageContext);
 
   const [customers, setCustomers] = useState(null);
   const [name, setName] = useState(null);
-  const [search, setSearch ] = useState('');
+  const [search, setSearch] = useState('');
   const [filter, setFilter] = useState(null);
-  
-  useEffect (() => {
+
+  useEffect(() => {
     const fetchName = async () => {
       let customers = await getEmployee();
       setCustomers(customers);
@@ -35,60 +32,86 @@ const Dashboard = () => {
       setName(customers.name);
     };
     fetchName();
-  }, [])
+  }, []);
 
   useEffect(() => {
-    const filtered = (e) => {        
+    const filtered = (e) => {
       const filtered = customers.customerInformation.filter((customer) => {
-          const tag = customer.tags.toString().toLowerCase();
-          const name = customer.name.toString().toLowerCase();
-          const currsearch = tag + name;
-          return currsearch.indexOf(search.toLowerCase()) !== -1;
-        });
+        const tag = customer.tags.toString().toLowerCase();
+        const name = customer.name.toString().toLowerCase();
+        const currsearch = tag + name;
+        return currsearch.indexOf(search.toLowerCase()) !== -1;
+      });
       setFilter(filtered);
     };
-    if(name !== null) {filtered(search)};
+    if (name !== null) {
+      filtered(search);
+    }
   }, [search]);
 
   return (
     <>
-    <div className='add-margins'>
-        {displayGreeting({name}, {dictionary})}
+      <div className='add-margins'>
+        {displayGreeting({ name }, { dictionary })}
         <div style={{ float: 'right' }}>
-        <input  
-            type="search"
-            className="search"
+          <input
+            type='search'
+            className='search'
             placeholder={dictionary.search_Name_Tag}
             value={search}
-            onChange={(e) => { setSearch(e.target.value); } }
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
           />
         </div>
-        <div>{displayCustomers({filter}, {name}, {dictionary})}</div>
+        <div>{displayCustomers({ filter }, { name }, { dictionary })}</div>
       </div>
     </>
   );
-}
+};
 
-
-const displayGreeting = ({name}, {dictionary}) => {
+/**
+ * Displays a greeting if the user is logged in.
+ */
+const displayGreeting = ({ name }, { dictionary }) => {
   if (name !== null) {
-    return <h1>{dictionary.welcome}{name.split(' ')[0]}</h1>;
+    return (
+      <h1>
+        {dictionary.welcome}
+        {name.split(' ')[0]}
+      </h1>
+    );
   } else {
     return <h1>{dictionary.welcome}</h1>;
   }
-}
+};
 
-
-const displayCustomers = ({filter}, {name}, {dictionary}) => {
-  const tag = dictionary.noTag
+const displayCustomers = ({ filter }, { name }, { dictionary }) => {
+  const tag = dictionary.noTag;
   if (name !== null) {
     return (
       <table className='diasplayTable'>
+        <thead>
+          <tr className='tableHeader'>
+            <td>
+              <b>Navn</b>
+            </td>
+            <td>
+              <b>Kontaktperson</b>
+            </td>
+            <td>
+              <b>Epost</b>
+            </td>
+            <td>
+              <b>Tags</b>
+            </td>
+          </tr>
+        </thead>
         <tbody>
           {
             //Creates a table entry for each customer returned from the database.
             filter.map((customer) => (
-              <InfoBox 
+              <InfoBox
                 customerName={customer.name}
                 contactName={customer.contact.name}
                 mail={customer.contact.mail}
@@ -96,7 +119,7 @@ const displayCustomers = ({filter}, {name}, {dictionary}) => {
                 key={customer._id}
                 id={customer._id}
                 noTag={tag}
-                />
+              />
             ))
           }
         </tbody>
@@ -105,8 +128,7 @@ const displayCustomers = ({filter}, {name}, {dictionary}) => {
   } else {
     return <LoadingSymbol />;
   }
-}
-
+};
 
 const InfoBox = (prop) => {
   let history = useHistory();
@@ -128,8 +150,6 @@ const InfoBox = (prop) => {
       <td> {tags.length === 0 ? prop.noTag : prop.tags.toString().split(',').join(', ')} </td>
     </tr>
   );
-}
+};
 
 export default Dashboard;
-
-
