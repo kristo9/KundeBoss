@@ -32,19 +32,20 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       } else {
         employeeId = decoded.preferred_username;
-        db.collection('employee') // query to find users permission level
+
+        db.collection('employee') //checks if user is in database
           .find({ 'employeeId': employeeId })
-          .project({ 'admin': 1 })
           .toArray((error: any, docs: JSON | JSON[]) => {
             if (error) {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs[0].admin === 'write' || docs[0].admin === 'read') {
-                functionQuery(db);
-              } else {
-                errorUnauthorized(context, 'User dont have admin-write permission');
+              if (Object.keys(docs).length == 0) {
+                console.log('No employee found');
+                errorUnauthorized(context, 'User invalid');
                 return context.done();
+              } else {
+                functionQuery(db);
               }
             }
           });
@@ -60,7 +61,7 @@ export default (context: Context, req: HttpRequest): any => {
     let suppliers = null;
     db.collection('supplier')
       .find()
-      .project({'name':1})
+      .project({ 'name': 1 })
       .toArray((error: any, docs: any) => {
         if (error) {
           errorQuery(context, 'Cant query supplier collection');

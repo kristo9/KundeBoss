@@ -1,4 +1,4 @@
-import GetAllEmployees from '../GetAllEmployees/index';
+import GetAllSuppliers from '../GetAllSuppliers';
 import { prepareContext, httpRequest, timeout } from './sharedItems';
 
 describe('User credentials', () => {
@@ -7,7 +7,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'oyvind.husveg@kundeboss.onmicrosoft.com';
 
-    GetAllEmployees(context as any, request as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -16,40 +16,26 @@ describe('User credentials', () => {
     done();
   });
 
-  it('Userid doesnt have sufficient permission', async (done) => {
+  test('Userid not in database', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
-    request.headers.authorization = 'timTest@flyt.cloud';
+    request.headers.authorization = 'timTest333@gmail.net';
 
-    GetAllEmployees(context as any, request as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
-    expect(context.res.body).toBe('User dont have admin-write/read permission');
+    expect(context.res.body).toBe('User invalid');
     expect(context.res.status).toBe(401);
     done();
   });
 
-  it('Userid not in database', async (done) => {
-    let context = prepareContext();
-    let request = httpRequest;
-    request.headers.authorization = 'timtt@gmail.org';
-
-    GetAllEmployees(context as any, request as any);
-    await timeout(context);
-
-    expect(context.done).toEqual(true);
-    expect(context.res.body).toBe('User dont have admin-write/read permission'); //Because he is not in the database
-    expect(context.res.status).toBe(401);
-    done();
-  });
-
-  it('Token is empty/null', async (done) => {
+  test('Token is empty/null', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = '';
 
-    GetAllEmployees(context as any, request as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -63,7 +49,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'test';
 
-    GetAllEmployees(context as any, request as any);
+    GetAllSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);

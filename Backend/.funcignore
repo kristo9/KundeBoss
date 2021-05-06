@@ -2,6 +2,8 @@
 *.ts
 .git*
 .vscode
+*.test.*
+jest*
 local.settings.json
 test
 tsconfig.json
@@ -9,3 +11,6 @@ tests/
 babel.config.js
 test.config.ts
 testFunction/
+__mocks__
+typedoc.json
+package-lock.json

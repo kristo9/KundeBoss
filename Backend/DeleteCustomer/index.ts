@@ -55,7 +55,7 @@ export default (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs.admin === 'write') {
+              if (docs?.admin === 'write') {
                 connectWrite(context, functionQuery);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
