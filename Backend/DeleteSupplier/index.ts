@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -56,7 +56,7 @@ export default (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs.admin === 'write') {
+              if (docs?.admin === 'write') {
                 connectWrite(context, functionQuery);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
@@ -124,9 +124,19 @@ export default (context: Context, req: HttpRequest): any => {
                     return context.done();
                   }
                   console.log('Supplier deleted!');
-
-                  returnResult(context, docs);
-                  context.done();
+                  //Deletes the supplier for customers
+                  db.collection('customer').updateMany(
+                    { 'suppliers.id': req.body.id },
+                    { $pull: { suppliers: { 'id': req.body.id } } },
+                    (error: any, docs: any) => {
+                      if (error) {
+                        errorQuery(context);
+                        return context.done();
+                      }
+                      returnResult(context, docs);
+                      context.done();
+                    }
+                  );
                 });
               });
             });
