@@ -12,7 +12,7 @@ import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 import { getCustomer, getEmployee } from '../../../azure/api';
 
 // Context
-import { TypeContext } from '../../../Context/UserType/UserTypeContext';
+import { TypeContext } from '../../../context/UserType/UserTypeContext';
 
 // CSS
 import './customerpage.css';
