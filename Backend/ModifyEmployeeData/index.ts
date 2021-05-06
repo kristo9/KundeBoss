@@ -56,7 +56,7 @@ export default (context: Context, req: HttpRequest): any => {
 
     if (req.body.customers) {
       req.body.customers.forEach((customer) => {
-        console.log(customer['id']);
+        context.log(customer['id']);
         if (!_idVal(customer['id']) || (customer['permission'] != 'read' && customer['permission'] != 'write')) {
           setError('Invalid id or permission');
         }
