@@ -7,10 +7,11 @@ import { useAccount } from '@azure/msal-react';
 // Components
 import { SignInSignOutButton } from '../basicComp/SignInOutButton';
 import { msalInstance } from '../../azure/authRedirect';
-import LanguageSelector from '../../language/LangContext';
+import LanguageSelector from '../../Context/language/LangContext';
 
 // Context
-import { LanguageContext } from '../../language/LangContext';
+import { LanguageContext } from '../../Context/language/LangContext';
+import { TypeContext } from '../../Context/UserType/UserTypeContext';
 
 // CSS style
 import './Navbar.css';
@@ -18,6 +19,7 @@ import '../basicComp/basic.css';
 
 const Authenticated = () => {
   const { dictionary } = useContext(LanguageContext);
+  const { userType } = useContext(TypeContext);
   const accounts = msalInstance.getAllAccounts();
   sessionStorage.setItem('UserName', accounts[0].username);
   console.log('UserName is set at sessionStorage "UserName":  ' + sessionStorage.getItem('UserName'));
@@ -61,7 +63,7 @@ const Unauthenticated = () => {
 
   console.log(showLink);
   return (
-    <header className='topnav'>
+    <header className='topnav add-padding'>
       <div className='left'>
         <Link to='/' className='Logo' onClick={() => (showLink ? setShowLink(false) : '')}>
           "Logo"
@@ -83,11 +85,11 @@ const Unauthenticated = () => {
               {dictionary.about}{' '}
             </Link>
           </div>
-          <div className='signInOut'>
+          <div className='coloredNavButton'>
             <SignInSignOutButton />
           </div>
         </div>
-        <div className='hamburgermenu'>
+        <div className='hamburgermenu coloredNavButton'>
           <button onClick={() => setShowLink(!showLink)}> Open </button>
         </div>
       </div>
@@ -97,8 +99,9 @@ const Unauthenticated = () => {
 
 const Navba = () => {
   const isAuthenticated = useIsAuthenticated();
-
+  const { userType } = useContext(TypeContext);
   console.log('Bruker er authentisert:  ' + isAuthenticated);
+  console.log('Brukertype: ' + userType);
 
   const { accounts } = useMsal();
   const account = useAccount(accounts[0] || {});

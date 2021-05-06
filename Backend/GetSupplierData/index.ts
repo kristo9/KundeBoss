@@ -7,11 +7,12 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
 /**
- * @description Get alle data about a supplier
+ * @description Get all data about a supplier
  * @param contect : Context
  * @param req : HttpRequest
  */
 export default (context: Context, req: HttpRequest): any => {
+  let employeeId: any;
   /* Sanitizes input. Returns if there are no request body */
   req.body = prepInput(context, req.body);
   if (req.body === null) {
@@ -32,14 +33,14 @@ export default (context: Context, req: HttpRequest): any => {
     if (_idVal(req.body?.id)) {
       connectRead(context, authorize);
     } else {
-      errorWrongInput(context, 'id recieved not valid format');
+      errorWrongInput(context, 'ID recieved not valid format');
       return context.done();
     }
   };
 
   /**
    * @description validates token
-   * @param db : db connection
+   * @param db : db connectiondd
    */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
@@ -47,7 +48,24 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        functionQuery(db);
+        employeeId = decoded.preferred_username;
+
+        db.collection('employee') //checks if user is in database
+          .find({ 'employeeId': employeeId })
+          .toArray((error: any, docs: JSON | JSON[]) => {
+            if (error) {
+              errorQuery(context);
+              return context.done();
+            } else {
+              if (Object.keys(docs).length == 0) {
+                console.log('No employee found');
+                errorUnauthorized(context, 'User invalid');
+                return context.done();
+              } else {
+                functionQuery(db);
+              }
+            }
+          });
       }
     });
   };

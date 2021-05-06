@@ -1,14 +1,42 @@
-import react, { useState } from 'react';
+import react, { useEffect, useState } from 'react';
 
 /**
  * @returns a react component with the mail page.
  */
 function CustomerMailPage({ customerInfo }: any) {
-  console.log(customerInfo);
+
+  const [mails, setMails] = useState(customerInfo.mails);
+  const [filterMails, setFilterMail] = useState(customerInfo.mails);
+  const [search, setSearch] = useState('');
+
+
+  useEffect(() => {
+    const filtered = (e) => {        
+      const filtered = mails && mails.filter((mail) => {
+          const subject = mail.subject.toString().toLowerCase();
+          const text = mail.text.toString().toLowerCase();
+          const currsearch = subject + text;
+          return currsearch.indexOf(search.toLowerCase()) !== -1;
+        });
+      setFilterMail(filtered);
+    };
+    filtered(search);
+  }, [search]);
+  
+
   return (
     <div>
-      <h1>Her er det Mail</h1>
-      {customerInfo.mails.map((mail) => {
+      <h1> Mail </h1>
+      <input  
+            type="search"
+            className="searchbar"
+            placeholder="Search subject or text"
+            value={search}
+            onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
+      {filterMails.map((mail) => {
         return <DisplayMail mail={mail} key={mail._id} />;
       })}
     </div>

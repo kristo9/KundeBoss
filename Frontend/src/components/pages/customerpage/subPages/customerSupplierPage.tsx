@@ -6,11 +6,11 @@ import { useHistory } from 'react-router-dom';
  * @param {any} custInfo information about the cutomer.
  * @returns a react component with the customer-supplier page
  */
-function CustomerSupplierPage({ customerInfo }: any) {
+function CustomerSupplierPage({ customerInfo, customer }: any) {
   return (
     <div>
-      <h1 className='color-dark heading'>Her er det Leverandører</h1>
-      <DisplaySupplier suppliers={customerInfo.suppliers} />
+      <h1 className='color-dark heading'>Leverandører</h1>
+      <DisplaySupplier suppliers={customerInfo.suppliers} customer={customer} />
     </div>
   );
 }
@@ -20,7 +20,7 @@ function CustomerSupplierPage({ customerInfo }: any) {
  * @param {any} suppliers information about the suppliers.
  * @returns a react component with the supplier information.
  */
-function DisplaySupplier(props: { suppliers: any }) {
+function DisplaySupplier(props: { suppliers: any; customer: boolean }) {
   let history = useHistory();
   //the supplier-data are loaded/available
   if (props.suppliers) {
@@ -31,21 +31,31 @@ function DisplaySupplier(props: { suppliers: any }) {
     //the customer have suppliers
     return (
       <div>
-        {props.suppliers.map((supplier) => (
-          <div
-            key={supplier?.id}
-            onClick={() => {
-              history.push('/supplierpage/' + supplier.id.toString());
-            }}
-          >
-            <ContactPersonInfo
-              key={supplier?.id?.toString()}
-              name={supplier?.contact?.name}
-              mail={supplier?.contact?.mail}
-              phone={supplier?.contact?.phone}
-            />
-          </div>
-        ))}
+        {props.customer
+          ? props.suppliers.map((supplier) => (
+              <div>
+                <ContactPersonInfo
+                  key={supplier?.id?.toString()}
+                  name={supplier?.contact?.name}
+                  mail={supplier?.contact?.mail}
+                  phone={supplier?.contact?.phone}
+                />
+              </div>
+            ))
+          : props.suppliers.map((supplier) => (
+              <div
+                onClick={() => {
+                  history.push('/supplierpage/' + supplier.id.toString());
+                }}
+              >
+                <ContactPersonInfo
+                  key={supplier?.id?.toString()}
+                  name={supplier?.contact?.name}
+                  mail={supplier?.contact?.mail}
+                  phone={supplier?.contact?.phone}
+                />
+              </div>
+            ))}
       </div>
     );
   }

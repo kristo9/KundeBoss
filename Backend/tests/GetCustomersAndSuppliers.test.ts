@@ -1,4 +1,4 @@
-import GetAllEmployees from '../GetAllEmployees/index';
+import GetCustomersAndSuppliers from '../GetCustomersAndSuppliers';
 import { prepareContext, httpRequest, timeout } from './sharedItems';
 
 describe('User credentials', () => {
@@ -7,7 +7,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'oyvind.husveg@kundeboss.onmicrosoft.com';
 
-    GetAllEmployees(context as any, request as any);
+    GetCustomersAndSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -21,7 +21,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'timTest@flyt.cloud';
 
-    GetAllEmployees(context as any, request as any);
+    GetCustomersAndSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -35,7 +35,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'timtt@gmail.org';
 
-    GetAllEmployees(context as any, request as any);
+    GetCustomersAndSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -49,7 +49,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = '';
 
-    GetAllEmployees(context as any, request as any);
+    GetCustomersAndSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -63,7 +63,7 @@ describe('User credentials', () => {
     let request = httpRequest;
     request.headers.authorization = 'test';
 
-    GetAllEmployees(context as any, request as any);
+    GetCustomersAndSuppliers(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);

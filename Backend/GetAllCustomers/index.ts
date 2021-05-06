@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead } from '../SharedFiles/dataBase';
+import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -40,13 +40,23 @@ export default (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              if (Object.keys(docs).length == 0) {
-                console.log('No employee found');
-                errorUnauthorized(context, 'User invalid');
-                return context.done();
-              } else {
-                functionQuery(db);
-              }
+              db.collection('employee').findOne(
+                { 'employeeId': decoded.preferred_username },
+                { 'admin': 1 },
+                (error: any, docs: { admin: string }) => {
+                  if (error) {
+                    errorQuery(context);
+                    return context.done();
+                  } else {
+                    if (docs?.admin === 'write' || docs?.admin === 'read') {
+                      connectRead(context, functionQuery);
+                    } else {
+                      errorUnauthorized(context, 'User dont have admin permission');
+                      return context.done();
+                    }
+                  }
+                }
+              );
             }
           });
       }
@@ -58,23 +68,23 @@ export default (context: Context, req: HttpRequest): any => {
    * @param db : db connection
    */
   const functionQuery = (db: Db) => {
-    let suppliers = null;
-    db.collection('supplier')
+    let customers = null;
+    db.collection('customer')
       .find()
       .project({ 'name': 1 })
       .toArray((error: any, docs: any) => {
         if (error) {
-          errorQuery(context, 'Cant query supplier collection');
+          errorQuery(context, 'Cant query customer collection');
           return context.done();
         } else {
-          suppliers = docs;
+          customers = docs;
 
-          if (suppliers == null) {
-            errorWrongInput(context, 'No supplier found');
+          if (customers == null) {
+            errorWrongInput(context, 'No customer found');
             return context.done();
           }
 
-          returnResult(context, suppliers);
+          returnResult(context, customers);
           context.done();
         }
       });
