@@ -13,6 +13,9 @@ import LanguageSelector from '../../Context/language/LangContext';
 import { LanguageContext } from '../../Context/language/LangContext';
 import { TypeContext } from '../../Context/UserType/UserTypeContext';
 
+// Image
+import logo from '../../bilder/logo-ferdig.png'
+
 // CSS style
 import './Navbar.css';
 import '../basicComp/basic.css';
@@ -30,7 +33,7 @@ const Authenticated = () => {
     <header className='topnav add-padding'>
       <div className='left'>
         <Link to='/' onClick={() => (showLink ? setShowLink(false) : '')}>
-          "Logo"
+          <img src={logo} alt="Logo" className="logo"/>
         </Link>
       </div>
       <div className='contents' id={showLink ? 'hidden' : ''}>
@@ -69,40 +72,32 @@ const Unauthenticated = () => {
   return (
     <header className='topnav add-padding'>
       <div className='left'>
-        <Link to='/' className='Logo' onClick={() => (showLink ? setShowLink(false) : '')}>
-          {' '}
-          "Logo"{' '}
+        <Link to='/' onClick={() => (showLink ? setShowLink(false) : '')}>
+          <img src={logo} alt="Logo" className="logo"/>
         </Link>
       </div>
-      <div className='right'>
-        <div className='contents' id={showLink ? 'hidden' : ''}>
-          <div className='links'>
-            <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-              {' '}
-              {dictionary.contact}{' '}
-            </Link>
-            <Link to='/help' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-              {' '}
-              {dictionary.help}{' '}
-            </Link>
-            <Link to='/about' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-              {' '}
-              {dictionary.about}{' '}
-            </Link>
-          </div>
-          <div className='coloredNavButton'>
-            <SignInSignOutButton />
-          </div>
+      <div className='contents' id={showLink ? 'hidden' : ''}>
+        <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {dictionary.contact}
+        </Link>
+        <Link to='/about' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {dictionary.about}
+        </Link>
+        <div className='coloredNavButton'>
+          <SignInSignOutButton />
         </div>
-        <div className='hamburgermenu coloredNavButton'>
-          <button onClick={() => setShowLink(!showLink)}> Open </button>
+        <div className='langSel'>
+        <LanguageSelector />
         </div>
+      </div>
+      <div className='hamburgermenu coloredNavButton'>
+        <button onClick={() => setShowLink(!showLink)}> Open </button>
       </div>
     </header>
   );
 };
 
-const Navba = () => {
+const Navbar = () => {
   const isAuthenticated = useIsAuthenticated();
   const { userType } = useContext(TypeContext);
   console.log('Bruker er authentisert:  ' + isAuthenticated);
@@ -114,7 +109,7 @@ const Navba = () => {
   console.log(msalInstance.getActiveAccount());
   console.log(sessionStorage.getItem('UserName'));
 
-  return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
+  return <div>{!isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
 };
 
-export default Navba;
+export default Navbar;

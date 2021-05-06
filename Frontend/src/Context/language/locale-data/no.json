@@ -1,5 +1,8 @@
 {
     "contact": "Kontakt",
     "about": "Om Oss",
-    "help": "Hjelp"
+    "help": "Hjelp",
+    "noTag": "Ingen tags ",
+    "welcome": "Velkommen ",
+    "search_Name_Tag": "Søk etter navn eller tag"
   }

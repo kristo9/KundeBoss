@@ -1,5 +1,10 @@
 import { createContext, useState, useContext } from 'react';
 import { languageOptions, dictionaryList } from './LangDir';
+import * as ReactBootstrap from 'react-bootstrap';
+import ukFlag from '../../bilder/uk_Flag.svg.webp'
+import norwayFlag from '../../bilder/Flag_of_Norway.png'
+
+const { ButtonToolbar, Dropdown} = ReactBootstrap;
 
 
 
@@ -39,7 +44,7 @@ export function LanguageProvider({ children }) {
     );
   };
 
-
+/*
   export default function LanguageSelector() {
     const { userLanguage, userLanguageChange } = useContext(LanguageContext);
   
@@ -47,18 +52,57 @@ export function LanguageProvider({ children }) {
     const handleLanguageChange = e => userLanguageChange(e.target.value);
   
     return (
-      <select
-        onChange={handleLanguageChange}
-        value={userLanguage}
-      >
-        {Object.entries(languageOptions).map(([id, name]) => (
-          <option key={id} value={id}>{name}</option>
-        ))}
-      </select>
+      <>
+        <div className="langSelect" style={{width:200}}>
+          <select
+            onChange={handleLanguageChange}
+            value={userLanguage}
+          >
+            <option disabled selected> Make </option>
+            {Object.entries(languageOptions).map(([id, name]) => (
+              <option key={id} value={id}>{name}</option>
+            ))}
+          </select>
+        </div>
+      </>
     );
   };
+*/
 
 
+export default function LanguageSelector() {
+  const { userLanguage, userLanguageChange } = useContext(LanguageContext);
+
+  // set selected language by calling context method
+  const handleLanguageChange = ({value}) => userLanguageChange(value);
+  let value = 'no';
+  return (
+    <>
+      <div className='LangSelect'>
+        {(userLanguage === 'en') ? 
+      <img src={norwayFlag} alt='Norsk' style={{height:20, width:28}} onClick={() => {value='no'; handleLanguageChange({value})}}></img>
+      :
+      <img src={ukFlag} alt='English' style={{height:20, width:28}} onClick={() => {value='en'; handleLanguageChange({value})}}></img>
+      }
+      </div>
+      </>
+  );
+};
+
+/*
+
+<div className="langSelect" style={{width:200}}>
+        <select
+          onChange={handleLanguageChange}
+          value={userLanguage}
+          >
+          {Object.entries(languageOptions).map(([id, name]) => (
+            <option key={id} value={id}>{name}</option>
+            ))}
+          </select>
+        </div>
+
+*/
   export function Text({ tid }) {
     const languageContext = useContext(LanguageContext);
   

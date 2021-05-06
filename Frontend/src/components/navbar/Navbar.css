@@ -18,9 +18,10 @@
   padding: 1em;
 }
 
-.topnav a:hover {
+.topnav .Link:hover {
   color: white;
   background-color: #063752;
+  cursor: pointer;
 }
 
 .topnav #hidden {
@@ -134,4 +135,16 @@
     height: 110px;
     max-height: 110px;
   }
+}
+
+.logo {
+  height: 30px;
+  padding-top: 10px;
+}
+
+.langSel {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  padding-left: 15px;
 }
