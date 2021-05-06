@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import { msalInstance } from './azure/authRedirect';
-import { msalConfig } from "./azure/authConfig";
 
 // Component
 import App from './components/app/App';

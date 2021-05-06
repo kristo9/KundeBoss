@@ -61,7 +61,9 @@ class Dashboard extends React.Component<{}, { customers: any; search: string }> 
     if (this.state.customers) {
       filteredCustomers = this.state.customers.customerInformation.filter((customer) => {
         const tag = customer.tags.toString().toLowerCase();
-        return tag.indexOf(this.state.search.toLowerCase()) !== -1;
+        const name = customer.name.toString().toLowerCase();
+        const currsearch = tag + name;
+        return currsearch.indexOf(this.state.search.toLowerCase()) !== -1;
       });
     }
 
@@ -72,10 +74,10 @@ class Dashboard extends React.Component<{}, { customers: any; search: string }> 
           <input
             className='search'
             type='text'
-            placeholder='Search tag'
+            placeholder='Search name or tag'
             value={this.state.search}
             onChange={this.updateSearch.bind(this)}
-          ></input>
+          />
         </div>
         <div>{this.displayCustomers(filteredCustomers)}</div>
       </div>

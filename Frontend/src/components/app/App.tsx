@@ -16,7 +16,8 @@ import SupplierPage from '../pages/supplierPages/supplierPage';
 import HttpError from '../pages/pageNotFound/HttpErrorPage';
 
 // Context
-import { LanguageProvider } from '../../language/LangContext';
+import { LanguageProvider } from '../../Context/language/LangContext';
+import { UserTypeProvider } from '../../Context/UserType/UserTypeContext';
 
 // CSS Styling
 import './App.css';
@@ -45,25 +46,27 @@ const App = ({ pca }) => {
   console.log(inProgress);
   return (
     <LanguageProvider>
-      <Router>
-        <MsalProvider instance={pca}>
-          {inProgress === 'login' ? (
-            <div>
-              <h6> Loading Login......... </h6>
-            </div>
-          ) : (
-            <div className='app' style={{ height: '100vh' }}>
-              <div className='navbar'>
-                {' '}
-                <Navba />{' '}
+      <UserTypeProvider>
+        <Router>
+          <MsalProvider instance={pca}>
+            {inProgress === 'login' ? (
+              <div>
+                <h6> Loading Login......... </h6>
               </div>
-              <div style={{ marginTop: '75px', width: '100%' }}>
-                <Routes />
+            ) : (
+              <div className='app' style={{ height: '100vh' }}>
+                <div className='navbar'>
+                  {' '}
+                  <Navba />{' '}
+                </div>
+                <div style={{ marginTop: '75px', width: '100%' }}>
+                  <Routes />
+                </div>
               </div>
-            </div>
-          )}
-        </MsalProvider>
-      </Router>
+            )}
+          </MsalProvider>
+        </Router>
+      </UserTypeProvider>
     </LanguageProvider>
   );
 };
