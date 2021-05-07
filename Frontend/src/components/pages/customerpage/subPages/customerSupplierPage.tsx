@@ -33,14 +33,12 @@ function DisplaySupplier(props: { suppliers: any; customer: boolean }) {
       <div>
         {props.customer
           ? props.suppliers.map((supplier) => (
-              <div>
-                <ContactPersonInfo
-                  key={supplier?.id?.toString()}
-                  name={supplier?.contact?.name}
-                  mail={supplier?.contact?.mail}
-                  phone={supplier?.contact?.phone}
-                />
-              </div>
+              <ContactPersonInfo
+                key={supplier?.id?.toString()}
+                name={supplier?.contact?.name}
+                mail={supplier?.contact?.mail}
+                phone={supplier?.contact?.phone}
+              />
             ))
           : props.suppliers.map((supplier) => (
               <div

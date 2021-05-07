@@ -7,6 +7,7 @@ interface EmployeeRights {
   name: string;
   employeeId: string;
   admin: string;
+  isCustomer: boolean;
   customerInformation: EmployPermissionForACustomer[];
 }
 
@@ -42,24 +43,27 @@ const ViewRights = ({ adminData }: any) => {
 
   return (
     <div>
-      <h1>ViewRights</h1>
+      <h1 className='color-dark heading'>ViewRights</h1>
 
       {/* Searchfield */}
       <input type='text' placeholder='Søk' value={searchTerm} onChange={handleChange}></input>
 
       {/* Displayes all the employees and there rights */}
       <ul>
-        {searchResults.map((employee, index) => (
-          <li key={employee.employeeId}>
-            <EmployeRights
-              employeeId={employee.employeeId}
-              name={employee.name}
-              admin={employee.admin}
-              customerInformation={employee.customerInformation}
-              index={index}
-            />
-          </li>
-        ))}
+        {searchResults.map((employee, index) =>
+          !(employee.isCustomer || employee === null) ? (
+            <li key={employee.employeeId}>
+              <EmployeRights
+                employeeId={employee.employeeId}
+                name={employee.name}
+                admin={employee.admin}
+                isCustomer={employee.isCustomer}
+                customerInformation={employee.customerInformation}
+                index={index}
+              />
+            </li>
+          ) : null
+        )}
       </ul>
     </div>
   );
@@ -83,6 +87,7 @@ const ViewRights = ({ adminData }: any) => {
         ) : (
           <DisplayAndEditEmployeeRights
             employeeId={props.employeeId}
+            isCustomer={props.isCustomer}
             name={props.name}
             admin={props.admin}
             customerInformation={props.customerInformation}
@@ -120,7 +125,7 @@ const ViewRights = ({ adminData }: any) => {
             <p>{props.employeeId}</p>
             {props.customerInformation.map((customer) => {
               return (
-                <div>
+                <div key={customer._id}>
                   <span>
                     <b>{customer.name}</b>
                   </span>
@@ -132,12 +137,12 @@ const ViewRights = ({ adminData }: any) => {
         ) : (
           <form
             onSubmit={handleSubmit((data) => {
-              console.log(data);
+              let adminPermission: string = data.admin === 'Ingen' ? 'null' : data.admin;
 
               modifyEmployeeData(
                 data.employeeId,
                 data.name,
-                data.admin,
+                adminPermission,
                 false,
                 data.customerInformation.map((customerI) => {
                   return { id: customerI._id, permission: customerI.permission };
@@ -158,8 +163,8 @@ const ViewRights = ({ adminData }: any) => {
               <Select
                 register={register('admin')}
                 name={`admin`}
-                defaultOption={{ name: 'Nei?', value: null }}
-                defaultValue={props.admin}
+                defaultOption={{ name: 'Ingen', value: null }}
+                defaultValue={props.admin === null ? 'null' : props.admin}
                 options={[
                   { name: 'Les', value: 'read' },
                   { name: 'Skriv', value: 'write' },
@@ -183,12 +188,9 @@ const ViewRights = ({ adminData }: any) => {
                   <Select
                     register={register(`customerInformation.${index}.permission` as const)}
                     name={`customersInfo.${index}.customerInfo.permission`}
-                    defaultOption={{ name: 'Velg kunde', value: null }}
+                    defaultOption={{ name: 'les', value: 'read' }}
                     defaultValue={customerInfo[index].permission}
-                    options={[
-                      { name: 'les', value: 'read' },
-                      { name: 'skriv', value: 'write' },
-                    ]}
+                    options={[{ name: 'skriv', value: 'write' }]}
                   />
                 </div>
               );

@@ -1,4 +1,5 @@
-
+// CSS
+import '../../basicComp/basic.css';
 
 /**
  * Displayes the customer information.
@@ -8,7 +9,7 @@
 export function SupplierInfoPage({ supplierInfo }: any) {
   return (
     <div>
-      <h1>Infomasjon</h1>
+      <h1 className='color-dark heading'>Infomasjon</h1>
       <DisplayTextAndInfo text={'Navn'} information={supplierInfo.name} />
       <ContactPersonInfo
         name={supplierInfo.contact.name}

@@ -1,6 +1,7 @@
 import { ContactPersonInfo } from './SupplierInfoPage';
 import { useHistory } from 'react-router-dom';
 
+import '../../../basicComp/basic.css';
 
 /**
  * Displayes a list with the suppliers.
@@ -10,7 +11,7 @@ import { useHistory } from 'react-router-dom';
 function SupplierCustomerPage({ supplierInfo }: any) {
   return (
     <div>
-      <h1>Her er det Kunder</h1>
+      <h1 className='color-dark heading'>Kunder</h1>
       <p>
         <DisplayCustomer customers={supplierInfo.customers} />
       </p>
@@ -35,7 +36,11 @@ function DisplayCustomer(props: { customers: any }) {
     return (
       <div>
         {props.customers.map((customer) => (
-          <div onClick={() => { history.push('/customerpage/' + customer._id.toString()); }}>
+          <div
+            onClick={() => {
+              history.push('/customerpage/' + customer._id.toString());
+            }}
+          >
             <ContactPersonInfo
               key={customer._id.toString()}
               name={customer.contact.name}
@@ -50,4 +55,3 @@ function DisplayCustomer(props: { customers: any }) {
 }
 
 export default SupplierCustomerPage;
-

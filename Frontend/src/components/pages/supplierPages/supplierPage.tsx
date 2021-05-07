@@ -62,7 +62,7 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
           }
           buttons={this.buttons}
         />
-        {this.state.supplierInfo ? this.state.pageState : <LoadingSymbol />}
+        <div className='notSidebar'>{this.state.supplierInfo ? this.state.pageState : <LoadingSymbol />}</div>
       </div>
     );
   }

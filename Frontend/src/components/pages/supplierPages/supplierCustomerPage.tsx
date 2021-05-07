@@ -10,7 +10,7 @@ function SupplierCustomerPage({ supplierInfo }: any) {
   console.log(supplierInfo);
   return (
     <div>
-      <h1>Her er det Kunder</h1>
+      <h1 className='color-dark heading'>Her er det Kunder</h1>
       <p>
         <DisplayCustomers customers={supplierInfo.customers} />
       </p>

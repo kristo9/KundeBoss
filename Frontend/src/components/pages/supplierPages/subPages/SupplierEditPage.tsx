@@ -21,7 +21,7 @@ function SupplierEditPage({ supplierInfo }: any) {
 
   return (
     <div>
-      <h1>{supplierInfo ? 'Redigere leverandør' : 'Ny leverandør'}</h1>
+      <h1 className='color-dark heading'>{supplierInfo ? 'Redigere leverandør' : 'Ny leverandør'}</h1>
       <form
         onSubmit={handleSubmit((data) => {
           newSupplier(

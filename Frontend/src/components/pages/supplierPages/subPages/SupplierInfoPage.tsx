@@ -1,13 +1,17 @@
+// CSS
+import '../../../basicComp/basic.css';
+
 /**
  * Displayes the customer information.
  * @param {any} customerInfo contains all the information about the customer being displayed.
  * @returns a react-component with the customer information.
  */
+
 export function SupplierInfoPage({ supplierInfo }: any) {
-console.log(supplierInfo.name)
+  console.log(supplierInfo.name);
   return (
     <div>
-      <h1>Infomasjon</h1>
+      <h1 className='color-dark heading'>Infomasjon</h1>
       <DisplayTextAndInfo text={'Navn'} information={supplierInfo.name} />
       <ContactPersonInfo
         name={supplierInfo.contact.name}
@@ -68,12 +72,13 @@ function DisplayTags(props: { tags: any }) {
     );
   }
   //the supplier have tags, display them
-  else return (
-    <div>
-      <h3>Tags</h3>
-      {props.tags.map((tag) => (
-        <p key={tag}>{tag}</p>
-      ))}
-    </div>
-  );
+  else
+    return (
+      <div>
+        <h3>Tags</h3>
+        {props.tags.map((tag) => (
+          <p key={tag}>{tag}</p>
+        ))}
+      </div>
+    );
 }

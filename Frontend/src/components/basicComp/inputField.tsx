@@ -27,14 +27,14 @@ interface checkboxProps {
 interface SelectProps {
   register: any;
   name: string;
-  defaultValue: string | number;
+  defaultValue: string | number | null;
   defaultOption: {
     name: string;
-    value: string | number;
+    value: string | number | null;
   };
   options: {
     name: string;
-    value: string | number;
+    value: string | number | null;
   }[];
 }
 

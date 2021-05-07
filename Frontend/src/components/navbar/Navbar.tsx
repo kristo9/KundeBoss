@@ -105,7 +105,7 @@ const Navbar = () => {
   console.log(msalInstance.getActiveAccount());
   console.log(sessionStorage.getItem('UserName'));
 
-  return <div>{!isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
+  return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
 };
 
 export default Navbar;

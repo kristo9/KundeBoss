@@ -61,7 +61,7 @@ function SendMail(props: customerIDProp) {
     if (allCustomerAndSupplierIDs) {
       let supplierIDs = getValues(`receivers.${index}.customerID` as const);
 
-      let suppliers = allCustomerAndSupplierIDs.customers.filter(({ customer }) => {
+      let suppliers = allCustomerAndSupplierIDs?.customers?.filter(({ customer }) => {
         return supplierIDs === customer._id;
       })[0]?.customer?.suppliers;
 
@@ -93,31 +93,34 @@ function SendMail(props: customerIDProp) {
     const fetchAllCustomerAndSuppliers = async () => {
       // gets the complete list of customers and suppliers
       let customersAndSuppliers = await getCustomersAndSuppliers();
+      console.log(customersAndSuppliers);
       setAllCustomerAndSupplierIDs({ customers: customersAndSuppliers });
       setSelectedCustomerIDs({ customerID: props.customerID });
 
-      setValue(
-        'receivers',
+      if (customersAndSuppliers) {
+        setValue(
+          'receivers',
 
-        customersAndSuppliers
-          .filter(({ customer }) => {
-            var match = false;
-            props.customerID.map((id) => {
-              if (customer._id === id) {
-                match = true;
-              }
-            });
-            return match;
-          })
-          .map(({ customer }) => {
-            return {
-              customerID: customer._id,
-              suppliersIDs: customer.suppliers.map((supplier) => {
-                return supplier._id;
-              }),
-            };
-          })
-      );
+          customersAndSuppliers
+            ?.filter(({ customer }) => {
+              var match = false;
+              props.customerID?.map((id) => {
+                if (customer._id === id) {
+                  match = true;
+                }
+              });
+              return match;
+            })
+            ?.map(({ customer }) => {
+              return {
+                customerID: customer._id,
+                suppliersIDs: customer?.suppliers?.map((supplier) => {
+                  return supplier._id;
+                }),
+              };
+            })
+        );
+      }
     };
 
     fetchAllCustomerAndSuppliers();
@@ -131,11 +134,11 @@ function SendMail(props: customerIDProp) {
 
   return (
     <div>
-      <h1>Send Mail</h1>
+      <h1 className='color-dark heading'>Send Mail</h1>
 
       <form
         onSubmit={handleSubmit((data) => {
-          // let promisses = [];
+          let promisses = [];
           let supplierIDs;
 
           //filtrer ut default fra customerID og false fra supplierIDs[]
@@ -158,26 +161,27 @@ function SendMail(props: customerIDProp) {
               console.log(reciver);
               console.log(supplierIDs);
 
-              //     promisses.push(
-              //       sendMailCustomer(
-              //         selectedCustomerIDs.customerID[index],
-              //         typeof reciver.customerID == 'string',
-              //         data.text,
-              //         data.subject,
-              //         supplierIDs
-              //       )
-              //     );
+              promisses.push(
+                sendMailCustomer(
+                  selectedCustomerIDs.customerID[index],
+                  typeof reciver.customerID == 'string',
+                  data.text,
+                  data.subject,
+                  supplierIDs
+                )
+              );
             }
           });
 
-          // // exevutes all the promisses (send all the mails)
-          // promisses.forEach(async (propmis) => {
-          //   let result = await propmis;
-          //   console.log(result);
-          //   // if (result.status === 200) {
-          //   //   console.log('mail sendt');
-          //   // }
-          // });
+          console.log(promisses);
+          // exevutes all the promisses (send all the mails)
+          promisses.forEach(async (propmis) => {
+            let result = await propmis;
+            console.log(result);
+            // if (result.status === 200) {
+            //   console.log('mail sendt');
+            // }
+          });
         })}
       >
         <div className='displayInfoDiv inputField'>

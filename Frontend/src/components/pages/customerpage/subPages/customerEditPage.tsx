@@ -76,7 +76,7 @@ function CustomerEditPage({ customerInfo }: any) {
 
   return (
     <div>
-      <h1>{customerInfo ? 'Redigere kunden' : 'Ny kunde'}</h1>
+      <h1 className='color-dark heading'>{customerInfo ? 'Redigere kunden' : 'Ny kunde'}</h1>
       <form
         onSubmit={handleSubmit((data) => {
           console.log(data);
