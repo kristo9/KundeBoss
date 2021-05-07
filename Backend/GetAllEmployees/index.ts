@@ -76,6 +76,7 @@ export default (context: Context, req: HttpRequest): any => {
       'employeeId': 1,
       'admin': 1,
       'customers': 1,
+      'isCustomer': 1,
       'customerInformation._id': 1,
       'customerInformation.name': 1,
     };

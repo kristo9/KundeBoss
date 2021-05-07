@@ -55,6 +55,7 @@ export default (context: Context, req: HttpRequest): any => {
     }
 
     if (req.body.customers) {
+      context.log('Inne i customers');
       req.body.customers.forEach((customer) => {
         context.log(customer['id']);
         if (!_idVal(customer['id']) || (customer['permission'] != 'read' && customer['permission'] != 'write')) {
