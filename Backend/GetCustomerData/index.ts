@@ -94,6 +94,7 @@ export default (context: Context, req: HttpRequest): any => {
                 return context.done();
               }
               if (!(await customerIds)) {
+                errorWrongInput(context, 'No customer found');
                 return context.done();
               }
               let cust = docs.customers.find(
@@ -168,12 +169,10 @@ export default (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         }
-        //console.log(docs);
         if (docs.length === 0) {
           errorWrongInput(context, 'No customer found');
           return context.done();
         }
-
         docs = docs[0];
 
         docs.mails.reverse();

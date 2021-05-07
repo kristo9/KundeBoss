@@ -52,13 +52,18 @@ export default (context: Context, req: HttpRequest): any => {
           },
           {
             'admin': 1,
+            'customers': 1,
           },
-          (error: any, docs: { admin: string }) => {
+          (error: any, docs: any) => {
             if (error) {
               errorQuery(context);
               return context.done();
             } else {
-              if (docs.admin === 'write') {
+              let customerPerm = null;
+              if (docs?.customers?.length > 0) {
+                customerPerm = docs.customers.find((customer) => customer.id == req.body.id)?.permission;
+              }
+              if (docs.admin === 'write' || customerPerm === 'write') {
                 connectWrite(context, functionQuery);
               } else {
                 errorUnauthorized(context, 'User dont have admin permission');
@@ -117,6 +122,11 @@ export default (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         }
+        if(req.body?.id && docs.result.n === 0){
+          errorWrongInput(context, "No customer found");
+          return context.done();
+        }
+
         returnResult(context, docs);
         context.done();
       });

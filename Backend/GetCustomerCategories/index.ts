@@ -1,10 +1,9 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
+import { returnResult, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
 import { collections, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
-import { ObjectId } from 'mongodb';
 
 /**
  * @description Gets all suppliers in the database

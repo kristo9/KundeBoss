@@ -6,9 +6,9 @@ describe('User credentials', () => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'didrik.bjerk@kundeboss.onmicrosoft.com';
-    request.body['id'] = '604a7ae0fe05bd49dcb6b7a1';
+    request.body['id'] = '604a7d3b0f085c17609e9187';
 
-    GetCustomerData(context as any, httpRequest as any);
+    GetCustomerData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
@@ -23,7 +23,7 @@ describe('User credentials', () => {
     request.headers.authorization = 'didrik.bjerk@live.no';
     request.body['id'] = '604a7ae0fe05bd49dcb6b7a1';
 
-    GetCustomerData(context as any, httpRequest as any);
+    GetCustomerData(context as any, request as any);
     await timeout(context);
     expect(context.done).toEqual(true);
     //expect(context.res.body).toHaveProperty('_id', '605b37ae6c35ab18d8c49da7');
@@ -37,7 +37,7 @@ describe('User credentials', () => {
     request.headers.authorization = 'didri.bjerk@live.no';
     request.body['id'] = '604a7ae0fe05bd49dcb6b7a1';
 
-    GetCustomerData(context as any, httpRequest as any);
+    GetCustomerData(context as any, request as any);
     await timeout(context);
     expect(context.done).toEqual(true);
     //expect(context.res.body).toHaveProperty('_id', '605b37ae6c35ab18d8c49da7');
@@ -46,18 +46,18 @@ describe('User credentials', () => {
   });
 });
 
-describe('Wrong customer id', () => {
+describe('Admin', () => {
   test('Error 400', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'didrik.bjerk@kundeboss.onmicrosoft.com';
-    request.body['id'] = '404a7ae0fe05bd49dcb6b7a1';
+    request.body['id'] = '60705fc7b178af6350fd1645';
 
-    GetCustomerData(context as any, httpRequest as any);
+    GetCustomerData(context as any, request as any);
     await timeout(context);
 
     expect(context.done).toEqual(true);
-    expect(context.res.status).toBe(400);
+    expect(context.res.status).toBe(200);
     done();
   });
 
@@ -67,7 +67,7 @@ describe('Wrong customer id', () => {
     request.headers.authorization = 'didri.bjerk@live.no';
     request.body['id'] = '404a7ae0fe05bd49dcb6b7a1';
 
-    GetCustomerData(context as any, httpRequest as any);
+    GetCustomerData(context as any, request as any);
     await timeout(context);
     expect(context.done).toEqual(true);
     expect(context.res.status).toBe(401);

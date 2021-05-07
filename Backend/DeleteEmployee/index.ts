@@ -69,7 +69,7 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    db.collection('employee').findOne(query, (error: any, docs: any) => {
+    db.collection('employee').deleteOne(query, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
         return context.done();
@@ -79,7 +79,6 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       }
 
-      console.log('Employee deleted!');
       returnResult(context, docs);
       context.done();
     });

@@ -132,11 +132,13 @@ export default (context: Context, req: HttpRequest): any => {
       query['isCustomer'] = true;
     }
 
-    db.collection('employee').insertOne(query, (error: any) => {
+    db.collection('employee').insertOne(query, (error: any, docs:any) => {
       if (error) {
         errorQuery(context);
         return context.done();
       }
+      result['_id'] = docs.insertedId;
+
       context.log('New employee created');
 
       result['firstLogin'] = true;

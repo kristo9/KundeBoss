@@ -122,10 +122,26 @@ export default (context: Context, req: HttpRequest): any => {
                     errorQuery(context);
                     return context.done();
                   }
-                  console.log('Customer deleted!');
 
-                  returnResult(context, docs);
-                  context.done();
+                  //Deletes the supplier for customers
+                  db.collection('employee').updateMany(
+                    { 'customers.id': ObjectId(req.body.id) },
+                    { $pull: { customers: { 'id': ObjectId(req.body.id) } } },
+                    (error: any, docs: any) => {
+                      if (error) {
+                        errorQuery(context);
+                        return context.done();
+                      }
+
+                      let msg = JSON.parse('{}');
+                      msg['n'] = 'Found ' + docs.result.n + ' employees with the customer.';
+                      msg['nModified'] = 'Modified ' + docs.result.nModified + ' employees.';
+                      msg['res'] = 'Customer deleted.';
+
+                      returnResult(context, msg);
+                      context.done();
+                    }
+                  );
                 });
               });
             });

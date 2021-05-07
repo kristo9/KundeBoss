@@ -59,6 +59,7 @@ export default (context: Context, req: HttpRequest): any => {
     'name': 1,
     'employeeId': 1,
     'admin': 1,
+    'isCustomer': 1,
     'customers.id': 1,
     'customers.permission': 1,
   };
