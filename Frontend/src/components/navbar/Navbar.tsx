@@ -7,11 +7,11 @@ import { useAccount } from '@azure/msal-react';
 // Components
 import { SignInSignOutButton } from '../basicComp/SignInOutButton';
 import { msalInstance } from '../../azure/authRedirect';
-import LanguageSelector from '../../context/language/LangContext';
+import LanguageSelector from '../../Context/language/LangContext';
 
 // Context
-import { LanguageContext } from '../../context/language/LangContext';
-import { TypeContext } from '../../context/UserType/UserTypeContext';
+import { LanguageContext } from '../../Context/language/LangContext';
+import { TypeContext } from '../../Context/UserType/UserTypeContext';
 
 // Image
 import logo from '../../bilder/logo-ferdig.png';

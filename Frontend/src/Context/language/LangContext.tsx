@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from 'react';
-import { languageOptions, dictionaryList } from '../../context/language/LangDir'; //fordi :)
+import { languageOptions, dictionaryList } from './LangDir'; //fordi :)
 import * as ReactBootstrap from 'react-bootstrap';
 import ukFlag from '../../bilder/uk_Flag.svg.webp';
 import norwayFlag from '../../bilder/Flag_of_Norway.png';

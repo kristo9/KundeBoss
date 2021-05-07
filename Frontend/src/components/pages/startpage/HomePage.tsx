@@ -8,11 +8,11 @@ import PageNotFound from '../pageNotFound/pageNotFound';
 import CustomerPage from '../customerpage/customerpage';
 import { callLogin } from '../../../azure/api';
 
-import { TypeContext } from '../../../context/UserType/UserTypeContext';
+import { TypeContext } from '../../../Context/UserType/UserTypeContext';
 import Dashboard from '../dashboard/Dashboard';
 import adminIMG from '../../../bilder/admin.jpg';
 import dashboardIMG from '../../../bilder/dashboard.jpg';
-import LanguageSelector from '../../../context/language/LangContext';
+import LanguageSelector from '../../../Context/language/LangContext';
 
 import './HomePage.css';
 

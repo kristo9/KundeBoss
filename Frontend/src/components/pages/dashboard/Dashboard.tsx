@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 // CSS imports
 import './Dashboard.css';
 import '../../basicComp/basic.css';
-import { LanguageContext } from '../../../context/language/LangContext';
+import { LanguageContext } from '../../../Context/language/LangContext';
 import { stringify } from 'querystring';
 
 /**
