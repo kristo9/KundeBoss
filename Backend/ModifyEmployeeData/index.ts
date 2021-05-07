@@ -66,8 +66,11 @@ export default (context: Context, req: HttpRequest): any => {
     }
 
     if (req.body.admin) {
-      if (req.body.admin != 'write' && req.body.admin != 'read') {
+      if (req.body.admin !== 'write' && req.body.admin !== 'read' && req.body.admin !== 'null') {
         setError('Invalid admin permission');
+      }
+      if (req.body.admin === 'null') {
+        req.body.admin = null;
       }
       newVals['admin'] = req.body.admin;
     }

@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { returnResult } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead } from '../SharedFiles/dataBase';
+import { collections, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
 /**
@@ -81,13 +81,55 @@ export default (context: Context, req: HttpRequest): any => {
       'customerInformation.name': 1,
     };
 
+    db.collection(collections.employee)
+      .find()
+      .project()
+      .toArray((error: any, docs: any) => {
+        if (error) {
+          errorQuery(context);
+          return context.done();
+        }
+        let employees = docs;
+        db.collection(collections.customer)
+          .find()
+          .project({ '_id': 1, 'name': 1 })
+          .toArray((error: any, docs: any) => {
+            if (error) {
+              errorQuery(context);
+              return context.done();
+            }
+            let customers = docs;
+            employees.forEach((employee) => {
+              if (employee.admin === 'write') {
+                customers.forEach((customer) => (customer['permission'] = 'write'));
+                employee['customerInformation'] = customers;
+              } else {
+                let customerInformation = customers.filter((customer) =>
+                  JSON.stringify(employee.customers).includes(JSON.stringify(customer._id))
+                );
+                employee.customerInformation = [];
+                customerInformation.forEach((customer, index) => {
+                  try {
+                    employee.customerInformation.push({
+                      '_id': customer._id,
+                      'name': customer.name,
+                      'permission': employee['customers'][index]['permission'],
+                    });
+                  } catch {}
+                });
+              }
+
+              delete employee.customers;
+            });
+            returnResult(context, employees);
+            context.done();
+          });
+      });
+  };
+  /*
     db.collection('employee')
       .aggregate([
-        /*         {
-          '$match': {
-            employeeId: employeeId,
-          },
-        }, */
+           
         {
           '$lookup': {
             'from': 'customer',
@@ -123,6 +165,6 @@ export default (context: Context, req: HttpRequest): any => {
         returnResult(context, docs);
         context.done();
       });
-  };
+  };*/
   connectRead(context, authorize);
 };
