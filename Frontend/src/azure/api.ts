@@ -23,6 +23,7 @@ function callApi(endpoint, token, data) {
     .then((response) => {
       status = response.status;
       console.log(status);
+      console.log(response);
       return response.json();
     })
     .then((response) => {
@@ -389,7 +390,10 @@ export function modifyEmployeeData(
   name: string = null,
   admin: string = null,
   isCustomer: boolean = null,
-  customers: any
+  customers: {
+    id: string;
+    permission: string;
+  }[]
 ) {
   console.log('Calling ModifyEmployeeData function');
   const data = {
