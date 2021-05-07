@@ -4,6 +4,7 @@ import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../Sh
 import { verify } from 'jsonwebtoken';
 import { connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
+import { ObjectId } from 'mongodb';
 
 /**
  * Function that returns all the employees
@@ -56,10 +57,12 @@ export default (context: Context, req: HttpRequest): any => {
 
     if (req.body.customers) {
       context.log('Inne i customers');
-      req.body.customers.forEach((customer) => {
+      req.body.customers.forEach((customer, index, arr) => {
         context.log(customer['id']);
         if (!_idVal(customer['id']) || (customer['permission'] != 'read' && customer['permission'] != 'write')) {
           setError('Invalid id or permission');
+        } else {
+          arr[index]['id'] = ObjectId(customer.id);
         }
       });
       newVals['customers'] = req.body.customers;
