@@ -73,11 +73,13 @@ const HomePage = () => {
   const [isError, setIsError] = useState(null);
 
   useEffect(() => {
+    console.log("Use effect")
     async function fetchAccountInfo() {
       setLoading(true);
       setIsError('');
       try {
         let info = await callLogin();
+        console.log("Info   " ,info)
         switch (true) {
           case info.isConfigured && info.isCustomer && info.firstLogin:
             userTypeChange('CustomerFirstLogin');
@@ -112,8 +114,9 @@ const HomePage = () => {
       setLoading(false);
     }
     fetchAccountInfo();
-  }, []);
+  });
 
+  console.log(userType)
   return (
     <div>
       {isError !== '' ? (

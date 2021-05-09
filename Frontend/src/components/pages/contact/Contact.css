@@ -4,3 +4,7 @@ body {
 .App {
   background-color: rgb(223, 178, 178);
 }
+
+.title {
+  font-size: 50px;
+}
