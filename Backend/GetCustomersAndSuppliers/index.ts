@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { returnResult } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { checkDbConnection, clientRead, connectRead } from '../SharedFiles/dataBase';
+import { checkDbConnection, clientRead, collections, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
 /**
@@ -23,6 +23,8 @@ export default (context: Context, req: HttpRequest): any => {
     return context.done();
   }
 
+  let userIsAdmin = false;
+
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // verified and decoded token
@@ -41,23 +43,13 @@ export default (context: Context, req: HttpRequest): any => {
               return context.done();
             } else {
               if (docs[0]?.admin === 'write' || docs[0]?.admin === 'read') {
-                functionQuery(db);
-              } else {
-                errorUnauthorized(context, 'User dont have admin-write/read permission');
-                return context.done();
+                userIsAdmin = true;
               }
+              functionQuery(db);
             }
           });
       }
     });
-  };
-
-  // Which information is to be recieved
-  const projection = {
-    'customers._id': 1,
-    'customers.name': 1,
-    'customers.suppliers.name': 1,
-    'customers.suppliers._id': 1,
   };
 
   /**
@@ -66,8 +58,30 @@ export default (context: Context, req: HttpRequest): any => {
    * @return potential new tags and all the customers the user has access to
    */
   const functionQuery = (db: Db) => {
-    db.collection('employee') // Query to recieve information about one employee and his customers
-      .aggregate([
+    let aggregate = null;
+    let collection = null;
+    if (userIsAdmin) {
+      collection = collections.customer;
+      aggregate = [
+        {
+          '$lookup': {
+            'from': 'supplier',
+            'localField': 'suppliers.id',
+            'foreignField': '_id',
+            'as': 'suppliers',
+          },
+        },
+        {
+          '$project': {
+            'name': 1,
+            'suppliers._id': 1,
+            'suppliers.name': 1,
+          },
+        },
+      ];
+    } else {
+      collection = collections.employee;
+      aggregate = [
         {
           '$match': {
             'employeeId': employeeId,
@@ -90,8 +104,19 @@ export default (context: Context, req: HttpRequest): any => {
             'as': 'customers.suppliers',
           },
         },
-        { '$project': projection },
-      ])
+        {
+          '$project': {
+            'customers._id': 1,
+            'customers.name': 1,
+            'customers.suppliers.name': 1,
+            'customers.suppliers._id': 1,
+          },
+        },
+      ];
+    }
+
+    db.collection(collection) // Query to recieve information about one employee and his customers
+      .aggregate(aggregate)
       .toArray((error: any, docs: JSON[]) => {
         if (error) {
           errorQuery(context);
@@ -100,10 +125,16 @@ export default (context: Context, req: HttpRequest): any => {
           //docs = JSON.parse(JSON.stringify(docs).replace(/"customers":/g, '"customer":'));
           let customers: any = [];
           docs.forEach((customer) => {
-            customer = JSON.parse(JSON.stringify(customer).replace('"customers":', '"customer":'));
-            delete customer['_id'];
-            customers.push(customer);
+            if (userIsAdmin) {
+              customers.push({'customer':customer});
+            } else {
+              customer = JSON.parse(JSON.stringify(customer).replace('"customers":', '"customer":'));
+              customers.push(customer);
+              delete customer['_id'];
+            }
+            console.log(JSON.stringify(customer,null,2))
           });
+          
           returnResult(context, customers);
           context.done();
         }

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import Loading from '../../basicComp/loading';
 import PageNotFound from '../pageNotFound/pageNotFound';
 import CustomerPage from '../customerpage/customerpage';
-import { callLogin } from '../../../azure/api';
+import { callLogin, getAllEmployees, getEmployee } from '../../../azure/api';
 
 import { TypeContext } from '../../../Context/UserType/UserTypeContext';
 import Dashboard from '../dashboard/Dashboard';
@@ -72,6 +72,7 @@ const HomePage = () => {
   const [Load, setLoading] = useState(true);
   const [isError, setIsError] = useState(null);
 
+
   useEffect(() => {
     console.log("Use effect")
     async function fetchAccountInfo() {
@@ -79,13 +80,9 @@ const HomePage = () => {
       setIsError('');
       try {
         let info = await callLogin();
-        console.log("Info   " ,info)
         switch (true) {
-          case info.isConfigured && info.isCustomer && info.firstLogin:
-            userTypeChange('CustomerFirstLogin');
-            break;
-          case info.isConfigured && info.isCustomer && !info.firstLogin:
-            setUserCase('CustomerNotFirst');
+          case info.isConfigured && info.isCustomer:
+            userTypeChange('Customer');
             break;
           case info.isConfigured && info.admin === 'write' && info.firstLogin:
             userTypeChange('AdminWriteFirst');
@@ -112,11 +109,11 @@ const HomePage = () => {
         setIsError(true);
       }
       setLoading(false);
+  
     }
     fetchAccountInfo();
-  });
-
-  console.log(userType)
+  }, []);
+  
   return (
     <div>
       {isError !== '' ? (
@@ -125,9 +122,7 @@ const HomePage = () => {
         <Loading />
       ) : userType === 'NotConfigured' ? (
         <NotConfigured />
-      ) : userType === 'CustomerFirstLogin' ? (
-        <Customer />
-      ) : userType === 'CustomerNotFirst' ? (
+      ) : userType === 'Customer' ? (
         <Customer />
       ) : userType === 'AdminReadFirst' ? (
         <Admin />
