@@ -33,13 +33,12 @@ const CustomerPage = () => {
 
   useEffect(() => {
     const FetchCustomerInfo = async () => {
-      let customerI;
+      let customerI = null;
       console.log(userType + ' Det er det jeg er ;)');
 
-      if (userType === 'CustomerFirstLogin' || userType === 'CustomerNotFirst') {
+      if (userType === 'Customer') {
         console.log('Inne');
         const customerSelf = await getEmployee();
-        console.log(customerSelf.customerInformation[0]._id);
         customerI = await getCustomer(customerSelf.customerInformation[0]._id);
         setButtons('ButtonsRead');
       } else {
@@ -121,11 +120,6 @@ const ButtonsRead = ({ setPageState }, { customerInfo }) => {
       text: 'Leverandører',
       ID: 'supplier',
       onClick: () => setPageState(<CustomerSupplierPage customerInfo={customerInfo} customer={true} />),
-    },
-    {
-      text: 'Mail',
-      ID: 'mail',
-      onClick: () => setPageState(<CustomerMailPage customerInfo={customerInfo} />),
     },
   ];
   return buttonsRead;
