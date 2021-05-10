@@ -77,6 +77,7 @@ export default (context: Context, req: HttpRequest): any => {
   let receiverMail = [];
   let receiverInformation = [];
   let senderName = null;
+  let senderId = null;
 
   const getCustomer = (db) => {
     return new Promise((resolve) => {
@@ -103,6 +104,7 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       } else {
         senderName = decoded.name;
+        senderId = decoded.preferred_username;
 
         let customerPromise = getCustomer(db);
 
@@ -138,7 +140,7 @@ export default (context: Context, req: HttpRequest): any => {
             let replyUrl = process.env['ApiReplyUrl'];
             let replyId = null;
 
-            if(!customer){
+            if (!customer) {
               errorWrongInput(context);
               return context.done();
             }
@@ -235,7 +237,7 @@ export default (context: Context, req: HttpRequest): any => {
       };
 
       if (receiverMail.length > 0) {
-        context.log('Sent mail to:' + JSON.stringify(receiverMail,null,2));
+        context.log('Sent mail to:' + JSON.stringify(receiverMail, null, 2));
         context.bindings.resMail = message;
         mailGroup = docs.mailGroup;
         connectWrite(context, functionQuery);
@@ -253,6 +255,8 @@ export default (context: Context, req: HttpRequest): any => {
       'subject': req.body.subject,
       'text': req.body.text,
       'sender': senderName,
+      senderId,
+      'seenBy': [],
     };
 
     db.collection('mail').insertOne(newMail, (error: any, docs: any) => {

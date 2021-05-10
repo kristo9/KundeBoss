@@ -9,7 +9,7 @@ const sanitize = require('sanitize-html');
  */
 const sanitizeHtmlJson = (data: JSON | JSON[]) => {
   let iterate = (itData) => {
-    if (itData){
+    if (itData) {
       Object.keys(itData).forEach((key) => {
         if (typeof itData[key] === 'object') {
           itData[key] = iterate(itData[key]);
