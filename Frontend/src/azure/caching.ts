@@ -21,7 +21,7 @@ export async function getFromCache(objId) {
     let objAgeSec = (new Date().getTime() - cache.get(objId)?.time) / millInSec || 0;
     let obj = await cache.get(objId).data;
     if (obj?.status === 200 && objAgeSec < cacheTimeout) {
-      console.log(
+      /* console.log(
         'Retrieved object from cache. Age(sec): ' +
           Math.round(objAgeSec) +
           ' Timout(sec): ' +
@@ -30,7 +30,7 @@ export async function getFromCache(objId) {
           Math.round(currentSizeKB) +
           ' Objects: ' +
           cache.size
-      );
+      ); */
       let temp = cache.get(objId);
       temp.usageAge = ++cacheWeight;
       cache.set(objId, temp);
@@ -104,7 +104,7 @@ async function cleanCache() {
       cache.delete(tempKey);
     }
   }
-  console.log('Cleaned cache. New cache size(KB): ' + Math.round(currentSizeKB) + ' Objects: ' + cache.size);
+  /* console.log('Cleaned cache. New cache size(KB): ' + Math.round(currentSizeKB) + ' Objects: ' + cache.size); */
 }
 
 /**
