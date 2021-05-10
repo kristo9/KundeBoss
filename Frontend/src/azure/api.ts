@@ -304,6 +304,20 @@ export function getCustomer(id: string) {
   };
   return prepareCallWithCaching('GetCustomerData', customerId);
 }
+
+/**
+ * @description Register that a mail was opened
+ * @param id customer mongodb id
+ * @returns
+ */
+export function registerMailVisit(id: string) {
+  let mailId = {
+    id,
+  };
+  // deleteCache(customerId);
+  prepareCall('RegisterMailVisit', mailId); //.then(() => getCustomer(customerId));
+}
+
 /**
  * Gets information about a supplier
  * @param id supplier mongodb id

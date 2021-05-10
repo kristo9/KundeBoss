@@ -15,6 +15,7 @@ exports.default = (context, req) => {
     if (req.body === null) {
         return context.done();
     }
+    console.log(req.body.replyText);
     let replyId = null;
     let replyText = null;
     /**
@@ -22,7 +23,7 @@ exports.default = (context, req) => {
      * @param db : database connection
      */
     const functionQuery = (db) => {
-        db.collection(dataBase_1.collections.mail).updateOne({ 'receivers.replyId': replyId }, { '$set': { 'receivers.$.reply': { 'text': replyText, 'date': new Date() } } }, (error, docs) => {
+        db.collection(dataBase_1.collections.mail).updateOne({ 'receivers.replyId': replyId }, { '$set': { 'receivers.$.reply': { 'text': replyText + '\n\n', 'date': new Date() }, 'seenBy': [] } }, (error, docs) => {
             if (error) {
                 auth_1.errorQuery(context);
                 context.res.body = { text: 'Something went wrong' };

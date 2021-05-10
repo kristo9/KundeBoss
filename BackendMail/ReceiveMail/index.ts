@@ -16,7 +16,7 @@ export default (context: Context, req: HttpRequest): any => {
   if (req.body === null) {
     return context.done();
   }
-
+  console.log(req.body.replyText)
   let replyId = null;
   let replyText = null;
 
@@ -27,7 +27,7 @@ export default (context: Context, req: HttpRequest): any => {
   const functionQuery = (db: Db) => {
     db.collection(collections.mail).updateOne(
       { 'receivers.replyId': replyId },
-      { '$set': { 'receivers.$.reply': { 'text': replyText, 'date': new Date() } } },
+      { '$set': { 'receivers.$.reply': { 'text': replyText + '\n\n', 'date': new Date() },'seenBy':[] } },
       (error: any, docs: any) => {
         if (error) {
           errorQuery(context);
