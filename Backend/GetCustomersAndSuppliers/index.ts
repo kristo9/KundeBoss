@@ -35,8 +35,8 @@ export default (context: Context, req: HttpRequest): any => {
         employeeId = decoded.preferred_username;
 
         db.collection('employee') // query to find users permission level
-          .find({ 'employeeId': employeeId })
-          .project({ 'admin': 1 })
+          .find({ employeeId: employeeId })
+          .project({ admin: 1 })
           .toArray((error: any, docs: JSON | JSON[]) => {
             if (error) {
               errorQuery(context);
@@ -64,15 +64,15 @@ export default (context: Context, req: HttpRequest): any => {
       collection = collections.customer;
       aggregate = [
         {
-          '$lookup': {
-            'from': 'supplier',
-            'localField': 'suppliers.id',
-            'foreignField': '_id',
-            'as': 'suppliers',
+          $lookup: {
+            from: 'supplier',
+            localField: 'suppliers.id',
+            foreignField: '_id',
+            as: 'suppliers',
           },
         },
         {
-          '$project': {
+          $project: {
             'name': 1,
             'suppliers._id': 1,
             'suppliers.name': 1,
@@ -83,29 +83,29 @@ export default (context: Context, req: HttpRequest): any => {
       collection = collections.employee;
       aggregate = [
         {
-          '$match': {
-            'employeeId': employeeId,
+          $match: {
+            employeeId: employeeId,
           },
         },
         {
-          '$lookup': {
-            'from': 'customer',
-            'localField': 'customers.id',
-            'foreignField': '_id',
-            'as': 'customers',
+          $lookup: {
+            from: 'customer',
+            localField: 'customers.id',
+            foreignField: '_id',
+            as: 'customers',
           },
         },
-        { '$unwind': '$customers' },
+        { $unwind: '$customers' },
         {
-          '$lookup': {
-            'from': 'supplier',
-            'localField': 'customers.suppliers.id',
-            'foreignField': '_id',
-            'as': 'customers.suppliers',
+          $lookup: {
+            from: 'supplier',
+            localField: 'customers.suppliers.id',
+            foreignField: '_id',
+            as: 'customers.suppliers',
           },
         },
         {
-          '$project': {
+          $project: {
             'customers._id': 1,
             'customers.name': 1,
             'customers.suppliers.name': 1,
@@ -126,15 +126,14 @@ export default (context: Context, req: HttpRequest): any => {
           let customers: any = [];
           docs.forEach((customer) => {
             if (userIsAdmin) {
-              customers.push({'customer':customer});
+              customers.push({ customer: customer });
             } else {
               customer = JSON.parse(JSON.stringify(customer).replace('"customers":', '"customer":'));
               customers.push(customer);
               delete customer['_id'];
             }
-            console.log(JSON.stringify(customer,null,2))
           });
-          
+
           returnResult(context, customers);
           context.done();
         }
