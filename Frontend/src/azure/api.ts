@@ -1,7 +1,7 @@
 import { apiConfig } from './apiConfig';
 import { getTokenRedirect, msalInstance } from './authRedirect';
 import { tokenRequest } from './authConfig';
-import { addToCacheAndReturn, deleteCache, getFromCache } from './caching';
+import { addToCacheAndReturn, deleteCache, getFromCache, updateGetEmployee } from './caching';
 import { ArrayDestructuringAssignment } from 'typescript';
 
 function callApi(endpoint, token, data) {
@@ -310,10 +310,11 @@ export function getCustomer(id: string) {
  * @param id customer mongodb id
  * @returns
  */
-export function registerMailVisit(id: string) {
+export function registerMailVisit(id: string, customerId) {
   let mailId = {
     id,
   };
+  updateGetEmployee(customerId);
   // deleteCache(customerId);
   prepareCall('RegisterMailVisit', mailId); //.then(() => getCustomer(customerId));
 }

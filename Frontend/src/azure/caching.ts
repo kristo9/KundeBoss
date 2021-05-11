@@ -145,3 +145,18 @@ function roughSizeOfObject(object) {
   }
   return bytes;
 }
+
+export async function updateGetEmployee(customerId: string) {
+  let obj0 = cache.get('GetCustomers');
+  let obj = await obj0.data;
+  if (obj) {
+    for (let i = 0, len = obj.customerInformation.length; i < len; ++i) {
+      if (obj.customerInformation[i]._id == customerId) {
+        --obj.customerInformation[i].changedMails;
+        break;
+      }
+    }
+    obj0.data = obj;
+    cache.set('GetCustomers', obj0);
+  }
+}

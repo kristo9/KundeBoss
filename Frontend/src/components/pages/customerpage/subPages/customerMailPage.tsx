@@ -45,14 +45,14 @@ function CustomerMailPage({ customerInfo }: any) {
 
 function DisplayMail({ mail }: any) {
   const [open, setOpen] = useState(false);
-  
+
   return (
     <div>
       <div
         onClick={() => {
           setOpen(!open);
           if (mail.newContent === true) {
-            registerMailVisit(mail._id);
+            registerMailVisit(mail._id, window.location.pathname.split('/')[2]);
             mail.newContent = false;
           }
         }}

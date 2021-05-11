@@ -65,20 +65,60 @@ export default (context: Context, req: HttpRequest): any => {
         delete employee?.customers;
 
         db.collection(collections.customer)
-          .find(query)
-          .project({ '_id': 1, 'name': 1, 'contact.name': 1, 'contact.mail': 1, 'tags': 1 })
+          .aggregate([
+            {
+              '$match': query,
+            },
+            /* Gets all suppliers linked to the customer */
+            {
+              '$lookup': {
+                'from': 'mailGroup',
+                'localField': 'mailGroup',
+                'foreignField': '_id',
+                'as': 'mailGroup',
+              },
+            },
+            { '$unwind': '$mailGroup' },
+            /* Gets all mails in customers mailGroup */
+            {
+              '$lookup': {
+                'from': 'mail',
+                'localField': 'mailGroup.mails',
+                'foreignField': '_id',
+                'as': 'mails',
+              },
+            },
+            {
+              '$project': { '_id': 1, 'name': 1, 'contact.name': 1, 'contact.mail': 1, 'tags': 1, 'mails.seenBy': 1 },
+            },
+          ])
           .toArray((error: any, docs: any) => {
             if (error) {
               errorQuery(context);
               return context.done();
             }
+
             let allTags = [];
 
             employee['customerInformation'] = docs;
-            employee.customerInformation.forEach((customer) => (allTags = allTags.concat(customer.tags)));
+
+            employee.customerInformation.forEach((customer) => {
+              let changedMails = 0;
+              customer.mails.forEach((mail) => {
+                if (!mail?.seenBy?.includes(employeeId)) {
+                  ++changedMails;
+                }
+              });
+              customer['changedMails'] = changedMails;
+              delete customer.mails;
+              allTags = allTags.concat(customer.tags);
+            });
+
             employee['allTags'] = allTags.filter((tag, index) => allTags.indexOf(tag) === index);
+            delete employee.mails;
 
             returnResult(context, employee);
+
             context.done();
           });
       }
