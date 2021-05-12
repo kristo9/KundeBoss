@@ -1,7 +1,7 @@
 import { apiConfig } from './apiConfig';
 import { getTokenRedirect, msalInstance } from './authRedirect';
 import { tokenRequest } from './authConfig';
-import { addToCacheAndReturn, deleteCache, getFromCache } from './caching';
+import { addToCacheAndReturn, deleteCache, getFromCache, updateGetEmployee } from './caching';
 import { ArrayDestructuringAssignment } from 'typescript';
 
 function callApi(endpoint, token, data) {
@@ -304,6 +304,21 @@ export function getCustomer(id: string) {
   };
   return prepareCallWithCaching('GetCustomerData', customerId);
 }
+
+/**
+ * @description Register that a mail was opened
+ * @param id customer mongodb id
+ * @returns
+ */
+export function registerMailVisit(id: string, customerId) {
+  let mailId = {
+    id,
+  };
+  updateGetEmployee(customerId);
+  // deleteCache(customerId);
+  prepareCall('RegisterMailVisit', mailId); //.then(() => getCustomer(customerId));
+}
+
 /**
  * Gets information about a supplier
  * @param id supplier mongodb id

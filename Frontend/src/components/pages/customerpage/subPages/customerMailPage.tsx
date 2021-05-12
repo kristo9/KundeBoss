@@ -1,4 +1,5 @@
 import react, { useEffect, useState } from 'react';
+import { registerMailVisit } from '../../../../azure/api';
 
 /**
  * @returns a react component with the mail page.
@@ -47,7 +48,15 @@ function DisplayMail({ mail }: any) {
 
   return (
     <div>
-      <div onClick={() => setOpen(!open)}>
+      <div
+        onClick={() => {
+          setOpen(!open);
+          if (mail.newContent === true) {
+            registerMailVisit(mail._id, window.location.pathname.split('/')[2]);
+            mail.newContent = false;
+          }
+        }}
+      >
         <b>{mail.subject ? mail.subject : 'Mangler emne'}</b>
         <span> {formatDate(mail.date)}</span>
         <button> {open ? 'Lukk' : 'Åpne'}</button>

@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead, connectWrite, encryptReplyId } from '../SharedFiles/dataBase';
+import { collections, connectRead, connectWrite, encryptReplyId } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -77,6 +77,25 @@ export default (context: Context, req: HttpRequest): any => {
   let receiverMail = [];
   let receiverInformation = [];
   let senderName = null;
+  let senderId = null;
+
+  const getCustomer = (db) => {
+    return new Promise((resolve) => {
+      db.collection(collections.customer).findOne({ _id: ObjectId(req.body.customerId.id) }, {}, (error, docs) => {
+        if (error) {
+          errorQuery(context);
+          resolve(null);
+        } else {
+          if (docs != null) {
+            resolve(docs);
+          } else {
+            errorWrongInput(context, 'No customer found');
+            resolve(null);
+          }
+        }
+      });
+    });
+  };
 
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
@@ -85,6 +104,10 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       } else {
         senderName = decoded.name;
+        senderId = decoded.preferred_username;
+
+        let customerPromise = getCustomer(db);
+
         db.collection('employee')
           .aggregate([
             {
@@ -101,17 +124,26 @@ export default (context: Context, req: HttpRequest): any => {
               },
             },
           ])
-          .toArray((error: any, docs: any) => {
+          .toArray(async (error: any, docs: any) => {
             docs = docs[0];
             let excpectedReceiverCount = 0;
             if (error) {
               errorQuery(context); /*TODO: appropriate error message, optional */
               return context.done();
             }
-
-            let customer = docs.customerInformation.find((customer) => customer._id == req.body.customerId.id);
+            let customer = null;
+            if (docs.admin === 'write') {
+              customer = await customerPromise;
+            } else {
+              customer = docs.customerInformation.find((customer) => customer._id == req.body.customerId.id);
+            }
             let replyUrl = process.env['ApiReplyUrl'];
             let replyId = null;
+
+            if (!customer) {
+              errorWrongInput(context);
+              return context.done();
+            }
 
             if (req.body.customerId.include === 'true') {
               excpectedReceiverCount = 1;
@@ -131,7 +163,7 @@ export default (context: Context, req: HttpRequest): any => {
                 'type': 'customer',
               });
             }
-            
+
             if (req.body.supplierIds) {
               excpectedReceiverCount += req.body.supplierIds.length;
               customer.suppliers
@@ -140,7 +172,7 @@ export default (context: Context, req: HttpRequest): any => {
                   {
                     replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
                     receiverMail.push({
-                      'to': [{ 'email': supplier.mail }],
+                      'to': [{ 'email': supplier.contact.mail }],
                       'subject': req.body.subject,
                       'substitutions': {
                         '%replyUrl%': replyUrl + replyId,
@@ -199,16 +231,13 @@ export default (context: Context, req: HttpRequest): any => {
         'content': [
           {
             'type': 'text/html',
-            'value':
-              '<p>' +
-              req.body.text +
-              '</p><p>Følg linken for å svare</p><a href=%replyUrl%>Svar</a>',
+            'value': '<p>' + req.body.text + '</p><p>Følg linken for å svare</p><a href=%replyUrl%>Svar</a>',
           },
         ],
       };
 
       if (receiverMail.length > 0) {
-        context.log('Sent mail to:' + JSON.stringify(receiverMail));
+        context.log('Sent mail to:' + JSON.stringify(receiverMail, null, 2));
         context.bindings.resMail = message;
         mailGroup = docs.mailGroup;
         connectWrite(context, functionQuery);
@@ -226,6 +255,8 @@ export default (context: Context, req: HttpRequest): any => {
       'subject': req.body.subject,
       'text': req.body.text,
       'sender': senderName,
+      senderId,
+      'seenBy': [],
     };
 
     db.collection('mail').insertOne(newMail, (error: any, docs: any) => {

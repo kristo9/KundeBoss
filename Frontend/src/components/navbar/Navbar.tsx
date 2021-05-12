@@ -60,11 +60,11 @@ const Authenticated = () => {
 const Unauthenticated = () => {
   const { dictionary } = useContext(LanguageContext);
   sessionStorage.removeItem('UserName');
-  console.log('UserName is removed as no account is signed in');
+  //console.log('UserName is removed as no account is signed in');
 
   const [showLink, setShowLink] = useState(false);
 
-  console.log(showLink);
+  //console.log(showLink);
   return (
     <header className='topnav add-padding'>
       <div className='left'>

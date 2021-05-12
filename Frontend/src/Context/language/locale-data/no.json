@@ -4,5 +4,14 @@
     "help": "Hjelp",
     "noTag": "Ingen tags ",
     "welcome": "Velkommen ",
-    "search_Name_Tag": "Søk etter navn eller tag"
+    "search_Name_Tag": "Søk etter navn eller tag",
+    "contactPage" : {
+      "location" : "TietoEvry Brumunddal holder til i Strandveien 2, 2380.",
+      "openingHours" : "Ukedager: 09.00 - 15.00",
+      "contactAdmin" : "Om det oppstår noen problemer, ring +47 xxx xx xxx eller send epost til admin@flyt.cloud."
+    },
+    "aboutPage" : {
+      "introduction1" : "Flyt er et system utviklet for å gi ansatte og kunder en bedre opplevelse gjennom forbedret kommunikasjon og et ryddig system.",
+      "introduction2" : "Systemet ble utviklet som et bachelorprosjekt våren 2021, og ble utviklet av by Alexander A. Jørgensen, Øyvind T. D. Husveg, Kristoffer Haugen og Didrik K. Bjerk"
+    }
   }

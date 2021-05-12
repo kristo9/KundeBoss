@@ -24,6 +24,9 @@ export default (context: Context, req: HttpRequest): any => {
     return context.done();
   }
 
+  let isCustomer = true;
+  let username = null;
+
   /**
    * @description Validates that id provided in req.body has right format. Returns if it isn't
    * @returns contect.done()
@@ -63,7 +66,6 @@ export default (context: Context, req: HttpRequest): any => {
     });
   };
 
-  let isCustomer = true;
   /**
    * @description validates token and that client has permission to get data about the customer
    * @param db : db connection
@@ -76,10 +78,11 @@ export default (context: Context, req: HttpRequest): any => {
       } else {
         /*Check that customerid exists*/
         let customerIds = customerIdExist(db);
+        username = decoded.preferred_username;
 
         db.collection('employee').findOne(
           {
-            'employeeId': decoded.preferred_username,
+            'employeeId': username,
           },
           {
             'customers': 1,
@@ -175,17 +178,24 @@ export default (context: Context, req: HttpRequest): any => {
         }
         docs = docs[0];
 
-        docs.mails.reverse();
-
+        if (isCustomer !== false) {
+          delete docs.mails;
+        } else {
+          docs?.mails.reverse();
+          docs?.mails.forEach((mail) => {
+            if (mail?.seenBy?.includes(username)) {
+              mail['newContent'] = false;
+            } else {
+              mail['newContent'] = true;
+            }
+          });
+        }
         docs.supplierInformation.forEach((supplierInformation, index) => {
           if (JSON.stringify(docs.suppliers).includes(supplierInformation._id)) {
             docs.suppliers[index].name = supplierInformation.name;
           }
         });
 
-        if (isCustomer !== false) {
-          delete docs.mails;
-        }
         delete docs.supplierInformation;
         returnResult(context, docs);
         context.done();
