@@ -17,6 +17,7 @@ import { TypeContext } from '../../../Context/UserType/UserTypeContext';
 // CSS
 import './customerpage.css';
 import '../../basicComp/basic.css';
+import '../../basicComp/sidebar.css';
 
 /**
  * Contains the customer page and all the info needed by the subpages.
@@ -55,10 +56,8 @@ const CustomerPage = () => {
   }, []);
 
   return (
-    <>
-      {buttons === null ? (
-        <div></div>
-      ) : (
+    <div>
+      {buttons === null ? null : (
         <section className='margin-right H100'>
           {buttons == 'ButtonsRead' ? (
             <Sidebar
@@ -71,10 +70,10 @@ const CustomerPage = () => {
               buttons={Buttons({ setPageState }, { customerInfo })}
             />
           )}
-          <div className='notSidebar'>{customerInfo ? pageState : <LoadingSymbol />}</div>
+          <div className='addMarginToNotSidebar'>{customerInfo ? pageState : <LoadingSymbol />}</div>
         </section>
       )}
-    </>
+    </div>
   );
 };
 

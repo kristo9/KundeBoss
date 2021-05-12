@@ -6,11 +6,6 @@ import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 //CSS
 import '../../../basicComp/sendMail.css';
 
-interface NameAndID {
-  name: string;
-  _id: string;
-}
-
 interface CustomerAndSupplierIDProp {
   customers: {
     customer: {
@@ -38,6 +33,7 @@ function SendMail(props: customerIDProp) {
     test: string;
     receivers: {
       customerID: string;
+      includeCustomer: boolean; //TODO
       suppliersIDs: string[];
     }[];
   };
@@ -69,11 +65,10 @@ function SendMail(props: customerIDProp) {
         <span>
           {suppliers?.map((supplier, supIndex) => {
             return (
-              <span key={supplier._id}>
+              <span key={supplier._id} style={{ whiteSpace: 'nowrap', paddingRight: '1em' }}>
                 <Checkbox
                   key={supplier._id}
                   labelText={supplier.name}
-                  // lableType={'checkbox'}
                   lableName={supplier._id + index}
                   register={register(`receivers.${index}.suppliersIDs.${supIndex}` as const)}
                   defaultValue={false}
@@ -175,13 +170,13 @@ function SendMail(props: customerIDProp) {
 
           console.log(promisses);
           // exevutes all the promisses (send all the mails)
-          promisses.forEach(async (propmis) => {
-            let result = await propmis;
-            console.log(result);
-            // if (result.status === 200) {
-            //   console.log('mail sendt');
-            // }
-          });
+          // promisses.forEach(async (propmis) => {
+          //   let result = await propmis;
+          //   console.log(result);
+          //   // if (result.status === 200) {
+          //   //   console.log('mail sendt');
+          //   // }
+          // });
         })}
       >
         <div className='displayInfoDiv inputField'>
@@ -199,42 +194,64 @@ function SendMail(props: customerIDProp) {
             {fields.map(({ id, customerID }, custIndex) => {
               return (
                 <div key={id}>
-                  <button type='button' onClick={() => remove(custIndex)}>
-                    x
-                  </button>
+                  <div style={{ display: 'flex' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', marginRight: '2em' }}>
+                      <div style={{ whiteSpace: 'nowrap' }}>
+                        <button type='button' onClick={() => remove(custIndex)} className='removeButton'>
+                          x
+                        </button>
 
-                  <Select
-                    register={register(`receivers.${custIndex}.customerID` as const)}
-                    name={`receicers${custIndex}`}
-                    defaultOption={{ name: 'Velg kunde', value: 'default' }}
-                    defaultValue={customerID}
-                    options={allCustomerAndSupplierIDs?.customers?.map(({ customer }) => {
-                      return { name: customer.name, value: customer._id };
-                    })}
-                  />
+                        <Select
+                          register={register(`receivers.${custIndex}.customerID` as const)}
+                          name={`receicers${custIndex}`}
+                          defaultOption={{ name: 'Velg kunde', value: 'default' }}
+                          defaultValue={customerID}
+                          options={allCustomerAndSupplierIDs?.customers?.map(({ customer }) => {
+                            return { name: customer.name, value: customer._id };
+                          })}
+                        />
+                      </div>
+                      <div style={{ marginLeft: '2em' }}>
+                        <Checkbox
+                          labelText={'Inkluder kunde'}
+                          lableName={'includeCustomer'}
+                          register={register(`receivers.${custIndex}.includeCustomer` as const)}
+                          defaultValue={true}
+                          value={'true'}
+                        />
+                      </div>
+                    </div>
 
-                  <SupplierSelecter
-                    control={control}
-                    register={register}
-                    index={custIndex}
-                    customerID={getValues(`receivers.${custIndex}.customerID` as const)}
-                  />
-                  <hr></hr>
+                    <SupplierSelecter
+                      control={control}
+                      register={register}
+                      index={custIndex}
+                      customerID={getValues(`receivers.${custIndex}.customerID` as const)}
+                    />
+                  </div>
+                  <hr className='mailHr'></hr>
                 </div>
               );
             })}
 
-            <button type='button' onClick={() => append({})}>
-              Legg til mottager
+            <button type='button' onClick={() => append({})} className='addButton'>
+              <b>+</b> Legg til mottager
             </button>
           </MultipleInputField>
         </div>
 
-        <div className='displayInfoDiv'>
-          <label htmlFor='text'>Text: </label>
-          <input {...register('text', { required: true })} id='text' />
-        </div>
-        <button type='submit'>Send</button>
+        <TextArea
+          labelText={'Text'}
+          lableType={'text'}
+          lableName={'text'}
+          placeholderText={'Text til mottager'}
+          defaultValue={''}
+          register={register('text')}
+        />
+
+        <button type='submit' className='editButton'>
+          Send
+        </button>
       </form>
     </div>
   );

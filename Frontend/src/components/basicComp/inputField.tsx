@@ -1,6 +1,6 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { RegularExpressionLiteral } from 'typescript';
+import '../basicComp/sendMail.css';
+import '../basicComp/basic.css';
 
 interface inputProps {
   register: any; //ReturnType<typeof useForm>['register']; // gir register typen :)
@@ -47,11 +47,9 @@ export function MultipleInputField(props: multipleInputField) {
   );
 }
 
-//NYE
-
 export function InputField(props: inputProps) {
   return (
-    <span>
+    <div className='input displayInfoDiv'>
       <label htmlFor={props.lableName}>{props.labelText}:</label>
       <input
         type={props.lableType}
@@ -62,13 +60,13 @@ export function InputField(props: inputProps) {
         required={props.required}
         {...props.register}
       />
-    </span>
+    </div>
   );
 }
 
 export function TextArea(props: inputProps) {
   return (
-    <span>
+    <div className='input displayInfoDiv'>
       <label htmlFor={props.lableName}>{props.labelText}:</label>
       <textarea
         name={props.lableName}
@@ -78,7 +76,7 @@ export function TextArea(props: inputProps) {
         required={props.required}
         {...props.register}
       />
-    </span>
+    </div>
   );
 }
 
@@ -101,7 +99,7 @@ export function Checkbox(props: checkboxProps) {
         id={props.lableName}
         required={props.required}
         value={props.value}
-        // defaultValue={props.defaultValue}
+        // checked={props.defaultValue}
         {...props.register}
       />
     </span>
@@ -110,10 +108,9 @@ export function Checkbox(props: checkboxProps) {
 
 export function Select(props: SelectProps) {
   return (
-    <select defaultValue={props.defaultValue} name={props.name} {...props.register}>
+    <select defaultValue={props.defaultValue} name={props.name} {...props.register} className='custom-select'>
       <option value={props.defaultOption?.value}>{props.defaultOption.name}</option>
       {props.options?.map((option) => {
-        // console.log(props.defaultValue === option.value);
         return (
           <option key={option.value} value={option.value}>
             {option.name}

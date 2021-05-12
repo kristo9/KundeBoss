@@ -18,7 +18,6 @@ import HttpError from '../pages/pageNotFound/HttpErrorPage';
 // Context
 import { LanguageProvider } from '../../Context/language/LangContext';
 import { UserTypeProvider } from '../../Context/UserType/UserTypeContext';
-import LanguageSelector from '../../Context/language/LangContext';
 
 // CSS Styling
 import './App.css';

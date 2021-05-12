@@ -1,4 +1,6 @@
 import react from 'react';
+
+import { DisplayTextAndInfo, ContactPersonInfo } from '../../../basicComp/display';
 import '../../../basicComp/basic.css';
 
 /**
@@ -30,43 +32,6 @@ export function CustomerInfoPage({ customerInfo }: any) {
           information={customerInfo.infoReference}
           altText={'Kunden har ikke referanser'}
         />
-      </div>
-    </div>
-  );
-}
-
-/**
- * Formates text and information.
- * @param {string} text is the text being displayed before the information.
- * @param {string} information is displayed after the information.
- * @returns A react component with the formated text.
- */
-function DisplayTextAndInfo(props: { text: string; information: any; altText: string }) {
-  return (
-    <div>
-      <span style={{ display: 'inline-block', width: '5em' }}>
-        <b>{props.text}: </b>
-      </span>
-      {props.information ? props.information : props.altText}
-    </div>
-  );
-}
-
-/**
- * Displayes the contactperson information.
- * @param {string} name the name of the contactperson.
- * @param {number} phone the phone number of the contactperson.
- * @param {string} mail the ontactpersons mail.
- * @returns a react component with the information.
- */
-export function ContactPersonInfo(props: { name: string; phone: number; mail: string }) {
-  return (
-    <div className='displayInfoDiv'>
-      <h3>Kontaktperson</h3>
-      <div className='addMarginLeft'>
-        <DisplayTextAndInfo text={'Navn'} information={props.name} altText={'Mangler'} />
-        <DisplayTextAndInfo text={'Telefon'} information={props.phone} altText={'Mangler'} />
-        <DisplayTextAndInfo text={'Mail'} information={props.mail} altText={'Mangler'} />
       </div>
     </div>
   );

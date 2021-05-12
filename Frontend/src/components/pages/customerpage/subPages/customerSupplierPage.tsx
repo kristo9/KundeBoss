@@ -1,5 +1,5 @@
-import { ContactPersonInfo } from './customerInfoPage';
 import { useHistory } from 'react-router-dom';
+import { DisplayCustSupInfo } from '../../../basicComp/display';
 
 /**
  * Displayes a list with the suppliers.
@@ -21,7 +21,6 @@ function CustomerSupplierPage({ customerInfo, customer }: any) {
  * @returns a react component with the supplier information.
  */
 function DisplaySupplier(props: { suppliers: any; customer: boolean }) {
-  let history = useHistory();
   //the supplier-data are loaded/available
   if (props.suppliers) {
     //the customer doen't hava any suppliers
@@ -31,32 +30,22 @@ function DisplaySupplier(props: { suppliers: any; customer: boolean }) {
     //the customer have suppliers
     return (
       <div>
-        {props.customer
-          ? props.suppliers.map((supplier) => (
-              <ContactPersonInfo
-                key={supplier?.id?.toString()}
-                name={supplier?.contact?.name}
-                mail={supplier?.contact?.mail}
-                phone={supplier?.contact?.phone}
-              />
-            ))
-          : props.suppliers.map((supplier) => (
-              <div
-                onClick={() => {
-                  history.push('/supplierpage/' + supplier.id.toString());
-                }}
-              >
-                <ContactPersonInfo
-                  key={supplier?.id?.toString()}
-                  name={supplier?.contact?.name}
-                  mail={supplier?.contact?.mail}
-                  phone={supplier?.contact?.phone}
-                />
-              </div>
-            ))}
+        {props.suppliers.map((supplier) => (
+          <DisplayCustSupInfo
+            gotoPage={'/supplierpage/' + supplier.id.toString()}
+            name={supplier.name}
+            contactName={supplier.contact.name}
+            contactMail={supplier.contact.mail}
+            contactPhone={supplier.contact.phone}
+          />
+        ))}
       </div>
     );
   }
+}
+
+export function ContactPersonInfo() {
+  return <div></div>;
 }
 
 export default CustomerSupplierPage;
