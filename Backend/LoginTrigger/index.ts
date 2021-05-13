@@ -1,7 +1,7 @@
 import { Context, HttpRequest } from '@azure/functions';
 import { returnResult } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
-import { checkDbConnection, clientRead, connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { checkDbConnection, clientRead, collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { verify } from 'jsonwebtoken';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
@@ -132,7 +132,7 @@ export default (context: Context, req: HttpRequest): any => {
       query['isCustomer'] = true;
     }
 
-    db.collection('employee').insertOne(query, (error: any, docs:any) => {
+    db.collection(collections.employee).insertOne(query, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
         return context.done();
