@@ -1,6 +1,6 @@
 import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inputField';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { newSupplier } from '../../../../azure/api';
+import { deleteSupplier, newSupplier } from '../../../../azure/api';
 
 function SupplierEditPage({ supplierInfo }: any) {
   type FormValues = {
@@ -85,18 +85,40 @@ function SupplierEditPage({ supplierInfo }: any) {
           register={register('note')}
         />
 
-        {/* <TextArea
-          labelText={'Referanser'}
-          lableType={'text'}
-          lableName={'reference'}
-          placeholderText={'Referer til andre ting :)'}
-          defaultValue={supplierInfo && supplierInfo.note ? supplierInfo.note : ''}
-          register={register('infoReference')}
-        /> */}
+        <div className='small-margin-over'>
+          <button type='reset' className='editButton'>
+            Reset
+          </button>
+          <button type='submit' className='editButton'>
+            {supplierInfo ? 'Rediger bruker' : 'Lag bruker'}
+          </button>
 
-        <p>kunder []</p>
+          {/* Delete button */}
+          {supplierInfo ? (
+            <button
+              type='button'
+              className='editButton'
+              onClick={() => {
+                //popup-window asking the user if they want to delete the customer
+                let respond = window.confirm('Er du sikker på at du vil slette kunden?');
 
-        {supplierInfo ? (
+                // Yes, delete customer
+                if (respond) {
+                  console.log('Kunde slettet');
+                  deleteSupplier(supplierInfo._id);
+                }
+                // No, dont delete customer
+                else {
+                  console.log('Kunde ikke slettet');
+                }
+              }}
+            >
+              Slett kunde
+            </button>
+          ) : null}
+        </div>
+
+        {/* {supplierInfo ? (
           <button
             onClick={() => {
               //slett leverandør funksjon her (er du sikker boks?)
@@ -108,7 +130,7 @@ function SupplierEditPage({ supplierInfo }: any) {
           ''
         )}
         <button type='submit'>{supplierInfo ? 'Rediger leverandør' : 'Lag leverandør'}</button>
-        <button type='reset'>Reset</button>
+        <button type='reset'>Reset</button> */}
       </form>
     </div>
   );

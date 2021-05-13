@@ -19,8 +19,16 @@
 }
 
 .margin-right {
-  margin-right: 7%;
-  width: 93%;
+  margin-right: 2%;
+  width: 98%;
+}
+
+.add-margins-under {
+  margin-bottom: 10em;
+}
+
+div.small-margin-over {
+  margin-top: 1em;
 }
 
 .H100 {
@@ -69,7 +77,7 @@
 .displayInfoDiv {
   background-color: white;
   color: #063752;
-  width: 100%;
+  /* width: 100%; */
 
   padding-left: 1em;
   padding-right: 1em;
@@ -104,4 +112,13 @@
 .heading {
   padding-top: 1em;
   margin-top: 0;
+}
+
+/* Dropdown Select */
+
+select {
+  background-color: white;
+  border: white;
+  padding: 0.5em;
+  color: #063752;
 }

@@ -8,11 +8,12 @@ import SupplierCustomerPage from './subPages/SupplierCustomerPage';
 import SupplierNotesPage from './subPages/SupplierNotesPage';
 import LoadingSymbol from '../../basicComp/loading';
 import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
-import SupplierInfoPage from './supplierInfoPage';
+import SupplierInfoPage from './subPages/SupplierInfoPage';
 import SupplierEditPage from './subPages/SupplierEditPage';
 
 // CSS
 import '../../basicComp/basic.css';
+import '../../basicComp/sidebar.css';
 
 /**
  * Contains the customer page and all the info needed by the subpages.
@@ -62,7 +63,9 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
           }
           buttons={this.buttons}
         />
-        <div className='notSidebar'>{this.state.supplierInfo ? this.state.pageState : <LoadingSymbol />}</div>
+        <div className='addMarginToNotSidebar'>
+          {this.state.supplierInfo ? this.state.pageState : <LoadingSymbol />}
+        </div>
       </div>
     );
   }
@@ -85,16 +88,6 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
       text: 'Mail',
       ID: 'mail',
       onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
-    },
-    {
-      text: 'Send mail',
-      ID: 'sendMail',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
-    },
-    {
-      text: 'Notat',
-      ID: 'note',
-      onClick: () => this.setState({ pageState: <SupplierNotesPage supplierInfo={this.state.supplierInfo} /> }),
     },
     {
       text: 'Rediger',

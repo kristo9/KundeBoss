@@ -1,12 +1,79 @@
-input {
+.input {
+  display: flex;
+}
+
+/* .input div {
+  display: flex;
+} */
+
+.input textarea,
+.input input {
   background-color: white;
   border: none;
   border-bottom: 2px solid white;
-  width: 90%;
+  flex-grow: 100;
+  color: #063752;
 }
 
-input:focus {
+.input textarea:focus,
+.input input:focus {
   border: none;
   border-bottom: 2px solid #063752;
   outline: none;
+}
+
+.input textarea {
+  min-height: 6em;
+}
+
+.addTag {
+  display: flex;
+}
+
+.removeButton {
+  border: none;
+  background-color: white;
+  padding: 0.3em 0.7em;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.removeButton:hover {
+  background-color: #063752;
+  border: none;
+  color: white;
+  border-radius: 0.4em;
+}
+
+.addButton {
+  background-color: #f9f9f9;
+  border: none;
+  color: #063752;
+
+  padding: 0.3em 1em;
+  border-radius: 1em;
+}
+
+.addButton:hover {
+  background-color: #063752;
+  border: none;
+  color: white;
+}
+
+.editButton {
+  background-color: #015b97;
+  color: white;
+  padding: 0.5em;
+  border: none;
+  margin: 0.2em;
+}
+
+.editButton:hover {
+  background-color: #063752;
+}
+
+.mailHr {
+  background-color: #063752;
+  height: 1px;
+  border: none;
 }

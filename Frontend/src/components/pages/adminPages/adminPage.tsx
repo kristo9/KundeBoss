@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
+import { getAllEmployees } from '../../../azure/api';
 
 import LoadingSymbol from '../../basicComp/loading';
 import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
@@ -7,9 +8,9 @@ import { SBElementProps, Sidebar } from '../../basicComp/sidebar';
 //pages
 
 import ViewRights from './subPages/viewRights';
-import { getAllEmployees } from '../../../azure/api';
-import NewCustomer from './subPages/newCustomer';
-import NewSupplier from './subPages/newSupplier';
+import CustomerEditPage from '../customerpage/subPages/customerEditPage';
+import SupplierEditPage from '../supplierPages/subPages/SupplierEditPage';
+
 import NewEntry from './subPages/NewEntry';
 
 //CSS
@@ -56,7 +57,7 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     return (
       <div className='margin-right H100'>
         <Sidebar text='Admin side' buttons={this.buttons} />
-        <div className='notSidebar'>{this.state.adminInfo ? this.state.pageState : <LoadingSymbol />}</div>
+        <div className='addMarginToNotSidebar'>{this.state.adminInfo ? this.state.pageState : <LoadingSymbol />}</div>
       </div>
     );
   }
@@ -70,12 +71,12 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
     {
       text: 'Ny kunde',
       ID: 'newCustomer',
-      onClick: () => this.setState({ pageState: <NewCustomer /> }),
+      onClick: () => this.setState({ pageState: <CustomerEditPage /> }),
     },
     {
       text: 'Ny leverandør',
       ID: 'newSupplier',
-      onClick: () => this.setState({ pageState: <NewSupplier /> }),
+      onClick: () => this.setState({ pageState: <SupplierEditPage /> }),
     },
     {
       text: 'Nyinnlogget',

@@ -3,6 +3,10 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { getAllCustomer, getEmployee, modifyEmployeeData } from '../../../../azure/api';
 import { InputField, Select } from '../../../basicComp/inputField';
 
+//CSS
+import '../adminPage.css';
+import '../../../basicComp/basic.css';
+
 interface EmployeeRights {
   name: string;
   employeeId: string;
@@ -43,28 +47,37 @@ const ViewRights = ({ adminData }: any) => {
 
   return (
     <div>
-      <h1 className='color-dark heading'>ViewRights</h1>
-
-      {/* Searchfield */}
-      <input type='text' placeholder='Søk' value={searchTerm} onChange={handleChange}></input>
-
+      <h1 className='color-dark heading'>Rettigheter</h1>
+      <div style={{ marginBottom: '4em' }}>
+        {/* Searchfield */}
+        <input
+          style={{ float: 'right', marginBottom: '2em' }}
+          className='search'
+          type='text'
+          placeholder='Søk'
+          value={searchTerm}
+          onChange={handleChange}
+        ></input>
+      </div>
       {/* Displayes all the employees and there rights */}
-      <ul>
-        {searchResults.map((employee, index) =>
-          !(employee.isCustomer || employee === null) ? (
-            <li key={employee.employeeId}>
-              <EmployeRights
-                employeeId={employee.employeeId}
-                name={employee.name}
-                admin={employee.admin}
-                isCustomer={employee.isCustomer}
-                customerInformation={employee.customerInformation}
-                index={index}
-              />
-            </li>
-          ) : null
-        )}
-      </ul>
+      <section className='employeeDisplay'>
+        <ul>
+          {searchResults.map((employee, index) =>
+            !(employee.isCustomer || employee === null) ? (
+              <li key={employee.employeeId} className='displayInfoDiv'>
+                <EmployeRights
+                  employeeId={employee.employeeId}
+                  name={employee.name}
+                  admin={employee.admin}
+                  isCustomer={employee.isCustomer}
+                  customerInformation={employee.customerInformation}
+                  index={index}
+                />
+              </li>
+            ) : null
+          )}
+        </ul>
+      </section>
     </div>
   );
 
@@ -73,17 +86,28 @@ const ViewRights = ({ adminData }: any) => {
 
     return (
       <div>
-        <h2>{props.name}</h2>
-        <button onClick={() => setIsOpen(!isOpen)}>{isOpen ? 'Lukk' : 'Åpne'}</button>
+        <div style={{ display: 'flex' }}>
+          <button
+            className='rotate90'
+            style={{ height: '2em', marginRight: '0.5em' }}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? '>' : '<'}
+          </button>
+          <h3>{props.name}</h3>
+        </div>
 
         {!isOpen ? (
-          <p>
-            {props.admin === 'write'
-              ? 'Admin skriv'
-              : props.admin === 'read'
-              ? 'les'
-              : 'Har ' + props.customerInformation.length + ' kunder'}
-          </p>
+          <div>
+            <p style={{ fontSize: '0.8em', margin: '0.1em' }}>{props.employeeId}</p>
+            <p style={{ marginBottom: 0 }}>
+              {props.admin === 'write'
+                ? 'Admin skriv'
+                : props.admin === 'read'
+                ? 'Admin les'
+                : 'Har ' + props.customerInformation.length + ' kunder'}
+            </p>
+          </div>
         ) : (
           <DisplayAndEditEmployeeRights
             employeeId={props.employeeId}
@@ -118,21 +142,24 @@ const ViewRights = ({ adminData }: any) => {
 
     return (
       <div>
-        <button onClick={() => setEditIsOpen(!isEditOpen)}>{isEditOpen ? 'Avbryt' : 'Rediger'}</button>
+        <button className='editButton' onClick={() => setEditIsOpen(!isEditOpen)}>
+          {isEditOpen ? 'Avbryt' : 'Rediger'}
+        </button>
 
         {!isEditOpen ? (
           <div>
             <p>{props.employeeId}</p>
-            {props.customerInformation.map((customer) => {
-              return (
-                <div key={customer._id}>
-                  <span>
+            <ul>
+              {props.customerInformation.map((customer) => {
+                return (
+                  <li key={customer._id}>
                     <b>{customer.name}</b>
-                  </span>
-                  <span> {customer.permission === 'write' ? 'skriv' : 'les'}</span>
-                </div>
-              );
-            })}
+
+                    <span> {customer.permission === 'write' ? 'skriv' : 'les'}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         ) : (
           <form
@@ -175,7 +202,9 @@ const ViewRights = ({ adminData }: any) => {
             {permissionField.map(({ id }, index, customerInfo) => {
               return (
                 <div key={id}>
-                  <button onClick={() => permissionFieldRemove(index)}>x</button>
+                  <button className='removeButton' onClick={() => permissionFieldRemove(index)}>
+                    x
+                  </button>
                   <Select
                     register={register(`customerInformation.${index}._id` as const)}
                     name={`customersInfo.${index}.customerInfo._id`}
@@ -195,11 +224,17 @@ const ViewRights = ({ adminData }: any) => {
                 </div>
               );
             })}
-            <button type='button' onClick={() => permissionFieldAppend({})}>
-              Legg til kunde
+            <button className='addButton' type='button' onClick={() => permissionFieldAppend({})}>
+              <b>+</b> Legg til kunde
             </button>
-            <button type='submit'>Rediger ansatt</button>
-            <button type='reset'>Reset</button>
+            <div className='small-margin-over'>
+              <button className='editButton' type='submit'>
+                Rediger ansatt
+              </button>
+              <button className='editButton' type='reset'>
+                Reset
+              </button>
+            </div>
           </form>
         )}
       </div>

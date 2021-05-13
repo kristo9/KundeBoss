@@ -7,6 +7,10 @@ import { deleteCustomer } from '../../../../azure/api';
 
 // import { Test } from '../../../../interfaces';
 
+// CSS
+import '../../../basicComp/basic.css';
+import '../../../basicComp/sendMail.css';
+
 interface NameAndID {
   _id: string;
   name: string;
@@ -75,9 +79,10 @@ function CustomerEditPage({ customerInfo }: any) {
   console.log(suppleirFields);
 
   return (
-    <div>
+    <div className='W100'>
       <h1 className='color-dark heading'>{customerInfo ? 'Redigere kunden' : 'Ny kunde'}</h1>
       <form
+        className='add-margins-under'
         onSubmit={handleSubmit((data) => {
           console.log(data);
 
@@ -102,143 +107,163 @@ function CustomerEditPage({ customerInfo }: any) {
           defaultValue={customerInfo && customerInfo.name ? customerInfo.name : ''}
           register={register('customerName')}
         />
-        <MultipleInputField text='Kontaktperson'>
-          <InputField
-            labelText={'Navn'}
+
+        <div className='small-margin-over'>
+          <MultipleInputField text='Kontaktperson'>
+            <InputField
+              labelText={'Navn'}
+              lableType={'text'}
+              lableName={'contactName'}
+              placeholderText={'Kontaktpersonens navn'}
+              defaultValue={
+                customerInfo && customerInfo.contact && customerInfo.contact.name ? customerInfo.contact.name : ''
+              }
+              register={register('contactName')}
+            />
+            <InputField
+              labelText={'Telfon'}
+              lableType={'tel'}
+              lableName={'contactPhone'}
+              placeholderText={'Kontaktpersonens tlf'}
+              defaultValue={
+                customerInfo && customerInfo.contact && customerInfo.contact.phone ? customerInfo.contact.phone : ''
+              }
+              register={register('contactPhone')}
+            />
+            <InputField
+              labelText={'Epost'}
+              lableType={'email'}
+              lableName={'contactMail'}
+              placeholderText={'Kontaktpersonens mail'}
+              defaultValue={
+                customerInfo && customerInfo.contact && customerInfo.contact.mail ? customerInfo.contact.mail : ''
+              }
+              register={register('contactMail')}
+            />
+          </MultipleInputField>
+        </div>
+        <div className='small-margin-over'>
+          <TextArea
+            labelText={'Notat'}
             lableType={'text'}
-            lableName={'contactName'}
-            placeholderText={'Kontaktpersonens navn'}
-            defaultValue={
-              customerInfo && customerInfo.contact && customerInfo.contact.name ? customerInfo.contact.name : ''
-            }
-            register={register('contactName')}
+            lableName={'note'}
+            placeholderText={'Notat om kunden'}
+            defaultValue={customerInfo && customerInfo.comment ? customerInfo.comment : ''}
+            register={register('note')}
           />
-          <InputField
-            labelText={'Telfon'}
-            lableType={'tel'}
-            lableName={'contactPhone'}
-            placeholderText={'Kontaktpersonens tlf'}
-            defaultValue={
-              customerInfo && customerInfo.contact && customerInfo.contact.phone ? customerInfo.contact.phone : ''
-            }
-            register={register('contactPhone')}
+          <TextArea
+            labelText={'Referanser'}
+            lableType={'text'}
+            lableName={'reference'}
+            placeholderText={'Referer til andre ting :)'}
+            defaultValue={customerInfo && customerInfo.infoReference ? customerInfo.infoReference : ''}
+            register={register('infoReference')}
           />
-          <InputField
-            labelText={'Epost'}
-            lableType={'email'}
-            lableName={'contactMail'}
-            placeholderText={'Kontaktpersonens mail'}
-            defaultValue={
-              customerInfo && customerInfo.contact && customerInfo.contact.mail ? customerInfo.contact.mail : ''
-            }
-            register={register('contactMail')}
-          />
-        </MultipleInputField>
-        <TextArea
-          labelText={'Notat'}
-          lableType={'text'}
-          lableName={'note'}
-          placeholderText={'Notat om kunden'}
-          defaultValue={customerInfo && customerInfo.comment ? customerInfo.comment : ''}
-          register={register('note')}
-        />
-        <TextArea
-          labelText={'Referanser'}
-          lableType={'text'}
-          lableName={'reference'}
-          placeholderText={'Referer til andre ting :)'}
-          defaultValue={customerInfo && customerInfo.infoReference ? customerInfo.infoReference : ''}
-          register={register('infoReference')}
-        />
-        <MultipleInputField text={'Tags'}>
-          {tagFields.map(({ id }, index) => {
-            return (
-              <div key={id}>
-                <InputField
-                  labelText={'Tag ' + (index + 1)}
-                  lableType={'text'}
-                  lableName={`tags[${index}].tag`}
-                  register={register(`tags.${index}.tag` as const)}
-                  defaultValue={customerInfo.tags[index]}
-                />
-                <button onClick={() => tagRemove(index)}>x</button>
-              </div>
-            );
-          })}
+        </div>
+        <div className='small-margin-over'>
+          <MultipleInputField text={'Tags'}>
+            {tagFields.map(({ id }, index) => {
+              return (
+                <div key={id} className='displayInfoDiv addTag'>
+                  <button onClick={() => tagRemove(index)} className='removeButton'>
+                    x
+                  </button>
+                  <InputField
+                    labelText={'Tag ' + (index + 1)}
+                    lableType={'text'}
+                    lableName={`tags[${index}].tag`}
+                    register={register(`tags.${index}.tag` as const)}
+                    defaultValue={customerInfo.tags[index]}
+                  />
+                </div>
+              );
+            })}
 
-          <button type='button' onClick={() => tagAppend({})}>
-            Legg til tag
-          </button>
-        </MultipleInputField>
-        <MultipleInputField text={'Leverandører'}>
-          {suppleirFields.map(({ id }, index, supplier) => {
-            return (
-              <div key={id}>
-                <Select
-                  register={register(`suppliers.${index}.id` as const)}
-                  name={`suppliers[${index}].id`}
-                  defaultOption={{ name: 'Velg leverandør', value: 'default' }}
-                  defaultValue={supplier[index].id}
-                  options={supplierArrayState?.map(({ name, _id }) => {
-                    return { name: name, value: _id };
-                  })}
-                />
-                <InputField
-                  labelText={'Navn '}
-                  lableType={'text'}
-                  lableName={`suppliers[${index}].name`}
-                  register={register(`suppliers.${index}.contact.name` as const)}
-                  defaultValue={customerInfo.suppliers[index]?.contact?.name}
-                />
-                <InputField
-                  labelText={'Telefon '}
-                  lableType={'text'}
-                  lableName={`suppliers[${index}].phone`}
-                  register={register(`suppliers.${index}.contact.phone` as const)}
-                  defaultValue={customerInfo.suppliers[index]?.contact?.phone}
-                />
-                <InputField
-                  labelText={'Mail '}
-                  lableType={'text'}
-                  lableName={`suppliers[${index}].mail`}
-                  register={register(`suppliers.${index}.contact.mail` as const)}
-                  defaultValue={customerInfo.suppliers[index]?.contact?.mail}
-                />
-                <button onClick={() => supplierRemove(index)}>x</button>
-              </div>
-            );
-          })}
-          <button type='button' onClick={() => supplierAppend({})}>
-            Legg til leverandør
-          </button>
-        </MultipleInputField>
+            <button className='addButton' type='button' onClick={() => tagAppend({})}>
+              <b>+</b> Legg til tag
+            </button>
+          </MultipleInputField>
+        </div>
+        <div className='small-margin-over'>
+          <MultipleInputField text={'Leverandører'}>
+            {suppleirFields.map(({ id }, index, supplier) => {
+              return (
+                <div key={id}>
+                  <button className='removeButton' onClick={() => supplierRemove(index)}>
+                    x
+                  </button>
+                  <Select
+                    register={register(`suppliers.${index}.id` as const)}
+                    name={`suppliers[${index}].id`}
+                    defaultOption={{ name: 'Velg leverandør', value: 'default' }}
+                    defaultValue={supplier[index].id}
+                    options={supplierArrayState?.map(({ name, _id }) => {
+                      return { name: name, value: _id };
+                    })}
+                  />
 
-        {/* Delete button */}
-        {customerInfo ? (
-          <button
-            type='button'
-            onClick={() => {
-              //popup-window asking the user if they want to delete the customer
-              let respond = window.confirm('Er du sikker på at du vil slette kunden?');
+                  <InputField
+                    labelText={'Navn '}
+                    lableType={'text'}
+                    lableName={`suppliers[${index}].name`}
+                    register={register(`suppliers.${index}.contact.name` as const)}
+                    defaultValue={customerInfo.suppliers[index]?.contact?.name}
+                  />
+                  <InputField
+                    labelText={'Telefon '}
+                    lableType={'text'}
+                    lableName={`suppliers[${index}].phone`}
+                    register={register(`suppliers.${index}.contact.phone` as const)}
+                    defaultValue={customerInfo.suppliers[index]?.contact?.phone}
+                  />
+                  <InputField
+                    labelText={'Mail '}
+                    lableType={'text'}
+                    lableName={`suppliers[${index}].mail`}
+                    register={register(`suppliers.${index}.contact.mail` as const)}
+                    defaultValue={customerInfo.suppliers[index]?.contact?.mail}
+                  />
+                </div>
+              );
+            })}
+            <button type='button' onClick={() => supplierAppend({})} className='addButton'>
+              <b>+</b> Legg til leverandør
+            </button>
+          </MultipleInputField>
+        </div>
 
-              // Yes, delete customer
-              if (respond) {
-                console.log('Kunde slettet');
-                deleteCustomer(customerInfo._id);
-              }
-              // No, dont delete customer
-              else {
-                console.log('Kunde ikke slettet');
-              }
-            }}
-          >
-            Slett kunde
+        <div className='small-margin-over'>
+          <button type='reset' className='editButton'>
+            Reset
           </button>
-        ) : (
-          ''
-        )}
-        <button type='submit'>{customerInfo ? 'Rediger bruker' : 'Lag bruker'}</button>
-        <button type='reset'>Reset</button>
+          <button type='submit' className='editButton'>
+            {customerInfo ? 'Rediger bruker' : 'Lag bruker'}
+          </button>
+
+          {/* Delete button */}
+          {customerInfo ? (
+            <button
+              type='button'
+              className='editButton'
+              onClick={() => {
+                //popup-window asking the user if they want to delete the customer
+                let respond = window.confirm('Er du sikker på at du vil slette kunden?');
+
+                // Yes, delete customer
+                if (respond) {
+                  console.log('Kunde slettet');
+                  deleteCustomer(customerInfo._id);
+                }
+                // No, dont delete customer
+                else {
+                  console.log('Kunde ikke slettet');
+                }
+              }}
+            >
+              Slett kunde
+            </button>
+          ) : null}
+        </div>
       </form>
     </div>
   );

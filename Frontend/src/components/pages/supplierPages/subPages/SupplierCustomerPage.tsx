@@ -1,5 +1,5 @@
-import { ContactPersonInfo } from './SupplierInfoPage';
 import { useHistory } from 'react-router-dom';
+import { ContactPersonInfo, DisplayCustSupInfo } from '../../../basicComp/display';
 
 import '../../../basicComp/basic.css';
 
@@ -12,9 +12,7 @@ function SupplierCustomerPage({ supplierInfo }: any) {
   return (
     <div>
       <h1 className='color-dark heading'>Kunder</h1>
-      <p>
-        <DisplayCustomer customers={supplierInfo.customers} />
-      </p>
+      <DisplayCustomer customers={supplierInfo.customers} />
     </div>
   );
 }
@@ -36,18 +34,14 @@ function DisplayCustomer(props: { customers: any }) {
     return (
       <div>
         {props.customers.map((customer) => (
-          <div
-            onClick={() => {
-              history.push('/customerpage/' + customer._id.toString());
-            }}
-          >
-            <ContactPersonInfo
-              key={customer._id.toString()}
-              name={customer.contact.name}
-              mail={customer.contact.mail}
-              phone={customer.contact.phone}
-            />
-          </div>
+          <DisplayCustSupInfo
+            key={customer?._id}
+            gotoPage={'/customerpage/' + customer?._id?.toString()}
+            name={customer.name}
+            contactName={customer?.contact?.name}
+            contactMail={customer?.contact?.mail}
+            contactPhone={customer?.contact?.phone}
+          />
         ))}
       </div>
     );
