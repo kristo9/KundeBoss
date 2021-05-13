@@ -2,6 +2,9 @@ import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inp
 import { useForm, useFieldArray } from 'react-hook-form';
 import { deleteSupplier, newSupplier } from '../../../../azure/api';
 
+import '../../../basicComp/sendMail.css';
+import '../../../basicComp/basic.css';
+
 function SupplierEditPage({ supplierInfo }: any) {
   type FormValues = {
     supplierName: string;
@@ -132,7 +135,86 @@ function SupplierEditPage({ supplierInfo }: any) {
         <button type='submit'>{supplierInfo ? 'Rediger leverandør' : 'Lag leverandør'}</button>
         <button type='reset'>Reset</button> */}
       </form>
+
+      <div>
+        <CustomerEditForm employeeName='test' employeeAge={22} customers={[{ name: 'kunde1' }, { name: 'kunde2' }]} />
+      </div>
     </div>
+  );
+}
+
+// Verdiene som brukes på skjemaet
+interface IFormValues {
+  employeeName?: string;
+  employeeAge?: number;
+  customers?: { name: string }[];
+}
+
+// React komponent med skjema for endreing av kunde
+function CustomerEditForm(props: IFormValues) {
+  // Setter default verdi om det er sendt med
+  const { control, register, handleSubmit } = useForm<IFormValues>({
+    defaultValues: {
+      employeeName: props?.employeeName,
+      employeeAge: props?.employeeAge,
+      customers: props?.customers,
+    },
+  });
+
+  // Lager dynamisk skjema
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'customers',
+  });
+
+  // Oppdaterer kunden
+  function onSubmit(data) {
+    //updateCustomer(data.name, data.age);
+    console.log(data);
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '170px' }} className='displayInfoDiv'>
+        <div>
+          <p style={{ marginTop: 0, marginBottom: 0 }}>Ansatt info:</p>
+          <div className='input'>
+            <input {...register('employeeName')} placeholder='Navn' />
+          </div>
+          <div className='input'>
+            <input {...register('employeeAge')} placeholder='Alder' />
+          </div>
+        </div>
+        <div className='small-margin-over'>
+          {/* Redigering av kundene til en ansatt */}
+          <p style={{ marginTop: 0, marginBottom: 0 }}>Kunder:</p>
+          {fields.map(({ id }, index) => {
+            return (
+              <div style={{ display: 'flex' }} className='input'>
+                <button onClick={() => remove(index)} className='removeButton'>
+                  x
+                </button>
+                <input
+                  className='input'
+                  key={id}
+                  {...register(`customers.${index}.name` as const)}
+                  placeholder='Kunde navn'
+                />
+              </div>
+            );
+          })}
+          {/* Legger til kunde */}
+          <button type='button' onClick={() => append({})} className='addButton' style={{ backgroundColor: 'white' }}>
+            <b>+</b> Legg til kunde
+          </button>
+        </div>
+        <div className='small-margin-over'>
+          <button className='editButton' type='submit'>
+            Endre kunde
+          </button>
+        </div>
+      </div>
+    </form>
   );
 }
 
