@@ -1,0 +1,22 @@
+.mail {
+}
+
+.smallText {
+  font-size: 0.8em;
+}
+
+.table {
+  display: table;
+}
+.table-row {
+  display: table-row;
+}
+.table-cell {
+  display: table-cell;
+  padding: 10px;
+}
+
+.name {
+  max-width: 10em;
+  word-wrap: break-word;
+}

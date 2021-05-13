@@ -50,7 +50,7 @@ const Dashboard = () => {
   }, [search]);
 
   return (
-    <>
+    <div>
       <div className='add-margins'>
         {displayGreeting({ name }, { dictionary })}
         <div style={{ float: 'right' }}>
@@ -66,7 +66,7 @@ const Dashboard = () => {
         </div>
         <div>{displayCustomers({ filter }, { name }, { dictionary })}</div>
       </div>
-    </>
+    </div>
   );
 };
 
