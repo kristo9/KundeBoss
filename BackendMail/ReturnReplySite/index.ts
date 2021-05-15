@@ -28,11 +28,11 @@ export default (context: Context, req: HttpRequest) => {
       }
       let receiver = docs.receivers.find((receiver) => receiver.replyId === replyId);
 
-      let replyText = receiver?.reply?.text ? receiver.reply.text : '';
+      let reply = receiver?.reply ;
 
       context.res = {
         body: {
-          replyText,
+          reply,
           replyCode: process.env['ReplyCode'],
         },
       };

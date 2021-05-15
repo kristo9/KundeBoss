@@ -33,12 +33,17 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       }
       let reply = docs?.receivers?.find((receiver) => receiver.replyId == replyId)?.reply?.text;
-     
+      let newReply;
+      if (!reply && !replyText) {
+        newReply = { 'text': null, 'date': new Date() };
+      } else {
+        newReply = { 'text': (reply ? reply : '') + replyText + '\n\n', 'date': new Date() };
+      }
       db.collection(collections.mail).updateOne(
         { 'receivers.replyId': replyId },
         {
           '$set': {
-            'receivers.$.reply': { 'text': (reply ? reply : '') + replyText + '\n\n', 'date': new Date() },
+            'receivers.$.reply': newReply,
             'seenBy': [],
           },
         },
@@ -73,7 +78,7 @@ export default (context: Context, req: HttpRequest): any => {
     replyId = req.body.replyId;
     if (req.body?.replyText) {
       if (req.body.replyText.length < 1000) {
-        replyText = req.body.replyText;
+        replyText = req.body.replyText == 'null' ? null : req.body.replyText;
       } else {
         context.res = {
           status: 400,

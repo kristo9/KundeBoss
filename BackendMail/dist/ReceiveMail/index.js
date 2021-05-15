@@ -31,9 +31,16 @@ exports.default = (context, req) => {
                 return context.done();
             }
             let reply = (_c = (_b = (_a = docs === null || docs === void 0 ? void 0 : docs.receivers) === null || _a === void 0 ? void 0 : _a.find((receiver) => receiver.replyId == replyId)) === null || _b === void 0 ? void 0 : _b.reply) === null || _c === void 0 ? void 0 : _c.text;
+            let newReply;
+            if (!reply && !replyText) {
+                newReply = { 'text': null, 'date': new Date() };
+            }
+            else {
+                newReply = { 'text': (reply ? reply : '') + replyText + '\n\n', 'date': new Date() };
+            }
             db.collection(dataBase_1.collections.mail).updateOne({ 'receivers.replyId': replyId }, {
                 '$set': {
-                    'receivers.$.reply': { 'text': (reply ? reply : '') + replyText + '\n\n', 'date': new Date() },
+                    'receivers.$.reply': newReply,
                     'seenBy': [],
                 },
             }, (error, docs) => {
@@ -65,7 +72,7 @@ exports.default = (context, req) => {
         replyId = req.body.replyId;
         if ((_a = req.body) === null || _a === void 0 ? void 0 : _a.replyText) {
             if (req.body.replyText.length < 1000) {
-                replyText = req.body.replyText;
+                replyText = req.body.replyText == 'null' ? null : req.body.replyText;
             }
             else {
                 context.res = {
