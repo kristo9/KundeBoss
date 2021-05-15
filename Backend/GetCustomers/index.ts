@@ -69,21 +69,11 @@ export default (context: Context, req: HttpRequest): any => {
             {
               '$match': query,
             },
-            /* Gets all suppliers linked to the customer */
-            {
-              '$lookup': {
-                'from': 'mailGroup',
-                'localField': 'mailGroup',
-                'foreignField': '_id',
-                'as': 'mailGroup',
-              },
-            },
-            { '$unwind': '$mailGroup' },
             /* Gets all mails in customers mailGroup */
             {
               '$lookup': {
                 'from': 'mail',
-                'localField': 'mailGroup.mails',
+                'localField': 'mails',
                 'foreignField': '_id',
                 'as': 'mails',
               },

@@ -16,7 +16,7 @@ export default (context: Context, req: HttpRequest): any => {
   if (req.body === null) {
     return context.done();
   }
-  console.log(req.body.replyText)
+  console.log(req.body.replyText);
   let replyId = null;
   let replyText = null;
 
@@ -25,40 +25,60 @@ export default (context: Context, req: HttpRequest): any => {
    * @param db : database connection
    */
   const functionQuery = (db: Db) => {
-    db.collection(collections.mail).updateOne(
-      { 'receivers.replyId': replyId },
-      { '$set': { 'receivers.$.reply': { 'text': replyText + '\n\n', 'date': new Date() },'seenBy':[] } },
-      (error: any, docs: any) => {
-        if (error) {
-          errorQuery(context);
-          context.res.body = { text: 'Something went wrong' };
+    db.collection(collections.mail).findOne({ 'receivers.replyId': replyId }, {}, (error: any, docs: any) => {
+      if (error) {
+        errorQuery(context);
+        context.res.body = { text: 'Something went wrong' };
 
-          return context.done();
-        }
-        if (docs.modifiedCount === 1) {
-          context.log('Success!');
-          context.res = {
-            body: { text: replyText ? 'Reply text registered' : 'Confirmation registered' },
-          };
-        } else {
-          context.log('No document found');
-          context.res = {
-            status: 400,
-            body: {
-              text: 'Error, not found',
-            },
-          };
-        }
-        context.done();
+        return context.done();
       }
-    );
+      let reply = docs?.receivers?.find((receiver) => receiver.replyId == replyId)?.reply?.text;
+      let newReply;
+      if (!reply && !replyText) {
+        newReply = { 'text': null, 'date': new Date() };
+      } else {
+        newReply = { 'text': (reply ? reply : '') + replyText + '\n\n', 'date': new Date() };
+      }
+      db.collection(collections.mail).updateOne(
+        { 'receivers.replyId': replyId },
+        {
+          '$set': {
+            'receivers.$.reply': newReply,
+            'seenBy': [],
+          },
+        },
+        (error: any, docs: any) => {
+          if (error) {
+            errorQuery(context);
+            context.res.body = { text: 'Something went wrong' };
+
+            return context.done();
+          }
+          if (docs.modifiedCount === 1) {
+            context.log('Success!');
+            context.res = {
+              body: { text: replyText ? 'Reply text registered' : 'Confirmation registered' },
+            };
+          } else {
+            context.log('No document found');
+            context.res = {
+              status: 400,
+              body: {
+                text: 'Error, not found',
+              },
+            };
+          }
+          context.done();
+        }
+      );
+    });
   };
 
   if (req.body.replyId) {
     replyId = req.body.replyId;
     if (req.body?.replyText) {
       if (req.body.replyText.length < 1000) {
-        replyText = req.body.replyText;
+        replyText = req.body.replyText == 'null' ? null : req.body.replyText;
       } else {
         context.res = {
           status: 400,

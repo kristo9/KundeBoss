@@ -15,7 +15,6 @@ import { getCustomer, getEmployee } from '../../../azure/api';
 import { TypeContext } from '../../../Context/UserType/UserTypeContext';
 
 // CSS
-import './customerpage.css';
 import '../../basicComp/basic.css';
 import '../../basicComp/sidebar.css';
 

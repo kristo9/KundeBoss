@@ -422,6 +422,51 @@ export function modifyEmployeeData(
   return prepareCallAndDeleteCache('ModifyEmployeeData', data);
 }
 
+export async function getReply(replyId: string){
+  const headers = new Headers();
+  const options = {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      replyId, //' + '"' + replyId +  '"' + '
+    }),
+  };
+  return fetch('https://mailparserfunctionapp.azurewebsites.net/api/' + 'ReturnReplySite?code=yPNF1MTKfFHSJt0kteaTRmiILS8AshisCQG3nyh4JPDftpFUwnfcCw==', options) 
+  .then(async (response) => {
+    if (response.status === 400) {
+    }
+    let status = response.status
+    let text = (await response.json());
+
+    return { text, status };
+  })
+  .then((response) => response)
+  .catch((e) => e);
+}
+
+export async function sendReply(replyId: string, replyText: string,code:string) {
+  const headers = new Headers();
+
+  const options = {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      replyText,
+      replyId, //' + '"' + replyId +  '"' + '
+    }),
+  };
+  return fetch('https://mailparserfunctionapp.azurewebsites.net/api/' + 'ReceiveMail?code=' + code /*BVxig7/z5rPp6wFR/FW9QDwl3ZM7aiv0INr2Wo2NULYgF08QyxZ7aw==*/, options) 
+    .then(async (response) => {
+      if (response.status === 400) {
+      }
+      let status = response.status
+      let text = (await response.json()).text;
+      return { text, status };
+    })
+    .then((response) => response)
+    .catch((e) => e);
+}
+
 export function logToken() {
   getTokenRedirect(tokenRequest).then((response) => {
     if (response) console.log(response.accessToken);

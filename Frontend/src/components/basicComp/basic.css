@@ -53,14 +53,15 @@ div.small-margin-over {
   Searchbox
 */
 .search {
+  background: url('../../bilder/searchIcon.png') 12em center no-repeat;
+  background-size: 20px;
   background-color: white;
   color: #063752;
-  /* border-color: white;
-  border: 5px; */
   border: none;
   padding: 0.5em;
-  /* padding-left: 1.5em; */
-  border-radius: 50px 0px 0px 50px;
+  padding-left: 1em;
+  border-radius: 50px 50px 50px 50px;
+  width: 14.5em;
 }
 
 .search::placeholder {

@@ -84,68 +84,33 @@ export default (context: Context, req: HttpRequest): any => {
           errorWrongInput(context, 'No customer found');
           return context.done();
         }
-        let mailGroup = docs[0].mailGroup;
 
-        db.collection('mailGroup')
-          .find(ObjectId(mailGroup))
-          .toArray((error: any, docs: any) => {
-            if (error) {
-              errorQuery(context);
-              return context.done();
-            }
+        db.collection('customer').deleteOne(query, (error: any, docs: any) => {
+          if (error) {
+            errorQuery(context);
+            return context.done();
+          }
 
-            var array = [];
-            docs[0].mails.forEach((itm) => {
-              array.push(itm);
-            });
-
-            const mailQuery = {
-              '_id': { $in: array },
-            };
-
-            db.collection('mail').deleteMany(mailQuery, (error: any, docs: any) => {
+          //Deletes the supplier for customers
+          db.collection('employee').updateMany(
+            { 'customers.id': ObjectId(req.body.id) },
+            { $pull: { customers: { 'id': ObjectId(req.body.id) } } },
+            (error: any, docs: any) => {
               if (error) {
                 errorQuery(context);
                 return context.done();
               }
-              console.log('Mails deleted!');
 
-              db.collection('mailGroup').deleteOne({ _id: ObjectId(mailGroup) }, (error: any, docs: any) => {
-                if (error) {
-                  errorQuery(context);
-                  return context.done();
-                }
-                console.log('MailGroup deleted!');
+              let msg = JSON.parse('{}');
+              msg['n'] = 'Found ' + docs.result.n + ' employees with the customer.';
+              msg['nModified'] = 'Modified ' + docs.result.nModified + ' employees.';
+              msg['res'] = 'Customer deleted.';
 
-                db.collection('customer').deleteOne(query, (error: any, docs: any) => {
-                  if (error) {
-                    errorQuery(context);
-                    return context.done();
-                  }
-
-                  //Deletes the supplier for customers
-                  db.collection('employee').updateMany(
-                    { 'customers.id': ObjectId(req.body.id) },
-                    { $pull: { customers: { 'id': ObjectId(req.body.id) } } },
-                    (error: any, docs: any) => {
-                      if (error) {
-                        errorQuery(context);
-                        return context.done();
-                      }
-
-                      let msg = JSON.parse('{}');
-                      msg['n'] = 'Found ' + docs.result.n + ' employees with the customer.';
-                      msg['nModified'] = 'Modified ' + docs.result.nModified + ' employees.';
-                      msg['res'] = 'Customer deleted.';
-
-                      returnResult(context, msg);
-                      context.done();
-                    }
-                  );
-                });
-              });
-            });
-          });
+              returnResult(context, msg);
+              context.done();
+            }
+          );
+        });
       });
   };
 

@@ -1,6 +1,10 @@
 import react, { useEffect, useState } from 'react';
 import { registerMailVisit } from '../../../../azure/api';
 
+//CSS
+import '../../../basicComp/basic.css';
+import '../mail.css';
+
 /**
  * @returns a react component with the mail page.
  */
@@ -27,18 +31,22 @@ function CustomerMailPage({ customerInfo }: any) {
   return (
     <div>
       <h1 className='color-dark heading'> Mail </h1>
-      <input
-        type='search'
-        className='searchbar'
-        placeholder='Search subject or text'
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-        }}
-      />
-      {filterMails.map((mail) => {
-        return <DisplayMail mail={mail} key={mail._id} />;
-      })}
+      <div style={{ float: 'right' }}>
+        <input
+          type='search'
+          className='search'
+          placeholder='Search subject or text'
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
+      </div>
+      <div>
+        {filterMails.map((mail) => {
+          return <DisplayMail mail={mail} key={mail._id} />;
+        })}
+      </div>
     </div>
   );
 }
@@ -47,7 +55,8 @@ function DisplayMail({ mail }: any) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <div className='displayInfoDiv'>
+      <div className='smallText'> {formatDate(mail.date)}</div>
       <div
         onClick={() => {
           setOpen(!open);
@@ -57,55 +66,39 @@ function DisplayMail({ mail }: any) {
           }
         }}
       >
-        <b>{mail.subject ? mail.subject : 'Mangler emne'}</b>
-        <span> {formatDate(mail.date)}</span>
-        <button> {open ? 'Lukk' : 'Åpne'}</button>
-        <p>{mail.receivers.length} mottakere</p>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <b style={{ flex: 1 }}>{mail.subject ? mail.subject : 'Mangler emne'}</b>
+          <p style={{ margin: 0, float: 'right' }}>{mail.receivers.length} mottakere</p>
+        </div>
       </div>
 
-      {open ? <OpenDisplayMail mail={mail} /> : ''}
+      {open ? <OpenDisplayMail mail={mail} /> : null}
     </div>
   );
 }
 
-// function ClosedDisplayMail({ mail }: any) {
-//   return <p></p>;
-// }
-
 function OpenDisplayMail({ mail }: any) {
-  const [repliesOpen, setRepliesOpen] = useState(false);
-
+  console.log(mail);
   return (
     <div>
       <p style={{ whiteSpace: 'pre-wrap' }}>{mail.text}</p>
-      <button
-        onClick={() => {
-          setRepliesOpen(!repliesOpen);
-        }}
-      >
-        {repliesOpen ? 'Skjul svar' : 'Vis svar'}
-      </button>
-      {repliesOpen ? <OpenRepliesToMail mail={mail} /> : ''}
-    </div>
-  );
-}
+      <hr></hr>
 
-function OpenRepliesToMail({ mail }: any) {
-  return (
-    <div>
-      {mail.receivers.map((receiver) => {
-        return <DisplayMailAnswer receiver={receiver} key={receiver.id} />;
-      })}
+      <div>
+        {mail.receivers.map((receiver) => {
+          return <DisplayMailAnswer receiver={receiver} key={receiver.id} />;
+        })}
+      </div>
     </div>
   );
 }
 
 function DisplayMailAnswer({ receiver }: any) {
-  if (receiver.reply) {
+  if (receiver?.reply) {
     return (
-      <div style={{ backgroundColor: 'red' }}>
-        <p>From: {receiver.name}</p>
-        <p style={{ whiteSpace: 'pre-wrap' }}>{receiver.reply.text ? receiver.reply.text : 'Har bekreftet.'}</p>
+      <div className='table-row'>
+        <p className='table-cell name'>{receiver.name}</p>
+        <p className='table-cell'>{receiver?.reply?.text ? receiver.reply.text : 'Har bekreftet.'}</p>
       </div>
     );
   } else {
@@ -113,11 +106,11 @@ function DisplayMailAnswer({ receiver }: any) {
   }
 }
 
-// YYYY-MM-DDThh:mm:ss.xxxZ
-// hh:mm:ss DD.MM.YYYY
+// Converts YYYY-MM-DDThh:mm:ss.xxx
+// Too      DD.MM.YYYY, hh:mm:ss
 function formatDate(date: string) {
   let newDate =
-    date.substring(11, 19) + ' ' + date.substring(8, 10) + '.' + date.substring(5, 7) + '.' + date.substring(0, 4);
+    date.substring(8, 10) + '.' + date.substring(5, 7) + '.' + date.substring(0, 4) + ', ' + date.substring(11, 19);
   return newDate;
 }
 

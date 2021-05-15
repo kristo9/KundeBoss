@@ -15,7 +15,6 @@ import NewEntry from './subPages/NewEntry';
 
 //CSS
 import '../../basicComp/sidebar.css';
-import '../customerpage/customerpage.css';
 
 class AdminPage extends React.Component<RouteComponentProps, { pageState: any; adminInfo: any }> {
   /**
