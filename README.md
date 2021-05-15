@@ -4,7 +4,7 @@
 
 
 ## Hvordan bruke
-#### Krav
+## Krav
 Det er nødvendig med node.js og en kode editor (testet med Visual Studio Code med Azure Functions addon).
 
 ## Oppstart
