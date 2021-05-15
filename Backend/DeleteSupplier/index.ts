@@ -85,62 +85,27 @@ export default (context: Context, req: HttpRequest): any => {
           errorWrongInput(context, 'No supplier found');
           return context.done();
         }
-        let mailGroup = docs[0].mailGroup;
 
-        db.collection('mailGroup')
-          .find(ObjectId(mailGroup))
-          .toArray((error: any, docs: any) => {
-            if (error) {
-              errorQuery(context);
-              return context.done();
-            }
-
-            var array = [];
-            docs[0].mails.forEach((itm) => {
-              array.push(itm);
-            });
-
-            const mailQuery = {
-              '_id': { $in: array },
-            };
-
-            db.collection('mail').deleteMany(mailQuery, (error: any, docs: any) => {
+        db.collection('supplier').deleteOne(query, (error: any, docs: any) => {
+          if (error) {
+            errorQuery(context);
+            return context.done();
+          }
+          console.log('Supplier deleted!');
+          //Deletes the supplier for customers
+          db.collection('customer').updateMany(
+            { 'suppliers.id': ObjectId(req.body.id) },
+            { $pull: { suppliers: { 'id': ObjectId(req.body.id) } } },
+            (error: any, docs: any) => {
               if (error) {
                 errorQuery(context);
                 return context.done();
               }
-              console.log('Mails deleted!');
-
-              db.collection('mailGroup').deleteOne({ _id: ObjectId(mailGroup) }, (error: any, docs: any) => {
-                if (error) {
-                  errorQuery(context);
-                  return context.done();
-                }
-                console.log('MailGroup deleted!');
-
-                db.collection('supplier').deleteOne(query, (error: any, docs: any) => {
-                  if (error) {
-                    errorQuery(context);
-                    return context.done();
-                  }
-                  console.log('Supplier deleted!');
-                  //Deletes the supplier for customers
-                  db.collection('customer').updateMany(
-                    { 'suppliers.id': req.body.id },
-                    { $pull: { suppliers: { 'id': req.body.id } } },
-                    (error: any, docs: any) => {
-                      if (error) {
-                        errorQuery(context);
-                        return context.done();
-                      }
-                      returnResult(context, docs);
-                      context.done();
-                    }
-                  );
-                });
-              });
-            });
-          });
+              returnResult(context, docs);
+              context.done();
+            }
+          );
+        });
       });
   };
 
