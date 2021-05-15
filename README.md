@@ -1,7 +1,14 @@
 # KundeBoss
 
-For oppstart av frontend, gå inn i frontend mappen og åpne en bash/powershell terminal og tast inn kommandoen "npm start". 
 
+
+
+## Oppstart
+For oppstart av frontend, gå inn i frontend mappen og åpne en bash/powershell terminal og tast inn kommandoen:
+
+```powershell
+npm start
+```
 
 For oppstart av backend, gå inn i backendmappen og åpne koden i en kode editor og trykk på F5.
 
