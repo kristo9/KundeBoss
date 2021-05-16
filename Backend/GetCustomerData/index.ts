@@ -144,27 +144,14 @@ export default (context: Context, req: HttpRequest): any => {
             'as': 'supplierInformation',
           },
         },
-        /* Gets mailGroup linked to the customer */
-        {
-          '$lookup': {
-            'from': 'mailGroup',
-            'localField': 'mailGroup',
-            'foreignField': '_id',
-            'as': 'mailGroup',
-          },
-        },
-        { '$unwind': '$mailGroup' },
         /* Gets all mails in customers mailGroup */
         {
           '$lookup': {
             'from': 'mail',
-            'localField': 'mailGroup.mails',
+            'localField': 'mails',
             'foreignField': '_id',
             'as': 'mails',
           },
-        },
-        {
-          '$project': { 'mailGroup': 0 },
         },
       ])
       .toArray((error: any, docs: any) => {

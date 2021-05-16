@@ -88,6 +88,10 @@ export default (context: Context, req: HttpRequest): any => {
       },
     };
 
+    if (!req.body?.id) {
+      update.$set['mails'] = [];
+    }
+
     const updateOrInsertSupplier = () => {
       db.collection(collections.supplier).updateOne(query, update, queryOptions, (error: any, docs: any) => {
         if (error) {
@@ -99,18 +103,7 @@ export default (context: Context, req: HttpRequest): any => {
       });
     };
 
-    if (!req.body?.id) {
-      db.collection('mailGroup').insertOne({ 'mails': [] }, (error: any, docs: any) => {
-        if (error) {
-          errorQuery(context);
-          return context.done();
-        }
-        update.$set['mailGroup'] = ObjectId(docs.insertedId);
-        updateOrInsertSupplier();
-      });
-    } else {
-      updateOrInsertSupplier();
-    }
+    updateOrInsertSupplier();
   };
 
   inputValidation();

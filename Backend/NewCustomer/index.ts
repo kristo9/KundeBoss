@@ -77,8 +77,6 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    let mailGroup = null;
-
     const updateOrUpsertCustomer = () => {
       const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
 
@@ -93,8 +91,6 @@ export default (context: Context, req: HttpRequest): any => {
           supplier.id = ObjectId(supplier.id);
         }); */
       }
-
-      console.log(req.body.suppliers);
 
       let update = {
         '$set': {
@@ -113,8 +109,8 @@ export default (context: Context, req: HttpRequest): any => {
         },
       };
 
-      if (mailGroup) {
-        update.$set['mailGroup'] = mailGroup;
+      if (!req.body?.id) {
+        update.$set['mails'] = [];
       }
 
       db.collection(collections.customer).updateOne(query, update, queryOptions, (error: any, docs: any) => {
@@ -122,8 +118,8 @@ export default (context: Context, req: HttpRequest): any => {
           errorQuery(context);
           return context.done();
         }
-        if(req.body?.id && docs.result.n === 0){
-          errorWrongInput(context, "No customer found");
+        if (req.body?.id && docs.result.n === 0) {
+          errorWrongInput(context, 'No customer found');
           return context.done();
         }
 
@@ -132,20 +128,7 @@ export default (context: Context, req: HttpRequest): any => {
       });
     };
 
-    if (!req.body?.id) {
-      db.collection('mailGroup').insertOne({ 'mails': [] }, (error: any, docs: any) => {
-        if (error) {
-          errorQuery(context);
-          return context.done();
-        }
-
-        mailGroup = ObjectId(docs.insertedId);
-
-        updateOrUpsertCustomer();
-      });
-    } else {
-      updateOrUpsertCustomer();
-    }
+    updateOrUpsertCustomer();
   };
 
   inputValidation();

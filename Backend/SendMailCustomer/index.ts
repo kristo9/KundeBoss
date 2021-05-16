@@ -212,7 +212,6 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   let message = null;
-  let mailGroup = null;
 
   const sendMail = (db: Db) => {
     db.collection('customer').findOne({ '_id': ObjectId(req.body.customerId.id) }, {}, (error: any, docs: any) => {
@@ -239,7 +238,6 @@ export default (context: Context, req: HttpRequest): any => {
       if (receiverMail.length > 0) {
         context.log('Sent mail to:' + JSON.stringify(receiverMail, null, 2));
         context.bindings.resMail = message;
-        mailGroup = docs.mailGroup;
         connectWrite(context, functionQuery);
       } else {
         errorWrongInput(context, 'no valid clients received');
@@ -266,23 +264,23 @@ export default (context: Context, req: HttpRequest): any => {
         return context.done();
       }
 
-      db.collection('mailGroup').updateOne(
-        { '_id': mailGroup },
+      db.collection(collections.customer).updateOne(
+        { '_id': ObjectId(req.body.customerId.id) },
         {
           '$push': {
             'mails': docs.insertedId,
           },
-        },
-        (error: any, docs: any) => {
-          if (error) {
-            context.bindings.resMail = null;
-            errorQuery(context, 'Not able to update mailGroup in db');
-            return context.done();
-          }
-          returnResult(context, docs);
-          context.done();
         }
       );
+      {
+        if (error) {
+          context.bindings.resMail = null;
+          errorQuery(context, 'Not able to update customer in db');
+          return context.done();
+        }
+        returnResult(context, docs);
+        context.done();
+      }
     });
   };
 
