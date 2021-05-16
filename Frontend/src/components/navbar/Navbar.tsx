@@ -37,7 +37,7 @@ const Authenticated = () => {
         </Link>
       </div>
       <div className='contents' id={showLink ? 'hidden' : ''}>
-        <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+        {/* <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
           {dictionary.contact}
         </Link>
         <Link to='/help' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
@@ -45,9 +45,13 @@ const Authenticated = () => {
         </Link>
         <Link to='/about' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
           {dictionary.about}
-        </Link>
+        </Link> */}
+
         <div className='coloredNavButton'>
           <SignInSignOutButton />
+        </div>
+        <div className='langSel'>
+          <LanguageSelector />
         </div>
       </div>
       <div className='hamburgermenu coloredNavButton'>

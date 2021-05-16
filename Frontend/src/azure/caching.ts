@@ -148,7 +148,7 @@ function roughSizeOfObject(object) {
 
 export async function updateGetEmployee(customerId: string) {
   let obj0 = cache.get('GetCustomers');
-  let obj = await obj0.data;
+  let obj = await obj0?.data;
   if (obj) {
     for (let i = 0, len = obj.customerInformation.length; i < len; ++i) {
       if (obj.customerInformation[i]._id == customerId) {

@@ -20,3 +20,11 @@
   max-width: 10em;
   word-wrap: break-word;
 }
+
+.alert {
+  height: 10px;
+  width: 10px;
+  background-color: #62b3e5;
+  margin: auto;
+  margin-left: 0.5em;
+}

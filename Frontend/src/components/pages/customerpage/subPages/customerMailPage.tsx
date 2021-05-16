@@ -31,9 +31,8 @@ function CustomerMailPage({ customerInfo }: any) {
   return (
     <div>
       <h1 className='color-dark heading'> Mail </h1>
-      <div style={{ float: 'right' }}>
+      <div style={{ marginBottom: '0.5em', float: 'right' }}>
         <input
-          type='search'
           className='search'
           placeholder='Search subject or text'
           value={search}
@@ -42,6 +41,7 @@ function CustomerMailPage({ customerInfo }: any) {
           }}
         />
       </div>
+
       <div>
         {filterMails.map((mail) => {
           return <DisplayMail mail={mail} key={mail._id} />;
@@ -55,7 +55,7 @@ function DisplayMail({ mail }: any) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className='displayInfoDiv'>
+    <div className='displayInfoDiv' style={{ clear: 'right' }}>
       <div className='smallText'> {formatDate(mail.date)}</div>
       <div
         onClick={() => {
@@ -68,7 +68,8 @@ function DisplayMail({ mail }: any) {
       >
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <b style={{ flex: 1 }}>{mail.subject ? mail.subject : 'Mangler emne'}</b>
-          <p style={{ margin: 0, float: 'right' }}>{mail.receivers.length} mottakere</p>
+          <ReceiversStatus receivers={mail.receivers} />
+          {mail.newContent === true ? <div className='alert'></div> : null}
         </div>
       </div>
 
@@ -78,11 +79,10 @@ function DisplayMail({ mail }: any) {
 }
 
 function OpenDisplayMail({ mail }: any) {
-  console.log(mail);
   return (
     <div>
-      <p style={{ whiteSpace: 'pre-wrap' }}>{mail.text}</p>
-      <hr></hr>
+      <p>{mail.text}</p>
+      <hr className='mailHr'></hr>
 
       <div>
         {mail.receivers.map((receiver) => {
@@ -94,15 +94,15 @@ function OpenDisplayMail({ mail }: any) {
 }
 
 function DisplayMailAnswer({ receiver }: any) {
-  if (receiver?.reply) {
+  if (receiver) {
     return (
       <div className='table-row'>
-        <p className='table-cell name'>{receiver.name}</p>
-        <p className='table-cell'>{receiver?.reply?.text ? receiver.reply.text : 'Har bekreftet.'}</p>
+        <p className='table-cell name'>{receiver.name ? receiver.name : 'Mangler navn'}</p>
+        <p className='table-cell'>
+          {receiver.reply === null ? 'Har ikke svart' : receiver.reply.text ? receiver.reply.text : 'Har bekreftet.'}
+        </p>
       </div>
     );
-  } else {
-    return <div></div>;
   }
 }
 
@@ -112,6 +112,18 @@ function formatDate(date: string) {
   let newDate =
     date.substring(8, 10) + '.' + date.substring(5, 7) + '.' + date.substring(0, 4) + ', ' + date.substring(11, 19);
   return newDate;
+}
+
+function ReceiversStatus(props: { receivers: any }) {
+  let sendt = props.receivers.length;
+  let replys = props.receivers.filter((reciver) => {
+    return typeof reciver?.reply?.text === 'string';
+  }).length;
+  let accept = props.receivers.filter((reciver) => {
+    return typeof reciver?.reply?.text === 'boolean';
+  }).length;
+  // return <p style={{ margin: 0, float: 'right' }}>{props.receivers.length} mottakere</p>;
+  return <p>{sendt + 's ' + replys + 'r ' + accept + 'a'} </p>;
 }
 
 export default CustomerMailPage;

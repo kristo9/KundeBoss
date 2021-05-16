@@ -77,11 +77,6 @@ class AdminPage extends React.Component<RouteComponentProps, { pageState: any; a
       ID: 'newSupplier',
       onClick: () => this.setState({ pageState: <SupplierEditPage /> }),
     },
-    {
-      text: 'Nyinnlogget',
-      ID: 'newLogin',
-      onClick: () => this.setState({ pageState: <NewEntry /> }),
-    }, //TODO: lage side for nyinnlogget
   ];
 }
 

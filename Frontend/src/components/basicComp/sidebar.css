@@ -52,5 +52,7 @@
 }
 
 .addMarginToNotSidebar {
-  margin-left: 17em;
+  margin-left: -webkit-calc(10em + 6vw);
+  margin-left: -moz-calc(10em + 6vw);
+  margin-left: calc(10em + 6vw);
 }
