@@ -53,34 +53,12 @@ export default (context: Context, req: HttpRequest): any => {
     });
   };
 
-  // What information is to be recieved
-  const projection = {
-    '_id': 0,
-    'name': 1,
-    'employeeId': 1,
-    'admin': 1,
-    'isCustomer': 1,
-    'customers.id': 1,
-    'customers.permission': 1,
-  };
-
   /**
    * @description Query that asks for all employees in the database
    * @param db read access to database, needed to recieve all employees
    * @return context.res.body that contains a JSON object that is an array of JSON objects for each employee
    */
   const functionQuery = (db: Db) => {
-    const project2 = {
-      '_id': 0,
-      'name': 1,
-      'employeeId': 1,
-      'admin': 1,
-      'customers': 1,
-      'isCustomer': 1,
-      'customerInformation._id': 1,
-      'customerInformation.name': 1,
-    };
-
     db.collection(collections.employee)
       .find()
       .project()
@@ -126,45 +104,6 @@ export default (context: Context, req: HttpRequest): any => {
           });
       });
   };
-  /*
-    db.collection('employee')
-      .aggregate([
-           
-        {
-          '$lookup': {
-            'from': 'customer',
-            'localField': 'customers.id',
-            'foreignField': '_id',
-            'as': 'customerInformation',
-          },
-        },
-        { '$project': project2 },
-      ])
-      .toArray((error: any, docs: JSON) => {
-        if (error) {
-          errorQuery(context);
-          return context.done();
-        }
 
-        let stuff = null;
-        let arrL = Object.keys(docs).length;
-
-        for (let index = 0; index < arrL; index++) {
-          stuff = docs[index].customers;
-          docs[index].customerInformation.forEach((customerInformation) => {
-            stuff.forEach((element) => {
-              if (JSON.stringify(element.id).includes(customerInformation._id)) {
-                customerInformation.permission = element.permission;
-              }
-            });
-          });
-
-          delete docs[index].customers;
-        }
-
-        returnResult(context, docs);
-        context.done();
-      });
-  };*/
   connectRead(context, authorize);
 };

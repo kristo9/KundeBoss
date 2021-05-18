@@ -1,10 +1,9 @@
 import { Context, HttpRequest } from '@azure/functions';
-import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
+import { returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { collections, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
-import { ObjectId } from 'mongodb';
 
 /**
  * @description Gets all suppliers in the database
@@ -33,14 +32,14 @@ export default (context: Context, req: HttpRequest): any => {
       } else {
         employeeId = decoded.preferred_username;
 
-        db.collection('employee') //checks if user is in database
+        db.collection(collections.employee) //checks if user is in database
           .find({ 'employeeId': employeeId })
           .toArray((error: any, docs: JSON | JSON[]) => {
             if (error) {
               errorQuery(context);
               return context.done();
             } else {
-              db.collection('employee').findOne(
+              db.collection(collections.employee).findOne(
                 { 'employeeId': decoded.preferred_username },
                 { 'admin': 1 },
                 (error: any, docs: { admin: string }) => {
@@ -69,7 +68,7 @@ export default (context: Context, req: HttpRequest): any => {
    */
   const functionQuery = (db: Db) => {
     let customers = null;
-    db.collection('customer')
+    db.collection(collections.customer)
       .find()
       .project({ 'name': 1 })
       .toArray((error: any, docs: any) => {

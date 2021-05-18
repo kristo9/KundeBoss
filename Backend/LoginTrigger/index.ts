@@ -53,7 +53,7 @@ export default (context: Context, req: HttpRequest): any => {
   const functionQuery = (db: Db) => {
     result['name'] = decodedToken.name;
 
-    db.collection('employee')
+    db.collection(collections.employee)
       .find()
       .project({
         _id: 0,

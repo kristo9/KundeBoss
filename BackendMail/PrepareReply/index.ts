@@ -40,10 +40,7 @@ export default (context: Context, req: HttpRequest) => {
     });
   };
 
-  console.log(req.body);
-
   if (req.body.replyId) {
-    console.log('test');
 
     replyId = req.body.replyId;
     connectRead(context, functionQuery);

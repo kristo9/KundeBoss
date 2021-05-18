@@ -80,7 +80,7 @@ export default (context: Context, req: HttpRequest): any => {
         let customerIds = customerIdExist(db);
         username = decoded.preferred_username;
 
-        db.collection('employee').findOne(
+        db.collection(collections.employee).findOne(
           {
             'employeeId': username,
           },
@@ -128,7 +128,7 @@ export default (context: Context, req: HttpRequest): any => {
    * @param db : db connection
    */
   const functionQuery = (db: Db) => {
-    db.collection('customer')
+    db.collection(collections.customer)
       .aggregate([
         {
           '$match': {

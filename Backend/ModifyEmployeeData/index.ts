@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, nameVal, mailVal, _idVal, returnResult, errorWrongInput } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -105,7 +105,7 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        db.collection('employee') // Check if user has access to the function
+        db.collection(collections.employee) // Check if user has access to the function
           .find({ employeeId: decoded.preferred_username })
           .project({ admin: 1 })
           .toArray((error: any, docs: { admin: string }[]) => {
@@ -133,7 +133,7 @@ export default (context: Context, req: HttpRequest): any => {
   const functionQuery = (db: Db) => {
     const query = { 'employeeId': req.body.employeeId };
 
-    db.collection('employee').updateOne(query, newVals, (error: any, docs: JSON) => {
+    db.collection(collections.employee).updateOne(query, newVals, (error: any, docs: JSON) => {
       // Updates employee
       if (error) {
         console.log(error);
