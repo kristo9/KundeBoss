@@ -12,6 +12,7 @@ import '../../basicComp/basic.css';
 import { LanguageContext } from '../../../Context/language/LangContext';
 import { stringify } from 'querystring';
 import SendMail from '../customerpage/subPages/customerSendMail';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 /**
  * A class that contains and renders the dashboard
@@ -143,14 +144,17 @@ function DisplayCustomers(props: { filter; name; dictionary; selectedCutomersArr
             <td>
               <b>Navn</b>
             </td>
-            <td>
+            <td className="contactPerson">
               <b>Kontaktperson</b>
             </td>
-            <td>
+            <td className="cm">
               <b>Epost</b>
             </td>
             <td>
               <b>Tags</b>
+            </td>
+            <td>
+              <b>Notifikasjoner</b>
             </td>
           </tr>
         </thead>
@@ -165,6 +169,7 @@ function DisplayCustomers(props: { filter; name; dictionary; selectedCutomersArr
                 tags={customer.tags}
                 key={customer._id}
                 id={customer._id}
+                notifications={customer.changedMails}
                 noTag={tag}
                 customerSelected={props.selectedCutomersArray ? props.selectedCutomersArray[index] : false}
                 updateFunction={props.updateFunction}
@@ -206,9 +211,10 @@ const InfoBox = (prop) => {
           {prop.customerName}
         </b>
       </td>
-      <td>{prop.contactName}</td>
-      <td>{prop.mail}</td>
+      <td className="contactPerson">{prop.contactName}</td>
+      <td className="cm">{prop.mail}</td>
       <td> {tags.length === 0 ? prop.noTag : prop.tags.toString().split(',').join(', ')} </td>
+      <td>{prop.notifications}</td>
     </tr>
   );
 };

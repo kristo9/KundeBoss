@@ -15,19 +15,37 @@ import { TypeContext } from '../../Context/UserType/UserTypeContext';
 
 // Image
 import logo from '../../bilder/logo-ferdig.png';
+import hamburgermeny from '../../bilder/Hamburger_icon.svg.png'
+import close from '../../bilder/close.png'
 
 // CSS style
 import './Navbar.css';
 import '../basicComp/basic.css';
 
-const Authenticated = () => {
-  const { dictionary } = useContext(LanguageContext);
-  const { userType } = useContext(TypeContext);
-  const accounts = msalInstance.getAllAccounts();
-  sessionStorage.setItem('UserName', accounts[0].username);
-  console.log('UserName is set at sessionStorage "UserName":  ' + sessionStorage.getItem('UserName'));
+/* This component returns either a authenticated or a unauthenticated navbar. The msal provider in the 
+      App.tsx file keeps track of the user and if the user is signed in or not*/ 
 
-  const [showLink, setShowLink] = useState(false);
+
+
+const Navbar = () => {
+  const { accounts } = useMsal();                       // Gets all accounts.
+  const account = useAccount(accounts[0] || {});        // Gets first account.
+  msalInstance.setActiveAccount(account);               // Sets first account as active account. 
+  const isAuthenticated = useIsAuthenticated();         // Function from @azure/msal-react to keep track of authentication.
+      
+  return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
+  };
+      
+export default Navbar;                                  // Exports Navbar function as component.
+
+
+const Authenticated = () => {
+
+  const { userType } = useContext(TypeContext);             // Gets global userType from typeContext.
+  const [showLink, setShowLink] = useState(false);          // Local state to keep track of whether to 
+
+  const accounts = msalInstance.getAllAccounts();           // Gets all active accounts.
+  sessionStorage.setItem('UserName', accounts[0].username); // Stores username as sessionstorage. 
 
   return (
     <header className='topnav add-padding'>
@@ -37,16 +55,11 @@ const Authenticated = () => {
         </Link>
       </div>
       <div className='contents' id={showLink ? 'hidden' : ''}>
-        {/* <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-          {dictionary.contact}
-        </Link>
-        <Link to='/help' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-          {dictionary.help}
-        </Link>
-        <Link to='/about' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-          {dictionary.about}
-        </Link> */}
-
+        { (userType === 'AdminReadFirst' || userType === 'AdminReadNotFirst' || userType === 'AdminWriteFirst' || userType === 'AdminWriteNotFirst') ?
+        <Link to='/admin' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          Admin
+        </Link> : ''
+        }
         <div className='coloredNavButton'>
           <SignInSignOutButton />
         </div>
@@ -54,21 +67,29 @@ const Authenticated = () => {
           <LanguageSelector />
         </div>
       </div>
-      <div className='hamburgermenu coloredNavButton'>
-        <button onClick={() => setShowLink(!showLink)}> Open </button>
+      <div className='hamburgermenu'>
+        { (userType === 'AdminReadFirst' || userType === 'AdminReadNotFirst' || userType === 'AdminWriteFirst' || userType === 'AdminWriteNotFirst') ?
+        <Link to='/admin' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          Admin
+        </Link> : ''
+        }
+        <div className='coloredNavButton'>
+          <SignInSignOutButton />
+        </div>
+        <div className='langSel'>
+          <LanguageSelector />
+        </div>
       </div>
     </header>
   );
 };
 
 const Unauthenticated = () => {
-  const { dictionary } = useContext(LanguageContext);
-  sessionStorage.removeItem('UserName');
-  //console.log('UserName is removed as no account is signed in');
 
-  const [showLink, setShowLink] = useState(false);
-
-  //console.log(showLink);
+  const { dictionary } = useContext(LanguageContext);       // Global language context through dictionary.
+  const [showLink, setShowLink] = useState(false);          // Local state to keep track of whether 
+  sessionStorage.removeItem('UserName');                    // If no user is signed in, makes sure sessionStorage is empty. 
+  
   return (
     <header className='topnav add-padding'>
       <div className='left'>
@@ -90,26 +111,16 @@ const Unauthenticated = () => {
           <LanguageSelector />
         </div>
       </div>
-      <div className='hamburgermenu coloredNavButton'>
-        <button onClick={() => setShowLink(!showLink)}> Open </button>
+      <div className='hamburgermenu coloredNavButton'>              {/* If navbar gets small enough it will show a hamburgermenu*/}
+        <div onClick={() => setShowLink(!showLink)}>                {/* On click => set show link to the opposite of what it was*/}
+        { showLink ?                                                /* Showlink is true? Then the links is showing. Else click them menu to open it.*/
+          <img src={close} alt='Close' className='Open' /> :
+          <img src={hamburgermeny} alt='Open' className='Open' />
+        }
+        </div>
       </div>
     </header>
   );
 };
 
-const Navbar = () => {
-  const isAuthenticated = useIsAuthenticated();
-  const { userType } = useContext(TypeContext);
-  console.log('Bruker er authentisert:  ' + isAuthenticated);
-  console.log('Brukertype: ' + userType);
 
-  const { accounts } = useMsal();
-  const account = useAccount(accounts[0] || {});
-  msalInstance.setActiveAccount(account);
-  console.log(msalInstance.getActiveAccount());
-  console.log(sessionStorage.getItem('UserName'));
-
-  return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
-};
-
-export default Navbar;

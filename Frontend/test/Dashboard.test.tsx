@@ -1,5 +1,4 @@
 // MOCKS
-
 import {
   callLogin,
   getCustomer,

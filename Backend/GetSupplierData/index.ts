@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead } from '../SharedFiles/dataBase';
+import { collections, connectRead } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -50,7 +50,7 @@ export default (context: Context, req: HttpRequest): any => {
       } else {
         employeeId = decoded.preferred_username;
 
-        db.collection('employee') //checks if user is in database
+        db.collection(collections.employee) //checks if user is in database
           .find({ 'employeeId': employeeId })
           .toArray((error: any, docs: JSON | JSON[]) => {
             if (error) {
@@ -76,43 +76,47 @@ export default (context: Context, req: HttpRequest): any => {
    */
   const functionQuery = (db: Db) => {
     let supplier = null;
-    db.collection('supplier').findOne({ '_id': ObjectId(req.body.id) }, { 'contact': 0 }, (error: any, docs: any) => {
-      if (error) {
-        errorQuery(context, 'Cant query supplier collection');
-        return context.done();
-      } else {
-        supplier = docs;
-
-        if (supplier == null) {
-          errorWrongInput(context, 'No supplier found');
+    db.collection(collections.supplier).findOne(
+      { '_id': ObjectId(req.body.id) },
+      { 'contact': 0 },
+      (error: any, docs: any) => {
+        if (error) {
+          errorQuery(context, 'Cant query supplier collection');
           return context.done();
-        }
-        /* Find all customers that have a relation with the supplier */
-        db.collection('customer')
-          .find({ 'suppliers': { '$elemMatch': { 'id': ObjectId(req.body.id) } } })
-          .project({
-            'name': 1,
-            'contact': 1,
-            'suppliers': 1,
-          })
-          .toArray((error: any, docs: any) => {
-            if (error) {
-              errorQuery(context, 'Cant query customer collection');
-              return context.done();
-            } else {
-              /* Remove excessive data about other suplliers from customers */
-              docs.forEach((customer, index, customers) => {
-                customers[index]['supplier'] = customer.suppliers.find((element) => element.id == req.body.id);
-                delete customers[index].suppliers;
-              });
+        } else {
+          supplier = docs;
 
-              supplier['customers'] = docs;
-              returnResult(context, supplier);
-              context.done();
-            }
-          });
+          if (supplier == null) {
+            errorWrongInput(context, 'No supplier found');
+            return context.done();
+          }
+          /* Find all customers that have a relation with the supplier */
+          db.collection(collections.customer)
+            .find({ 'suppliers': { '$elemMatch': { 'id': ObjectId(req.body.id) } } })
+            .project({
+              'name': 1,
+              'contact': 1,
+              'suppliers': 1,
+            })
+            .toArray((error: any, docs: any) => {
+              if (error) {
+                errorQuery(context, 'Cant query customer collection');
+                return context.done();
+              } else {
+                /* Remove excessive data about other suplliers from customers */
+                docs.forEach((customer, index, customers) => {
+                  customers[index]['supplier'] = customer.suppliers.find((element) => element.id == req.body.id);
+                  delete customers[index].suppliers;
+                });
+
+                supplier['customers'] = docs;
+                returnResult(context, supplier);
+                context.done();
+              }
+            });
+        }
       }
-    });
+    );
   };
 
   inputValidation();

@@ -1,29 +1,41 @@
-import React, { useEffect, useState } from 'react';
+// Libraries.
+import { useContext, useEffect, useState } from 'react';
+
+// Function Calls.
 import { getReply, sendReply } from '../../../azure/api';
+
+// Context
+import { LanguageContext } from '../../../Context/language/LangContext';
+
+// CSS
 import './MailReply.css';
 
-/**
- * @returns A react component with the help page
- */
+/*
+Page for mail replies. When someone answers a mail they get sent to this components page. 
+*/
 
 const getReplyText = (replyId) => getReply(window.location.search.split('=')[1]).then(() => getReply(replyId));
 
-export function MailReply() {
-  const [mail, setMail] = useState('');
-  const [reply, setReply] = useState('Henter...');
-  const [btnBool, setBtnBool] = useState(Boolean);
-  const [firstLoad, setFistLoad] = useState(true);
-  const [status, setStatus] = useState('');
-  const [replyCode, setReplyCode] = useState('');
+export const MailReply = () => {
 
+  const { dictionary } = useContext(LanguageContext)
+
+  const [mail, setMail] = useState('');             // Sets local state mail to empty.
+  const [reply, setReply] = useState(dictionary.Fetching);  // Sets local state reply to "Henter".
+  const [btnBool, setBtnBool] = useState(Boolean);  // Sets local state btnBool to 'Boleean'.
+  const [firstLoad, setFistLoad] = useState(true);  // Sets local state first load to true.abs
+  const [status, setStatus] = useState('');         // Sets local state status to empty.
+  const [replyCode, setReplyCode] = useState('');   // Sets local state replyCode to empty. 
+
+  // UseEffect to 
   useEffect(() => {
-    setFistLoad(false);
-    let getReply = async () => {
-      let res = await getReplyText(window.location.search.split('=')[1]);
+    setFistLoad(false);                                                    // Sets first Load to false.
+    let getReply = async () => {                                           // GetsReply. 
+      let res = await getReplyText(window.location.search.split('=')[1]);  // Gets
       if (!res?.text?.reply) {
         setReply('');
       } else if (!res?.text?.reply.text) {
-        setReply('Mail har blitt registrert mottatt');
+        setReply(dictionary.mailSetRecived);
       } else {
         setReply(res?.text?.reply.text);
       }
@@ -38,17 +50,17 @@ export function MailReply() {
   return (
     <div className='MailReply'>
       <div className='page'>
-        <h1>Registrer svar</h1>
+        <h1>{dictionary.registerAnswer}</h1>
       </div>
       <p style={{ whiteSpace: 'pre-wrap' }}>
-        {(reply && reply != 'Henter...' && reply != 'Mail har blitt registrert mottatt' ? 'Tidligere svar:\n\n' : '') +
+        {(reply && reply != dictionary.Fetching && reply != dictionary.MailRecived ? dictionary.EarlierAnswer + ':\n\n' : '') +
           reply}
       </p>
       <div>
         <textarea
           value={mail}
           onChange={(e) => setMail(e.target.value)}
-          placeholder='Skriv her'
+          placeholder={dictionary.writeHere}
           style={{ width: '370px' }}
           rows={8}
           cols={5}
@@ -60,10 +72,10 @@ export function MailReply() {
         onClick={async () => {
           let res = sendReply(window.location.search.split('=')[1], mail?.length > 0 ? mail : null, replyCode);
           setBtnBool(true);
-          setStatus((await res).status === 200 ? 'Svar mottatt' : 'Noe gikk galt');
+          setStatus((await res).status === 200 ? dictionary.answerRecived : dictionary.somethingWrong);
         }}
       >
-        Send svar
+        {dictionary.sendAnswer}
       </button>
       <p>{status}</p>
     </div>

@@ -1,15 +1,19 @@
+// Library
 import { createContext, useState } from 'react';
 
-interface ITodosContextData {
+// Sets interfase for userType context.
+interface ITodosContextData {  
     userType: any,
     userTypeChange: any,
   }
   
+// Creates context. 
   export const TypeContext = createContext<ITodosContextData>({
     userType: "Not_Defined",
-    userTypeChange: () => { },
+    userTypeChange: () => {},
   });
 
+// UserType provider to provide global context.
   export function UserTypeProvider({ children }) {
     const [ userType, userTypeChange ] = useState(TypeContext);
 

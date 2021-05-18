@@ -1,98 +1,78 @@
+// Libraries
 import { createContext, useState, useContext } from 'react';
-import { languageOptions, dictionaryList } from './LangDir'; //fordi :)
-import * as ReactBootstrap from 'react-bootstrap';
+
+// Dictionarylist and language options
+import { languageOptions, dictionaryList } from './LangDir';
+
+// Pictures
 import ukFlag from '../../bilder/uk_Flag.svg.webp';
 import norwayFlag from '../../bilder/Flag_of_Norway.png';
 
-const { ButtonToolbar, Dropdown } = ReactBootstrap;
 
-// create the language context with default selected language
-interface ITodosContextData {
+// Define interface to langcontext.
+interface LanguageInterface {
   userLanguage: any;
   dictionary: any;
   userLanguageChange: (c: string) => void;
 }
 
-export const LanguageContext = createContext<ITodosContextData>({
+// Create lang context with default values corresponding to interface.
+export const LanguageContext = createContext<LanguageInterface>({
   userLanguage: 'en',
   dictionary: dictionaryList.en,
   userLanguageChange: () => {},
 });
 
-// it provides the language context to app
+// Provide the language context to App.tsx.
 export function LanguageProvider({ children }) {
-  const defaultLanguage = window.localStorage.getItem('rcml-lang');
-
-  const [userLanguage, setUserLanguage] = useState(defaultLanguage || 'en');
-
-  const provider = {
-    userLanguage,
-
-    dictionary: dictionaryList[userLanguage],
-
-    userLanguageChange: (selected) => {
-      const newLanguage = languageOptions[selected] ? selected : 'en';
-
-      setUserLanguage(newLanguage);
-
-      window.localStorage.setItem('rcml-lang', newLanguage);
+  
+  const defaultLanguage = window.localStorage.getItem('rcml-lang');           // Get localstorage language of the user.
+  const [userLanguage, setUserLanguage] = useState(defaultLanguage || 'en');  // If default language isnt defined, set it to 'en'.
+  
+  const provider = {                                    // Sets provider to wrap components. 
+    userLanguage,                                       // Current language.
+    dictionary: dictionaryList[userLanguage],           // Dictionary from Json files.
+    userLanguageChange: (selected) => {                 // When language switch =>
+      const newLanguage = languageOptions[selected] ? selected : 'en'; // Set selected, if undefined 'en'.
+      setUserLanguage(newLanguage);                                    // Sets userlanguge to 'newLnguage'.
+      window.localStorage.setItem('rcml-lang', newLanguage);           // Updates language in localstorage.
     },
   };
-
-  return <LanguageContext.Provider value={provider}>{children}</LanguageContext.Provider>;
+  return <LanguageContext.Provider value={provider}>{children}</LanguageContext.Provider>; // Returns provider. 
 }
 
+// A button component that can be clicked to change between languages. 
 export default function LanguageSelector() {
-  const { userLanguage, userLanguageChange } = useContext(LanguageContext);
 
-  // set selected language by calling context method
-  const handleLanguageChange = ({ value }) => userLanguageChange(value);
-  let value = 'no';
+  const { userLanguage, userLanguageChange } = useContext(LanguageContext); // Import current lang, and update method. 
+  const handleLanguageChange = ({ value }) => userLanguageChange(value);    // Set selected language by calling context method.
+  
+  let value = null;                                                         // Variable to update userLanguagechange
   return (
     <>
       <div className='LangSelect'>
-        {userLanguage === 'en' ? (
-          <img
-            src={norwayFlag}
-            alt='Norsk'
-            style={{ height: 20, width: 28 }}
-            onClick={() => {
-              value = 'no';
-              handleLanguageChange({ value });
-            }}
-          ></img>
-        ) : (
+        {userLanguage === 'en' ? (               // If user language is english? Change image to norwegian.
           <img
             src={ukFlag}
             alt='English'
             style={{ height: 20, width: 28 }}
             onClick={() => {
+              value = 'no';
+              handleLanguageChange({ value });  // When updated picture is clicked, handleLanguagechange updates to norwegian.
+            }}
+          ></img>
+        ) : (                                    // Else user language is norwegian. Change image to english.
+          <img
+            src={norwayFlag}
+            alt='Norsk'
+            style={{ height: 20, width: 28 }}
+            onClick={() => {
               value = 'en';
-              handleLanguageChange({ value });
+              handleLanguageChange({ value });  // When updated picture is clicked, handleLanguagechange updates to english.
             }}
           ></img>
         )}
       </div>
     </>
   );
-}
-
-/*
-
-<div className="langSelect" style={{width:200}}>
-        <select
-          onChange={handleLanguageChange}
-          value={userLanguage}
-          >
-          {Object.entries(languageOptions).map(([id, name]) => (
-            <option key={id} value={id}>{name}</option>
-            ))}
-          </select>
-        </div>
-
-*/
-export function Text({ tid }) {
-  const languageContext = useContext(LanguageContext);
-
-  return languageContext.dictionary[tid] || tid;
 }

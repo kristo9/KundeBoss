@@ -13,5 +13,14 @@
     "aboutPage" : {
       "introduction1" : "Flyt er et system utviklet for å gi ansatte og kunder en bedre opplevelse gjennom forbedret kommunikasjon og et ryddig system.",
       "introduction2" : "Systemet ble utviklet som et bachelorprosjekt våren 2021, og ble utviklet av by Alexander A. Jørgensen, Øyvind T. D. Husveg, Kristoffer Haugen og Didrik K. Bjerk"
-    }
+    },
+    "Fetching": "Henter...",
+    "MailRecived": "Mail har blitt registrert mottatt",
+    "answerRecived": "Svar mottatt",
+    "EarlierAnswer": "Tidligere svar",
+    "writeHere": "Skriv her",
+    "somethingWrong": "Noe gikk galt",
+    "sendAnswer": "Send svar",
+    "registerAnswer": "Registrer svar",
+    "mailSetRecived": "Mail har blitt registrert mottatt"
   }

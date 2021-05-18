@@ -87,9 +87,6 @@ export default (context: Context, req: HttpRequest): any => {
         req.body.suppliers.forEach((supplier, index, arr) => {
           arr[index]['id'] = ObjectId(supplier.id);
         });
-        /* req.body.suppliers = req.body.suppliers.map((supplier) => {
-          supplier.id = ObjectId(supplier.id);
-        }); */
       }
 
       let update = {
@@ -133,8 +130,3 @@ export default (context: Context, req: HttpRequest): any => {
 
   inputValidation();
 };
-
-/* {
-  "name":"",
-  "mail":"",
-} */
