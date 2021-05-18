@@ -41,5 +41,9 @@
     "note": "Note",
     "references":"References",
     "custNoReferences": "Kunden har ikke referanser",
-    "custNoTags": "This customer doesn't have any tags"
+    "custNoTags": "This customer doesn't have any tags",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "phone": "Phone",
+    "missing": "Missing"
 }

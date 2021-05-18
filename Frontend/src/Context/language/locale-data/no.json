@@ -41,5 +41,9 @@
     "note": "Notat",
     "references":"Referanser",
     "custNoReferences": "Kunden har ikke referanser",
-    "custNoTags": "Denne kunden har ingen tags"
+    "custNoTags": "Denne kunden har ingen tags",
+    "signIn": "Log inn",
+    "signOut": "Log ut",
+    "phone": "Telefon",
+    "missing": "Mangler"
   }

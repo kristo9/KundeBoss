@@ -1,18 +1,27 @@
+// Libraries
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
+import { useContext } from 'react';
+
+// Configuarations
 import { loginRequest } from '../../azure/authConfig';
 
+// Context
+import { LanguageContext } from '../../Context/language/LangContext';
+
+// Function that proviedes sign in and out button.
 export const SignInSignOutButton = () => {
-  const { instance } = useMsal();
+  const { dictionary } = useContext(LanguageContext);     // Import global dictionary with useContext.
+  const { instance } = useMsal();                         // Get instance to log in/out
   return (
     <div>
-      <AuthenticatedTemplate>
+      <AuthenticatedTemplate>                             {/* If authenticated this template will be used*/}
         <button onClick={() => instance.logout()} className='Link'>
-          Sign Out
+          {dictionary.signOut}
         </button>
       </AuthenticatedTemplate>
-      <UnauthenticatedTemplate>
+      <UnauthenticatedTemplate>                            {/* If unauthenticated this template will be used*/}
         <button onClick={() => instance.loginRedirect(loginRequest)} className='Link'>
-          Sign In
+        {dictionary.signIn}
         </button>
       </UnauthenticatedTemplate>
     </div>
