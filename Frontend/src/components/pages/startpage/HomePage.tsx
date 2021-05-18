@@ -35,21 +35,7 @@ const Customer = () => {
 const Admin = () => {
   return (
     <>
-      <div className='admin'>
-        <div className='adminLink'>
-          <Link to='/admin'>
-            <img src={adminIMG} className='adminIMG' alt='Admin' />
-          </Link>
-          <div className='adminTekst'> ADMIN </div>
-        </div>
-        <div className='dashboardLink'>
-          <Link to='/dashboard'>
-            <img src={dashboardIMG} className='dashboardIMG' alt='Dashboard' />
-          </Link>
-          <div className='dashboardTekst'>KUNDER</div>
-          <div className='overlayDashboard'></div>
-        </div>
-      </div>
+      <Dashboard />
     </>
   );
 };

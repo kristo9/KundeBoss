@@ -23,12 +23,9 @@ import './Navbar.css';
 import '../basicComp/basic.css';
 
 const Authenticated = () => {
-  const { dictionary } = useContext(LanguageContext);
   const { userType } = useContext(TypeContext);
   const accounts = msalInstance.getAllAccounts();
   sessionStorage.setItem('UserName', accounts[0].username);
-  console.log('UserName is set at sessionStorage "UserName":  ' + sessionStorage.getItem('UserName'));
-
   const [showLink, setShowLink] = useState(false);
 
   return (
@@ -39,16 +36,11 @@ const Authenticated = () => {
         </Link>
       </div>
       <div className='contents' id={showLink ? 'hidden' : ''}>
-        {/* <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-          {dictionary.contact}
-        </Link>
-        <Link to='/help' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-          {dictionary.help}
-        </Link>
-        <Link to='/about' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
-          {dictionary.about}
-        </Link> */}
-
+        { (userType === 'AdminReadFirst' || userType === 'AdminReadNotFirst' || userType === 'AdminWriteFirst' || userType === 'AdminWriteNotFirst') ?
+        <Link to='/admin' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          Admin
+        </Link> : ''
+        }
         <div className='coloredNavButton'>
           <SignInSignOutButton />
         </div>
@@ -57,6 +49,11 @@ const Authenticated = () => {
         </div>
       </div>
       <div className='hamburgermenu'>
+        { (userType === 'AdminReadFirst' || userType === 'AdminReadNotFirst' || userType === 'AdminWriteFirst' || userType === 'AdminWriteNotFirst') ?
+        <Link to='/admin' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          Admin
+        </Link> : ''
+        }
         <div className='coloredNavButton'>
           <SignInSignOutButton />
         </div>
@@ -103,7 +100,6 @@ const Unauthenticated = () => {
           <img src={close} alt='Close' className='Open' /> :
           <img src={hamburgermeny} alt='Open' className='Open' />
       }
-            
         </div>
       </div>
     </header>
@@ -112,15 +108,10 @@ const Unauthenticated = () => {
 
 const Navbar = () => {
   const isAuthenticated = useIsAuthenticated();
-  const { userType } = useContext(TypeContext);
-  console.log('Bruker er authentisert:  ' + isAuthenticated);
-  console.log('Brukertype: ' + userType);
-
+  
   const { accounts } = useMsal();
   const account = useAccount(accounts[0] || {});
   msalInstance.setActiveAccount(account);
-  console.log(msalInstance.getActiveAccount());
-  console.log(sessionStorage.getItem('UserName'));
 
   return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
 };
