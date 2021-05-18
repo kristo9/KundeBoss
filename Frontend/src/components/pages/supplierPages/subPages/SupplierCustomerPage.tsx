@@ -1,7 +1,12 @@
+// Libraries
 import { useHistory } from 'react-router-dom';
-import { ContactPersonInfo, DisplayCustSupInfo } from '../../../basicComp/display';
 
+// Components
+import { DisplayCustSupInfo } from '../../../basicComp/display';
+
+// CSS
 import '../../../basicComp/basic.css';
+
 
 /**
  * Displayes a list with the suppliers.
@@ -30,7 +35,7 @@ function DisplayCustomer(props: { customers: any }) {
     if (props.customers.length === 0) {
       return <div>Denne kunden har ingen leverandører</div>;
     }
-    //the customer have suppliers
+    //The customer have suppliers
     return (
       <div>
         {props.customers.map((customer) => (

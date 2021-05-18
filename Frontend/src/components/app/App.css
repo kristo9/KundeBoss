@@ -1,4 +1,4 @@
-/*css for the body of the document*/
+/*Css for the body of the document*/
 body {
   width: 100%;
   margin: 0 auto;
@@ -12,6 +12,7 @@ body {
   flex-wrap: wrap;
 }
 
+/* Makes sure navbar goes on top of everything else */
 .navbar {
   z-index: 1000;
 }
@@ -22,6 +23,8 @@ body {
   src: url('../../fonts/web/Manrope-Regular.woff2') format('woff2'),
     url('../../fonts/web/Manrope-Regular.woff') format('woff');
 }
+
+/*Makes sure manrope is used everywhere*/
 * {
   font-family: Manrope;
 }

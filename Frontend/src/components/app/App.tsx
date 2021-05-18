@@ -25,6 +25,7 @@ import { UserTypeProvider } from '../../Context/UserType/UserTypeContext';
 import './App.css';
 import '../basicComp/basic.css';
 
+// Url extensions (path) that brings user to specified component. 
 const Routes = () => {
   return (
     <Switch className='Component'>
@@ -44,26 +45,27 @@ const Routes = () => {
   );
 };
 
+// Gets pca instance from index.tsx
 const App = ({ pca }) => {
+
   const { inProgress } = useMsal();
 
-  console.log(inProgress);
   return (
-    <LanguageProvider>
-      <UserTypeProvider>
-        <Router>
-          <MsalProvider instance={pca}>
-            {inProgress === 'login' ? (
+    <LanguageProvider>                            {/*Provider for global language context*/}
+      <UserTypeProvider>                          {/*Provider for global userType context*/}
+        <Router>                                  {/*Provider for routes*/}
+          <MsalProvider instance={pca}>           {/*Provider for msal login context*/}
+            {inProgress === 'login' ? (           /* Checks, and waits, if in login process */
               <div>
                 <h6> Loading Login......... </h6>
               </div>
-            ) : (
+            ) : (                                 /*If not in login process, setting navbar and route*/
               <div className='app W100'>
                 <div className='navbar'>
-                  <Navbar />
+                  <Navbar />                      {/*Places navbar on top. Navbar is always on top of routes components.*/}
                 </div>
                 <div className='startDocumentUnderNavbar W100'>
-                  <Routes />
+                  <Routes />                      {/*Routes component depending on which routelink.*/}
                 </div>
               </div>
             )}

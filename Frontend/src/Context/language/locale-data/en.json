@@ -13,5 +13,14 @@
     "aboutPage" : {
         "introduction1" : "Flyt is a system developed to provide a better experience for both employees and customers. ",
         "introduction2" : "The system was developed as a bachelor project for TietoEvry and was developed during the Spring of 2021 by Alexander A. Jørgensen, Øyvind T. D. Husveg, Kristoffer Haugen and Didrik K. Bjerk."
-    }
+    },
+    "Fetching": "Fetching...",
+    "MailRecived": "Mail registred as recived",
+    "answerRecived": "Answer recived",
+    "EarlierAnswer": "Earlier answer",
+    "writeHere": "Write here",
+    "somethingWrong": "Something went wrong",
+    "sendAnswer": "Send answer",
+    "registerAnswer": "Registrer answer",
+    "mailSetRecived": "Mail registred as recived"
 }

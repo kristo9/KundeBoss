@@ -22,11 +22,30 @@ import close from '../../bilder/close.png'
 import './Navbar.css';
 import '../basicComp/basic.css';
 
+/* This component returns either a authenticated or a unauthenticated navbar. The msal provider in the 
+      App.tsx file keeps track of the user and if the user is signed in or not*/ 
+
+
+
+const Navbar = () => {
+  const { accounts } = useMsal();                       // Gets all accounts.
+  const account = useAccount(accounts[0] || {});        // Gets first account.
+  msalInstance.setActiveAccount(account);               // Sets first account as active account. 
+  const isAuthenticated = useIsAuthenticated();         // Function from @azure/msal-react to keep track of authentication.
+      
+  return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
+  };
+      
+export default Navbar;                                  // Exports Navbar function as component.
+
+
 const Authenticated = () => {
-  const { userType } = useContext(TypeContext);
-  const accounts = msalInstance.getAllAccounts();
-  sessionStorage.setItem('UserName', accounts[0].username);
-  const [showLink, setShowLink] = useState(false);
+
+  const { userType } = useContext(TypeContext);             // Gets global userType from typeContext.
+  const [showLink, setShowLink] = useState(false);          // Local state to keep track of whether to 
+
+  const accounts = msalInstance.getAllAccounts();           // Gets all active accounts.
+  sessionStorage.setItem('UserName', accounts[0].username); // Stores username as sessionstorage. 
 
   return (
     <header className='topnav add-padding'>
@@ -66,13 +85,11 @@ const Authenticated = () => {
 };
 
 const Unauthenticated = () => {
-  const { dictionary } = useContext(LanguageContext);
-  sessionStorage.removeItem('UserName');
-  //console.log('UserName is removed as no account is signed in');
 
-  const [showLink, setShowLink] = useState(false);
-
-  //console.log(showLink);
+  const { dictionary } = useContext(LanguageContext);       // Global language context through dictionary.
+  const [showLink, setShowLink] = useState(false);          // Local state to keep track of whether 
+  sessionStorage.removeItem('UserName');                    // If no user is signed in, makes sure sessionStorage is empty. 
+  
   return (
     <header className='topnav add-padding'>
       <div className='left'>
@@ -94,26 +111,16 @@ const Unauthenticated = () => {
           <LanguageSelector />
         </div>
       </div>
-      <div className='hamburgermenu coloredNavButton'>
-        <div onClick={() => setShowLink(!showLink)}> 
-        { showLink ? 
+      <div className='hamburgermenu coloredNavButton'>              {/* If navbar gets small enough it will show a hamburgermenu*/}
+        <div onClick={() => setShowLink(!showLink)}>                {/* On click => set show link to the opposite of what it was*/}
+        { showLink ?                                                /* Showlink is true? Then the links is showing. Else click them menu to open it.*/
           <img src={close} alt='Close' className='Open' /> :
           <img src={hamburgermeny} alt='Open' className='Open' />
-      }
+        }
         </div>
       </div>
     </header>
   );
 };
 
-const Navbar = () => {
-  const isAuthenticated = useIsAuthenticated();
-  
-  const { accounts } = useMsal();
-  const account = useAccount(accounts[0] || {});
-  msalInstance.setActiveAccount(account);
 
-  return <div>{isAuthenticated ? <Authenticated /> : <Unauthenticated />}</div>;
-};
-
-export default Navbar;

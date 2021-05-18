@@ -7,15 +7,10 @@ import { msalInstance } from './azure/authRedirect';
 // Component
 import App from './components/app/App';
 
-// CSS Style
-import './index.css';
-
 // Creating a new msalInstanse for keeping track of Authentification.
 //export const msalInstance = new PublicClientApplication(msalConfig);
 
-// Assigning the active account to ".activeAccount" and storing the
-//     username for token fetching. If no account is signed in,
-//     make sure the username is removed from localstorage.
+// Assigning the active account to ".activeAccount" if account is signed in.
 const accounts = msalInstance.getAllAccounts();
 if (accounts.length > 0) {
   msalInstance.setActiveAccount(accounts[0]);
