@@ -21,21 +21,25 @@ interface EmployPermissionForACustomer {
   permission: string;
 }
 
+/**
+ * A react component contaning the viewRights-page
+ */
 const ViewRights = ({ adminData }: any) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<EmployeeRights[]>([]);
+  const [customerData, setCustomerData] = useState(null);
 
   // Searchfield logic
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
+  // Updates page based if search result changes
   useEffect(() => {
     const results = adminData.filter((employee) => employee.name.toLowerCase().includes(searchTerm.toLowerCase()));
     setSearchResults(results);
   }, [searchTerm]);
 
-  const [customerData, setCustomerData] = useState(null);
-
+  // Gets all customers, is used when updating the rights of an employee
   useEffect(() => {
     const fetchAllCustomers = async () => {
       let customers = await getAllCustomer();
@@ -81,6 +85,31 @@ const ViewRights = ({ adminData }: any) => {
     </div>
   );
 
+  //   name: string;
+  //   employeeId: string;
+  //   admin: string;
+  //   isCustomer: boolean;
+  //   customerInformation: EmployPermissionForACustomer[];
+  // }
+
+  // interface EmployPermissionForACustomer {
+  //   _id: string;
+  //   name: string;
+  //   permission: string;
+  // }
+
+  /**
+   *
+   * @param name: string
+   * @param employeeId: string;
+   * @param admin: string;
+   * @param isCustomer: boolean;
+   * @param customerInformation
+   * @param index: number
+   * @param index: number
+   * @param index: number
+   * @returns A react component that displayes the rights of an employee
+   */
   function EmployeRights(props: EmployeeRights & { index: number }) {
     const [isOpen, setIsOpen] = useState(false);
 

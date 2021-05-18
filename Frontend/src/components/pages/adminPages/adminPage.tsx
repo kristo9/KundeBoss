@@ -11,8 +11,6 @@ import ViewRights from './subPages/viewRights';
 import CustomerEditPage from '../customerpage/subPages/customerEditPage';
 import SupplierEditPage from '../supplierPages/subPages/SupplierEditPage';
 
-import NewEntry from './subPages/NewEntry';
-
 //CSS
 import '../../basicComp/sidebar.css';
 
