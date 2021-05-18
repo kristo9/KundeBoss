@@ -74,7 +74,7 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    db.collection('supplier')
+    db.collection(collections.supplier)
       .find({ '_id': ObjectId(req.body.id) })
       .toArray((error: any, docs: any) => {
         if (error) {
@@ -86,14 +86,13 @@ export default (context: Context, req: HttpRequest): any => {
           return context.done();
         }
 
-        db.collection('supplier').deleteOne(query, (error: any, docs: any) => {
+        db.collection(collections.supplier).deleteOne(query, (error: any, docs: any) => {
           if (error) {
             errorQuery(context);
             return context.done();
           }
-          console.log('Supplier deleted!');
           //Deletes the supplier for customers
-          db.collection('customer').updateMany(
+          db.collection(collections.customer).updateMany(
             { 'suppliers.id': ObjectId(req.body.id) },
             { $pull: { suppliers: { 'id': ObjectId(req.body.id) } } },
             (error: any, docs: any) => {

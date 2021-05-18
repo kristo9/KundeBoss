@@ -1,7 +1,7 @@
 import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
-import { checkDbConnection, clientRead, collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { verify } from 'jsonwebtoken';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
@@ -47,15 +47,14 @@ export default (context: Context, req: HttpRequest): any => {
    */
   const functionQuery = (db: Db) => {
     let query = { '_id': ObjectId(req.body.id) };
-    let update = { '$addToSet' :{'seenBy': username }}
-    db.collection(collections.mail).updateOne(query,update,(error:any,docs:any)=>{
-      if(error){
-        errorQuery(context)
-        return context.done()
+    let update = { '$addToSet': { 'seenBy': username } };
+    db.collection(collections.mail).updateOne(query, update, (error: any, docs: any) => {
+      if (error) {
+        errorQuery(context);
+        return context.done();
       }
-      returnResult(context,docs),
-      context.done();
-    })
+      returnResult(context, docs), context.done();
+    });
   };
 
   connectRead(context, authorize);

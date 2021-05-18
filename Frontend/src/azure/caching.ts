@@ -21,16 +21,6 @@ export async function getFromCache(objId) {
     let objAgeSec = (new Date().getTime() - cache.get(objId)?.time) / millInSec || 0;
     let obj = await cache.get(objId).data;
     if (obj?.status === 200 && objAgeSec < cacheTimeout) {
-      /* console.log(
-        'Retrieved object from cache. Age(sec): ' +
-          Math.round(objAgeSec) +
-          ' Timout(sec): ' +
-          Math.round(cacheTimeout - objAgeSec) +
-          '\nCurrent cache size(KB): ' +
-          Math.round(currentSizeKB) +
-          ' Objects: ' +
-          cache.size
-      ); */
       let temp = cache.get(objId);
       temp.usageAge = ++cacheWeight;
       cache.set(objId, temp);

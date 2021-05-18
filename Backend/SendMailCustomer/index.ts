@@ -100,7 +100,7 @@ export default (context: Context, req: HttpRequest): any => {
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       if (err) {
-        errorUnauthorized(context, 'Token not valid'); /*TODO: appropriate error message, optional */
+        errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
         senderName = decoded.name;
@@ -128,7 +128,7 @@ export default (context: Context, req: HttpRequest): any => {
             docs = docs[0];
             let excpectedReceiverCount = 0;
             if (error) {
-              errorQuery(context); /*TODO: appropriate error message, optional */
+              errorQuery(context);
               return context.done();
             }
             let customer = null;
@@ -286,12 +286,3 @@ export default (context: Context, req: HttpRequest): any => {
 
   inputValidation();
 };
-
-/*
-{
-  "customerId": {"id":"","include":"true"/"false"},
-  "supplierIds":[], Optional
-  "text": "",
-  "subject": ""
-}
-*/
