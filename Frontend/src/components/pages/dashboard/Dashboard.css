@@ -38,6 +38,15 @@ td {
   outline: none;
 }
 
+.selectedCustomer {
+  background-color: white;
+  border: 2px solid #063752;
+}
+.selectedCustomerSelected {
+  background-color: #015b97;
+  border: 2px solid #063752;
+}
+
 /**
  * Main wrapper
  */
@@ -245,4 +254,14 @@ td {
   padding: 10px;
   text-align: center;
   color: #888;
+}
+
+@media only screen and (max-width: 920px) {
+  .contactPerson {
+    display: none;
+  }
+
+  .cm {
+    display: none;
+  }
 }

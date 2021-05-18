@@ -16,6 +16,7 @@ import { TypeContext } from '../../Context/UserType/UserTypeContext';
 // Image
 import logo from '../../bilder/logo-ferdig.png';
 import hamburgermeny from '../../bilder/Hamburger_icon.svg.png'
+import close from '../../bilder/close.png'
 
 // CSS style
 import './Navbar.css';
@@ -38,6 +39,16 @@ const Authenticated = () => {
         </Link>
       </div>
       <div className='contents' id={showLink ? 'hidden' : ''}>
+        {/* <Link to='/contact' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {dictionary.contact}
+        </Link>
+        <Link to='/help' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {dictionary.help}
+        </Link>
+        <Link to='/about' className='Link' onClick={() => (showLink ? setShowLink(false) : '')}>
+          {dictionary.about}
+        </Link> */}
+
         <div className='coloredNavButton'>
           <SignInSignOutButton />
         </div>
@@ -46,7 +57,12 @@ const Authenticated = () => {
         </div>
       </div>
       <div className='hamburgermenu'>
-        <div onClick={() => setShowLink(!showLink)}> <img src={hamburgermeny} alt='Open' className='Open' /> </div>
+        <div className='coloredNavButton'>
+          <SignInSignOutButton />
+        </div>
+        <div className='langSel'>
+          <LanguageSelector />
+        </div>
       </div>
     </header>
   );
@@ -82,7 +98,13 @@ const Unauthenticated = () => {
         </div>
       </div>
       <div className='hamburgermenu coloredNavButton'>
-        <button onClick={() => setShowLink(!showLink)}> Open </button>
+        <div onClick={() => setShowLink(!showLink)}> 
+        { showLink ? 
+          <img src={close} alt='Close' className='Open' /> :
+          <img src={hamburgermeny} alt='Open' className='Open' />
+      }
+            
+        </div>
       </div>
     </header>
   );

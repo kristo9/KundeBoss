@@ -11,6 +11,8 @@ import './Dashboard.css';
 import '../../basicComp/basic.css';
 import { LanguageContext } from '../../../Context/language/LangContext';
 import { stringify } from 'querystring';
+import SendMail from '../customerpage/subPages/customerSendMail';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 /**
  * A class that contains and renders the dashboard
@@ -23,16 +25,32 @@ const Dashboard = () => {
   const [name, setName] = useState(null);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState(null);
+  const [mailOpen, setMailOpen] = useState(false);
+
+  const [selectedCutomers, setSelectedCustomers] = useState(null);
 
   useEffect(() => {
     const fetchName = async () => {
       let customers = await getEmployee();
       setCustomers(customers);
-      setFilter(customers.customerInformation);
-      setName(customers.name);
+      setFilter(customers?.customerInformation);
+      setName(customers?.name);
+      setSelectedCustomers(new Array(customers?.customerInformation?.length).fill(false));
+
+      console.log(customers?.customerInformation);
     };
+
     fetchName();
   }, []);
+
+  function updateSelectedCutomer(index: number) {
+    console.log(index);
+    setSelectedCustomers(
+      selectedCutomers?.map((customer, i) => {
+        return index === i ? !customer : customer;
+      })
+    );
+  }
 
   useEffect(() => {
     const filtered = (e) => {
@@ -50,22 +68,51 @@ const Dashboard = () => {
   }, [search]);
 
   return (
-    <div>
-      <div className='add-margins'>
-        {displayGreeting({ name }, { dictionary })}
-        <div style={{ float: 'right' }}>
-          <input
-            type='search'
-            className='search'
-            placeholder={dictionary.search_Name_Tag}
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
+    <div className='add-margins'>
+      {!mailOpen ? (
+        <div>
+          <DisplayGreeting name={name} dictionary={dictionary} />
+          <div style={{ float: 'right' }}>
+            <button className='editButton' style={{ marginRight: '1em' }} onClick={() => setMailOpen(true)}>
+              Send Mail
+            </button>
+            <input
+              type='search'
+              className='search'
+              placeholder={dictionary.search_Name_Tag}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+            />
+          </div>
+          <DisplayCustomers
+            updateFunction={updateSelectedCutomer}
+            filter={filter}
+            name={name}
+            dictionary={dictionary}
+            selectedCutomersArray={selectedCutomers}
           />
         </div>
-        <div>{displayCustomers({ filter }, { name }, { dictionary })}</div>
-      </div>
+      ) : (
+        <div>
+          <button
+            className='editButton'
+            style={{ float: 'right', marginTop: '3em' }}
+            onClick={() => setMailOpen(false)}
+          >
+            Tilbake
+          </button>
+          <SendMail
+            customerID={customers.customerInformation.map((customer, index) => {
+              if (customer && selectedCutomers[index]) {
+                console.log(customer._id + ' ' + index);
+                return customer._id;
+              }
+            })}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -73,44 +120,48 @@ const Dashboard = () => {
 /**
  * Displays a greeting if the user is logged in.
  */
-const displayGreeting = ({ name }, { dictionary }) => {
-  if (name !== null) {
+function DisplayGreeting(props: { name; dictionary }) {
+  if (props.name !== null) {
     return (
       <h1>
-        {dictionary.welcome}
-        {name.split(' ')[0]}
+        {props.dictionary.welcome}
+        {props.name.split(' ')[0]}
       </h1>
     );
   } else {
-    return <h1>{dictionary.welcome}</h1>;
+    return <h1>{props.dictionary.welcome}</h1>;
   }
-};
+}
 
-const displayCustomers = ({ filter }, { name }, { dictionary }) => {
-  const tag = dictionary.noTag;
-  if (name !== null) {
+function DisplayCustomers(props: { filter; name; dictionary; selectedCutomersArray; updateFunction }) {
+  const tag = props.dictionary.noTag;
+  if (props.name !== null) {
     return (
       <table className='diasplayTable'>
         <thead>
           <tr className='tableHeader'>
+            <td style={{ width: '10px' }}></td>
             <td>
               <b>Navn</b>
             </td>
-            <td>
+            <td className="contactPerson">
               <b>Kontaktperson</b>
             </td>
-            <td>
+            <td className="cm">
               <b>Epost</b>
             </td>
             <td>
               <b>Tags</b>
+            </td>
+            <td>
+              <b>Notifikasjoner</b>
             </td>
           </tr>
         </thead>
         <tbody>
           {
             //Creates a table entry for each customer returned from the database.
-            filter.map((customer) => (
+            props.filter.map((customer, index) => (
               <InfoBox
                 customerName={customer.name}
                 contactName={customer.contact.name}
@@ -118,7 +169,11 @@ const displayCustomers = ({ filter }, { name }, { dictionary }) => {
                 tags={customer.tags}
                 key={customer._id}
                 id={customer._id}
+                notifications={customer.changedMails}
                 noTag={tag}
+                customerSelected={props.selectedCutomersArray ? props.selectedCutomersArray[index] : false}
+                updateFunction={props.updateFunction}
+                index={index}
               />
             ))
           }
@@ -128,26 +183,38 @@ const displayCustomers = ({ filter }, { name }, { dictionary }) => {
   } else {
     return <LoadingSymbol />;
   }
-};
+}
 
 const InfoBox = (prop) => {
-  let history = useHistory();
   const tags = prop.tags;
+  let history = useHistory();
+  let className = 'selectedCustomer';
+  if (prop.customerSelected) {
+    className = 'selectedCustomerSelected';
+  }
 
   return (
-    <tr
-      tabIndex={0}
-      className='rad'
-      onClick={() => {
-        history.push('/customerpage/' + prop.id);
-      }}
-    >
+    <tr tabIndex={0} className='rad'>
       <td>
-        <b>{prop.customerName}</b>
+        <div
+          onClick={() => prop.updateFunction(prop.index)}
+          style={{ height: '1em', width: '1em' }}
+          className={className}
+        ></div>
       </td>
-      <td>{prop.contactName}</td>
-      <td>{prop.mail}</td>
+      <td>
+        <b
+          onClick={() => {
+            history.push('/customerpage/' + prop.id);
+          }}
+        >
+          {prop.customerName}
+        </b>
+      </td>
+      <td className="contactPerson">{prop.contactName}</td>
+      <td className="cm">{prop.mail}</td>
       <td> {tags.length === 0 ? prop.noTag : prop.tags.toString().split(',').join(', ')} </td>
+      <td>{prop.notifications}</td>
     </tr>
   );
 };

@@ -32,6 +32,7 @@ function DisplaySupplier(props: { suppliers: any; customer: boolean }) {
       <div>
         {props.suppliers.map((supplier) => (
           <DisplayCustSupInfo
+            key={supplier.id}
             gotoPage={'/supplierpage/' + supplier.id.toString()}
             name={supplier.name}
             contactName={supplier.contact.name}

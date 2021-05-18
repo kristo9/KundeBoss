@@ -188,7 +188,7 @@ function CustomerEditPage({ customerInfo }: any) {
           <MultipleInputField text={'Leverandører'}>
             {suppleirFields.map(({ id }, index, supplier) => {
               return (
-                <div key={id}>
+                <div key={id} className='displayInfoDiv'>
                   <button className='removeButton' onClick={() => supplierRemove(index)}>
                     x
                   </button>

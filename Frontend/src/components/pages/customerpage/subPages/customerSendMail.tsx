@@ -80,7 +80,7 @@ function SendMail(props: customerIDProp) {
         </span>
       );
     } else {
-      return <div>noe</div>;
+      return null;
     }
   };
 
@@ -170,13 +170,13 @@ function SendMail(props: customerIDProp) {
 
           console.log(promisses);
           // exevutes all the promisses (send all the mails)
-          // promisses.forEach(async (propmis) => {
-          //   let result = await propmis;
-          //   console.log(result);
-          //   // if (result.status === 200) {
-          //   //   console.log('mail sendt');
-          //   // }
-          // });
+          promisses.forEach(async (propmis) => {
+            let result = await propmis;
+            console.log(result);
+            // if (result.status === 200) {
+            //   console.log('mail sendt');
+            // }
+          });
         })}
       >
         <div className='displayInfoDiv inputField'>
@@ -234,7 +234,7 @@ function SendMail(props: customerIDProp) {
               );
             })}
 
-            <button type='button' onClick={() => append({})} className='addButton'>
+            <button type='button' onClick={() => append({})} className='addButtonWhite'>
               <b>+</b> Legg til mottager
             </button>
           </MultipleInputField>
