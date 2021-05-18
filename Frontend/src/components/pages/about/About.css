@@ -1,3 +1,4 @@
+/* Styles the title. */
 .title {
   font-size: 50px;
   margin: auto;
@@ -5,6 +6,7 @@
   padding: 10px;
 }
 
+/* Alligns text. */
 .t {
   max-width: 1200px;
   display: flex;
@@ -13,6 +15,7 @@
   flex-direction: column;
 }
 
+/* Styles whole component. */
 .page {
   margin: auto;
   width: 50%;

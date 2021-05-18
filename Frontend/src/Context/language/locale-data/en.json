@@ -4,6 +4,7 @@
     "help": "Help",
     "noTag": "No tags ",
     "welcome": "Welcome ",
+    "search_Subject_Text": "Search subject or text",
     "search_Name_Tag": "Search name or tag ",
     "contactPage" : {
         "location" : "TietoEvry Brumunddal is located at Strandveien 2, 2380.",
@@ -22,5 +23,23 @@
     "somethingWrong": "Something went wrong",
     "sendAnswer": "Send answer",
     "registerAnswer": "Registrer answer",
-    "mailSetRecived": "Mail registred as recived"
+    "mailSetRecived": "Mail registred as recived",
+    "sendMail": "Send Mail",
+    "back": "Back",
+    "name": "Name",
+    "contactPerson": "Contact Person",
+    "mail": "Mail",
+    "tags": "Tags",
+    "notifications": "Notifications",
+    "noAccess": "You don't have access",
+    "contactAdmin": "Contact admin!",
+    "suppliers": "Suppliers",
+    "noSuppliers": "Denne kunden har ingen leverandører",
+    "information": "Information",
+    "missingName": "Missing name",
+    "custNoNote": "Customer missing notes",
+    "note": "Note",
+    "references":"References",
+    "custNoReferences": "Kunden har ikke referanser",
+    "custNoTags": "This customer doesn't have any tags"
 }

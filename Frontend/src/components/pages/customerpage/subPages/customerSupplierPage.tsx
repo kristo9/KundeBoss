@@ -1,16 +1,26 @@
-import { useHistory } from 'react-router-dom';
+// Libraries
+import { useContext } from 'react';
+
+// Components
 import { DisplayCustSupInfo } from '../../../basicComp/display';
+
+// Context
+import { LanguageContext } from '../../../../Context/language/LangContext';
+import { dictionaryList } from '../../../../Context/language/LangDir';
 
 /**
  * Displayes a list with the suppliers.
  * @param {any} custInfo information about the cutomer.
  * @returns a react component with the customer-supplier page
  */
-function CustomerSupplierPage({ customerInfo, customer }: any) {
+
+ // CustomerSupplierPage main function.
+const CustomerSupplierPage = ({ customerInfo, customer }: any) => {
+  const { dictionary } = useContext(LanguageContext)
   return (
     <div>
-      <h1 className='color-dark heading'>Leverandører</h1>
-      <DisplaySupplier suppliers={customerInfo.suppliers} customer={customer} />
+      <h1 className='color-dark heading'>{dictionary.suppliers}</h1>
+      <DisplaySupplier suppliers={customerInfo.suppliers} customer={customer} />  {/* Lists information about suppliers*/}
     </div>
   );
 }
@@ -20,12 +30,13 @@ function CustomerSupplierPage({ customerInfo, customer }: any) {
  * @param {any} suppliers information about the suppliers.
  * @returns a react component with the supplier information.
  */
-function DisplaySupplier(props: { suppliers: any; customer: boolean }) {
+const DisplaySupplier =(props: { suppliers: any; customer: boolean }) => {
+  const { dictionary } = useContext(LanguageContext)
   //the supplier-data are loaded/available
   if (props.suppliers) {
     //the customer doen't hava any suppliers
     if (props.suppliers.length === 0) {
-      return <div>Denne kunden har ingen leverandører</div>;
+    return <div>{dictionary.noSuppliers}</div>;
     }
     //the customer have suppliers
     return (
@@ -45,8 +56,4 @@ function DisplaySupplier(props: { suppliers: any; customer: boolean }) {
   }
 }
 
-export function ContactPersonInfo() {
-  return <div></div>;
-}
-
-export default CustomerSupplierPage;
+export default CustomerSupplierPage; // Exports CustomerSupplierPage function as main functional component
