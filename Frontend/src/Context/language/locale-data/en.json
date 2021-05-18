@@ -6,6 +6,7 @@
     "welcome": "Welcome ",
     "search_Subject_Text": "Search subject or text",
     "search_Name_Tag": "Search name or tag ",
+    "search_Name": "Search name",
     "contactPage" : {
         "location" : "TietoEvry Brumunddal is located at Strandveien 2, 2380.",
         "openingHours" : "Weekdays: 09.00 - 15.00",
@@ -45,5 +46,28 @@
     "signIn": "Sign In",
     "signOut": "Sign Out",
     "phone": "Phone",
-    "missing": "Missing"
+    "missing": "Missing",
+
+    "read": "read",
+    "write": "write",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "reset": "Reset",
+
+    "admin": {
+        "permissions": "Permissions",
+        "has": "Has",
+        "customers": "customers",
+        "employeeName": "Emplyee name",
+        "none": "none",
+        "chooseCustomer": "Choose customer",
+        "addCustomer": "Add customer",
+        "adminPermissions": "Admin permissions"
+      },
+
+      "supplier": {
+          "customers": "Customers",
+          "noCustomers": "No customers yet"
+      }
+
 }

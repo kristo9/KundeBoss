@@ -6,6 +6,7 @@
     "welcome": "Velkommen ",
     "search_Subject_Text": "Søk emne eller text",
     "search_Name_Tag": "Søk etter navn eller tag",
+    "search_Name": "Søk etter navn",
     "contactPage" : {
       "location" : "TietoEvry Brumunddal holder til i Strandveien 2, 2380.",
       "openingHours" : "Ukedager: 09.00 - 15.00",
@@ -45,5 +46,27 @@
     "signIn": "Log inn",
     "signOut": "Log ut",
     "phone": "Telefon",
-    "missing": "Mangler"
+    "missing": "Mangler",
+
+    "read": "les",
+    "write": "skriv",
+    "cancel": "Avbryt",
+    "edit": "Rediger",
+    "reset": "Reset",
+
+    "admin": {
+      "permissions": "Rettigheter",
+      "has": "Har",
+      "customers": "kunder",
+      "employeeName": "Ansatt navn",
+      "none": "ingen",
+      "chooseCustomer": "Velg kunde",
+      "addCustomer": "Legg til kunde",
+      "adminPermissions": "Admin rettigheter"
+    },
+
+    "supplier": {
+      "customers": "Kunder",
+      "noCustomers": "Denne leverandøren har ingen kunder"
+  }
   }

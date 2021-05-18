@@ -1,12 +1,14 @@
 // Libraries
-import { useHistory } from 'react-router-dom';
+import { useContext } from 'react';
 
 // Components
 import { DisplayCustSupInfo } from '../../../basicComp/display';
 
+// Context
+import { LanguageContext } from '../../../../Context/language/LangContext';
+
 // CSS
 import '../../../basicComp/basic.css';
-
 
 /**
  * Displayes a list with the suppliers.
@@ -14,9 +16,10 @@ import '../../../basicComp/basic.css';
  * @returns a react component with the customer-supplier page
  */
 function SupplierCustomerPage({ supplierInfo }: any) {
+  const { dictionary } = useContext(LanguageContext);
   return (
     <div>
-      <h1 className='color-dark heading'>Kunder</h1>
+      <h1 className='color-dark heading'>{dictionary.supplier.customers}</h1>
       <DisplayCustomer customers={supplierInfo.customers} />
     </div>
   );
@@ -28,12 +31,12 @@ function SupplierCustomerPage({ supplierInfo }: any) {
  * @returns a react component with the supplier information.
  */
 function DisplayCustomer(props: { customers: any }) {
-  let history = useHistory();
+  const { dictionary } = useContext(LanguageContext);
   //the supplier-data are loaded/available
   if (props.customers) {
     //the customer doen't hava any suppliers
     if (props.customers.length === 0) {
-      return <div>Denne kunden har ingen leverandører</div>;
+      return <div>{dictionary.supplier.noCustomer}</div>;
     }
     //The customer have suppliers
     return (
