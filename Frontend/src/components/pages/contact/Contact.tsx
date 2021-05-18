@@ -2,10 +2,13 @@ import { LanguageContext } from '../../../Context/language/LangContext';
 import { useContext } from 'react';
 import './Contact.css';
 
-/**
- * @returns A react component with the contact page
+/*
+Contact returns a React Component with contact information if anyone would like to contact the developers og administator
+  of the application.
  */
-function Contact() {
+
+// A simple function that returns a small contact page with some information.
+const Contact = () => {
   const { dictionary } = useContext(LanguageContext);
 
   return (
@@ -20,4 +23,4 @@ function Contact() {
   );
 }
 
-export default Contact;
+export default Contact; // Export 'Contact' function as default.

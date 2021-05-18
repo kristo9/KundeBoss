@@ -1,6 +1,10 @@
-import React, { useState, FunctionComponent } from 'react';
+// Libraries
+import { useState } from 'react';
+
+// CSS
 import './sidebar.css';
 
+// Interface for incomming props.
 export interface SBProps {
   buttons: SBElementProps;
 
@@ -8,6 +12,7 @@ export interface SBProps {
   altText?: string;
 }
 
+// Interface for buttons.
 export interface SBButtonProp {
   icon?: any;
   text: string;
@@ -17,11 +22,14 @@ export interface SBButtonProp {
   currentlyActiveID?: string;
 }
 
+// Buttons interface array of SBButtonProp
 export interface SBElementProps extends Array<SBButtonProp> {}
 
+// Main function.
 export function Sidebar(props: SBProps) {
-  const [buttonState, setButtonState] = useState(props.buttons[0].ID);
+  const [buttonState, setButtonState] = useState(props.buttons[0].ID);    // Local state buttonstate.
 
+  // Returns a sidemenu of buttonprops and updates active button through buttonstate.
   return (
     <div className='sidebar'>
       <h2 className='sidebarHederText'>{props.text ? props.text : props.altText}</h2>
@@ -45,6 +53,7 @@ export function Sidebar(props: SBProps) {
   );
 }
 
+// Function that controlls if button is active or not.
 export function SidebarItem(props: SBButtonProp) {
   let classNameName = props.currentlyActiveID === props.ID ? 'buttonActive' : 'buttonNotActive';
 

@@ -1,14 +1,23 @@
-/**
- * All employees without acces will be redirected to this page.
- * @returns A react component contaning the page that users without access will see.
+// Libraries
+import { useContext } from "react";
+
+// Context
+import { LanguageContext } from "../../Context/language/LangContext";
+
+/*
+When a user dont have access they will see this page.
  */
-function InitialPage() {
+
+
+// Simple function that returnes a message saying user dont have access.
+const InitialPage = () => {
+  const { dictionary } = useContext(LanguageContext)
   return (
     <div className='add-margins'>
-      <p>Du har ikke tilgang</p>
-      <p>Kontakt admin (noe informasjon)</p>
+      <p>{dictionary.noAccess}</p>
+      <p>{dictionary.contactAdmin}</p>
     </div>
   );
 }
 
-export default InitialPage;
+export default InitialPage; // Export InitialPage as default functional component.

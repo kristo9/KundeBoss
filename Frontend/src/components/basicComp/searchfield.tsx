@@ -1,3 +1,4 @@
+// Libraries
 import React from 'react';
 
 class Searchfield extends React.Component<{}, { value: any; func: any }> {
@@ -31,3 +32,5 @@ class Searchfield extends React.Component<{}, { value: any; func: any }> {
 }
 
 export default Searchfield;
+
+

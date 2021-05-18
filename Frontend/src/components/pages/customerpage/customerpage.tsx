@@ -20,39 +20,38 @@ import '../../basicComp/sidebar.css';
 
 /**
  * Contains the customer page and all the info needed by the subpages.
- * Subpages are also loaded/viewed from here.
+ * Subpages are also loaded/viewed from this component.
  */
 
+
+// Main component in CustomerPage functional component.
 const CustomerPage = () => {
-  const { userType } = useContext(TypeContext);
+  const { userType } = useContext(TypeContext);                   // Global context variable userType to determine access.
 
-  const [pageState, setPageState] = useState(<LoadingSymbol />);
-  const [customerInfo, setCustomerInfo] = useState(null);
-  const [buttons, setButtons] = useState(null);
-  const [error, setError] = useState('');
+  const [pageState, setPageState] = useState(<LoadingSymbol />);  // Local state PageState to determine which page to display.
+  const [customerInfo, setCustomerInfo] = useState(null);         // Local state customerInfo to store customerInfo.
+  const [buttons, setButtons] = useState(null);                   // Local state buttons to store which buttons to show. 
 
+  // UseEffect to fetch customers info.
   useEffect(() => {
-    const FetchCustomerInfo = async () => {
-      let customerI = null;
-      console.log(userType + ' Det er det jeg er ;)');
-
-      if (userType === 'Customer') {
-        console.log('Inne');
-        const customerSelf = await getEmployee();
-        customerI = await getCustomer(customerSelf.customerInformation[0]._id);
-        setButtons('ButtonsRead');
+    const FetchCustomerInfo = async () => {                      // FetchCustomerInfo to fetch this customers info.
+      let customerI = null;                                      // Fetched customers variable.
+      if (userType === 'Customer') {                             // If the current user is 'Customer', only show some pages.
+        const customerSelf = await getEmployee();                // Gets info about itself. 
+        customerI = await getCustomer(customerSelf.customerInformation[0]._id); //Fetches the only customer related, itself.
+        setButtons('ButtonsRead');                               // Set buttons to only read access. 
       } else {
-        console.log('Ute :(');
-        customerI = await getCustomer(window.location.pathname.split('/')[2]);
-        setButtons('Buttons');
+        customerI = await getCustomer(window.location.pathname.split('/')[2]);  // If not a usertype 'Customer', get full access.
+        setButtons('Buttons');                                   // Set buttons to normal. Every button included. 
       }
-      setCustomerInfo(customerI);
-      setPageState(<CustomerInfoPage customerInfo={customerI} />);
+      setCustomerInfo(customerI);                                // Sets customersinformation to fetched result. 
+      setPageState(<CustomerInfoPage customerInfo={customerI} />); // Sets pagestate to startpage. Info. 
     };
 
-    FetchCustomerInfo();
-  }, []);
+    FetchCustomerInfo();                                         // Runs FetchCustomerInfo function.
+  }, []);                                                        // Only excecutes when first rendered.
 
+  // Returns buttonmenu and page depending on pagestate and if customerInfo is not empty.
   return (
     <div>
       {buttons === null ? null : (
@@ -75,8 +74,10 @@ const CustomerPage = () => {
   );
 };
 
-const Buttons = ({ setPageState }, { customerInfo }) => {
-  const buttons: SBElementProps = [
+
+// Function to set up Buttons in the sideMenu. Sets up every button for write permission. 
+const Buttons = ({ setPageState }, { customerInfo }) => {   // Gets setPageState to update onclick and customerInfo
+  const buttons: SBElementProps = [                         //   that lines up info in CustomerInfoPage component. 
     {
       text: 'Infomasjon',
       ID: 'info',
@@ -107,8 +108,9 @@ const Buttons = ({ setPageState }, { customerInfo }) => {
   return buttons;
 };
 
-const ButtonsRead = ({ setPageState }, { customerInfo }) => {
-  const buttonsRead: SBElementProps = [
+// Function to set up Buttons in the sideMenu. Sets up some buttons for read permission.
+const ButtonsRead = ({ setPageState }, { customerInfo }) => {   // Gets setPageState to update onclick and customerInfo
+  const buttonsRead: SBElementProps = [                         //   that lines up info in CustomerInfoPage component. 
     {
       text: 'Infomasjon',
       ID: 'info',
@@ -124,105 +126,3 @@ const ButtonsRead = ({ setPageState }, { customerInfo }) => {
 };
 
 export default CustomerPage;
-
-/*
-class CustomerPage extends React.Component<RouteComponentProps, { pageState: any; customerInfo: any; error: string; customer: boolean }> {
-  /**
-   * @constructor
-   * @param {props} props contains infomation about the class.
-   */
-/*
-  constructor(props) {
-    super(props);
-    this.state = {
-      pageState: <LoadingSymbol />,
-      customerInfo: null,
-      error: '',
-      customer: false,
-    };
-  }
-
-  /**
-   * Called immediately after a component is mounted. Setting state here will trigger re-rendering.
-   * Gets the customer information from backend and updates the display.
-   */
-/*
-  componentDidMount() {
-    // Loades the data from the API
-
-    const FetchCustomerInfo = async () => {
-      //Gets information about the customer based on the id in the URL or customers own id
-      const userType = GetUserType();
-      let customerI;
-
-      if(userType === 'CustomerFirstLogin' || userType === 'CustomerNotFirst' ) {
-        const customerSelf = await getEmployee()
-        console.log(customerSelf)
-        customerI = await getCustomer(window.location.pathname.split('/')[2]);
-      }
-      else {
-        customerI = await getCustomer(window.location.pathname.split('/')[2]);
-      }
-
-      this.setState({
-        customerInfo: customerI,
-        pageState: <CustomerInfoPage customerInfo={customerI} />,
-      });
-    };
-    FetchCustomerInfo();
-  }
-
-  /**
-   * Renders the class.
-   * @returns a react component with the customer page
-   */
-
-/*
-  render() {
-    console.log(this.state.error);
-
-    return (
-      <section className='margin-right H100'>
-        <Sidebar
-          text={this.state.customerInfo && this.state.customerInfo.name ? this.state.customerInfo.name : 'Kundenavn'}
-          buttons={this.buttons}
-        />
-        <div className='notSidebar'>{this.state.customerInfo ? this.state.pageState : <LoadingSymbol />}</div>
-      </section>
-    );
-  }
-
-  buttons: SBElementProps = [
-    {
-      text: 'Infomasjon',
-      ID: 'info',
-      onClick: () => this.setState({ pageState: <CustomerInfoPage customerInfo={this.state.customerInfo} /> }),
-    },
-    {
-      text: 'Leverandører',
-      ID: 'supplier',
-      onClick: () => this.setState({ pageState: <CustomerSupplierPage customerInfo={this.state.customerInfo} /> }),
-    },
-    {
-      text: 'Mail',
-      ID: 'mail',
-      onClick: () => this.setState({ pageState: <CustomerMailPage customerInfo={this.state.customerInfo} /> }),
-    },
-    {
-      text: 'Send mail',
-      ID: 'sendMail',
-      onClick: () =>
-        this.setState({
-          pageState: <SendMail customerID={[this.state.customerInfo._id]} />,
-        }),
-    },
-    {
-      text: 'Rediger',
-      ID: 'edit',
-      onClick: () => this.setState({ pageState: <CustomerEditPage customerInfo={this.state.customerInfo} /> }),
-    },
-  ];
-}
-
-export default CustomerPage;
-*/

@@ -1,7 +1,13 @@
-import react, { useEffect, useState } from 'react';
+// Libraries
+import { useContext, useEffect, useState } from 'react';
+
+// Function Call
 import { registerMailVisit } from '../../../../azure/api';
 
-//CSS
+// Context
+import { LanguageContext } from '../../../../Context/language/LangContext';
+
+// CSS
 import '../../../basicComp/basic.css';
 import '../mail.css';
 
@@ -9,32 +15,35 @@ import '../mail.css';
  * @returns a react component with the mail page.
  */
 function CustomerMailPage({ customerInfo }: any) {
-  const [mails, setMails] = useState(customerInfo.mails);
-  const [filterMails, setFilterMail] = useState(customerInfo.mails);
-  const [search, setSearch] = useState('');
+  const { dictionary } = useContext(LanguageContext)                  // Import global language context
 
+  const [mails] = useState(customerInfo.mails);                       // Local mails state set to existing mails.
+  const [filterMails, setFilterMail] = useState(customerInfo.mails);  // Local filtersMails state set to existing mails.
+  const [search, setSearch] = useState('');                           // Local search state.
+
+  // UseEffect to sorting searching for mail.
   useEffect(() => {
-    const filtered = (e) => {
+    const filtered = (e) => {                                   // Filtered function to filter mail corresponding to search.
       const filtered =
         mails &&
-        mails.filter((mail) => {
-          const subject = mail.subject.toString().toLowerCase();
-          const text = mail.text.toString().toLowerCase();
-          const currsearch = subject + text;
-          return currsearch.indexOf(search.toLowerCase()) !== -1;
+        mails.filter((mail) => {                                // Filter mails.
+          const subject = mail.subject.toString().toLowerCase();// Set text to lower case.
+          const text = mail.text.toString().toLowerCase();      // Set subject to lowercase,
+          const currsearch = subject + text;                    // Add text and subject to string.
+          return currsearch.indexOf(search.toLowerCase()) !== -1; // Return if search match any of currsearch string.
         });
-      setFilterMail(filtered);
+      setFilterMail(filtered);      // Set filtered mails to const filtered.
     };
-    filtered(search);
-  }, [search]);
+    filtered(search);               // Execute filtered function.
+  }, [search]);                     // Run everytime search updates. 
 
   return (
     <div>
-      <h1 className='color-dark heading'> Mail </h1>
+      <h1 className='color-dark heading'> {dictionary.mail} </h1>
       <div style={{ marginBottom: '0.5em', float: 'right' }}>
         <input
           className='search'
-          placeholder='Search subject or text'
+          placeholder={dictionary.search_Subject_Text}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);

@@ -1,10 +1,18 @@
-import { LanguageContext } from '../../../Context/language/LangContext';
+// Libraries
 import { useContext } from 'react';
+
+// Context
+import { LanguageContext } from '../../../Context/language/LangContext';
+
+// CSS
 import './About.css';
 
-/**
- * @returns A react component with the about page
- */
+/*
+Returns a react component with the About.tsx component. The components sends some base information about the 
+  whole web application.
+*/
+
+// Simple function returns the aboutpage. 
 function About() {
   const { dictionary } = useContext(LanguageContext);
   return (
@@ -18,4 +26,4 @@ function About() {
   );
 }
 
-export default About;
+export default About; // Export About as a functional component. 

@@ -1,6 +1,13 @@
-import react from 'react';
+// Libraries
+import { useContext } from 'react';
 
+// Components
 import { DisplayTextAndInfo, ContactPersonInfo } from '../../../basicComp/display';
+
+// Context
+import { LanguageContext } from '../../../../Context/language/LangContext';
+
+//CSS
 import '../../../basicComp/basic.css';
 
 /**
@@ -8,12 +15,15 @@ import '../../../basicComp/basic.css';
  * @param {any} customerInfo contains all the information about the customer being displayed.
  * @returns a react-component with the customer information.
  */
-export function CustomerInfoPage({ customerInfo }: any) {
+
+// Main function organizing customer information page. 
+export const CustomerInfoPage = ({ customerInfo }: any) => {
+  const { dictionary } = useContext(LanguageContext)
   return (
     <div>
-      <h1 className='color-dark heading'>Infomasjon</h1>
+      <h1 className='color-dark heading'>{dictionary.information}</h1>
       <div className='displayInfoDiv'>
-        <DisplayTextAndInfo text={'Navn'} information={customerInfo.name} altText={'Mangler navn'} />
+        <DisplayTextAndInfo text={dictionary.name} information={customerInfo.name} altText={dictionary.missingName} />
       </div>
       <ContactPersonInfo
         name={customerInfo.contact.name}
@@ -23,14 +33,14 @@ export function CustomerInfoPage({ customerInfo }: any) {
       <DisplayTags tags={customerInfo.tags} />
 
       <div className='displayInfoDiv'>
-        <DisplayTextAndInfo text={'Notat'} information={customerInfo.comment} altText={'Kunden har ikke notat'} />
+        <DisplayTextAndInfo text={dictionary.note} information={customerInfo.comment} altText={dictionary.custNoNote} />
       </div>
 
       <div className='displayInfoDiv'>
         <DisplayTextAndInfo
-          text={'Referanser'}
+          text={dictionary.references}
           information={customerInfo.infoReference}
-          altText={'Kunden har ikke referanser'}
+          altText={dictionary.custNoReferences}
         />
       </div>
     </div>
@@ -43,9 +53,10 @@ export function CustomerInfoPage({ customerInfo }: any) {
  * @returns a react component with the tags.
  */
 function DisplayTags(props: { tags: any }) {
+  const { dictionary } = useContext(LanguageContext)
   return (
     <div className='displayInfoDiv'>
-      <h3>Tags</h3>
+      <h3>{dictionary.tags}</h3>
       {props?.tags ? (
         <ul className='listStyle addMarginLeft'>
           {props.tags.map((tag) => (
@@ -53,7 +64,7 @@ function DisplayTags(props: { tags: any }) {
           ))}
         </ul>
       ) : (
-        <p>Denne kunden har ingen tags</p>
+      <p>{dictionary.custNoTags}</p>
       )}
     </div>
   );

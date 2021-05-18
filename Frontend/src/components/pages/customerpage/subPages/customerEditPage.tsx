@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inputField';
+// Libraries
+import { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { getAllSuppliers, getCustomersAndSuppliers, newCustomer } from '../../../../azure/api';
+
+// Components and Functional Calls
+import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inputField';
+import { getAllSuppliers, newCustomer } from '../../../../azure/api';
 import { Select } from '../../../basicComp/inputField';
 import { deleteCustomer } from '../../../../azure/api';
-
-// import { Test } from '../../../../interfaces';
 
 // CSS
 import '../../../basicComp/basic.css';
 import '../../../basicComp/sendMail.css';
+
 
 interface NameAndID {
   _id: string;
@@ -20,7 +22,7 @@ interface NameAndID {
  * A page for editing customers.
  * @returns a react component with the edit-customer page.
  */
-function CustomerEditPage({ customerInfo }: any) {
+const CustomerEditPage = ({ customerInfo }: any) => {
   const [supplierArrayState, setSupplierArrayState] = useState<NameAndID[]>(null);
 
   useEffect(() => {
