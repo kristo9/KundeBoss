@@ -59,7 +59,6 @@ export default (context: Context, req: HttpRequest): any => {
               errorQuery(context);
               return context.done();
             } else {
-              console.log(docs);
               if (docs?.admin === 'write') {
                 connectWrite(context, updateCategory);
               } else {

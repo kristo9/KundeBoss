@@ -23,7 +23,6 @@ describe('GetCustomers function', () => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'madeup@mail';
-//console.log(context)
     GetCustomers(context as any, request as any);
     await timeout(context);
 

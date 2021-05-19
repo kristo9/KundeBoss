@@ -52,15 +52,19 @@ export default (context: Context, req: HttpRequest): any => {
   };
   let mailCount = null;
 
+  /**
+   * @description Increaseses the reply counter in the database and updates the variable mailCunt. Creates a Replycounter document if it doesn't exist.
+   * @param db Database connection
+   */
   const getReplyCount = (db) => {
-    db.collection('mail').findOne({ '_id': 'replyCounter' }, { 'counter': 1 }, (error: any, docs: any) => {
+    db.collection(collections.mail).findOne({ '_id': 'replyCounter' }, { 'counter': 1 }, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
         return context.done();
       }
       if (docs === null) {
         mailCount = mailStartCount;
-        db.collection('mail').insertOne({ '_id': 'replyCounter', 'counter': mailCount }, (error, docs) => {
+        db.collection(collections.mail).insertOne({ '_id': 'replyCounter', 'counter': mailCount }, (error, docs) => {
           if (error) {
             errorQuery(context);
             return context.done();
@@ -79,6 +83,11 @@ export default (context: Context, req: HttpRequest): any => {
   let senderName = null;
   let senderId = null;
 
+  /**
+   * @description Finds and returns a customer from the database.
+   * @param db Database connection
+   * @returns JSON
+   */
   const getCustomer = (db) => {
     return new Promise((resolve) => {
       db.collection(collections.customer).findOne({ _id: ObjectId(req.body.customerId.id) }, {}, (error, docs) => {
@@ -97,6 +106,10 @@ export default (context: Context, req: HttpRequest): any => {
     });
   };
 
+  /**
+   * @description
+   * @param db 
+   */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       if (err) {
@@ -105,10 +118,8 @@ export default (context: Context, req: HttpRequest): any => {
       } else {
         senderName = decoded.name;
         senderId = decoded.preferred_username;
-
-        let customerPromise = getCustomer(db);
-
-        db.collection('employee')
+        
+        db.collection(collections.employee)
           .aggregate([
             {
               '$match': {
@@ -117,7 +128,7 @@ export default (context: Context, req: HttpRequest): any => {
             },
             {
               '$lookup': {
-                'from': 'customer',
+                'from':collections.customer,
                 'localField': 'customers.id',
                 'foreignField': '_id',
                 'as': 'customerInformation',
@@ -133,7 +144,7 @@ export default (context: Context, req: HttpRequest): any => {
             }
             let customer = null;
             if (docs.admin === 'write') {
-              customer = await customerPromise;
+              customer = await getCustomer(db);
             } else {
               customer = docs.customerInformation.find((customer) => customer._id == req.body.customerId.id);
             }
@@ -202,9 +213,8 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   const updateReplyCount = (db) => {
-    db.collection('mail').updateOne({ '_id': 'replyCounter' }, { '$set': { 'counter': mailCount } }, (error, docs) => {
+    db.collection(collections.mail).updateOne({ '_id': 'replyCounter' }, { '$set': { 'counter': mailCount } }, (error, docs) => {
       if (error) {
-        console.log('error');
         return context.done();
       }
       connectRead(context, sendMail);
@@ -257,7 +267,7 @@ export default (context: Context, req: HttpRequest): any => {
       'seenBy': [],
     };
 
-    db.collection('mail').insertOne(newMail, (error: any, docs: any) => {
+    db.collection(collections.mail).insertOne(newMail, (error: any, docs: any) => {
       if (error) {
         context.bindings.resMail = null;
         errorQuery(context, 'Not able to insert new mail in db');

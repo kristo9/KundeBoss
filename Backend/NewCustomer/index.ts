@@ -46,7 +46,7 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        db.collection('employee').findOne(
+        db.collection(collections.employee).findOne(
           {
             'employeeId': decoded.preferred_username,
           },
@@ -81,7 +81,6 @@ export default (context: Context, req: HttpRequest): any => {
       const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
 
       const queryOptions = { upsert: req.body?.id ? false : true };
-      console.log(req.body.suppliers);
 
       if (req.body?.suppliers) {
         req.body.suppliers.forEach((supplier, index, arr) => {

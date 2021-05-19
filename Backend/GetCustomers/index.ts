@@ -72,7 +72,7 @@ export default (context: Context, req: HttpRequest): any => {
             /* Gets all mails in customers mailGroup */
             {
               '$lookup': {
-                'from': 'mail',
+                'from': collections.mail,
                 'localField': 'mails',
                 'foreignField': '_id',
                 'as': 'mails',
