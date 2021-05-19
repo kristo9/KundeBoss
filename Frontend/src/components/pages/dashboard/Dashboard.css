@@ -22,7 +22,6 @@ td {
 
 /* Changes the syle of the rows in the table when hover*/
 .rad:hover {
-  color: rgb(24, 218, 24);
   box-shadow: 0px 0px 0px 2px #063752;
   cursor: pointer;
 }

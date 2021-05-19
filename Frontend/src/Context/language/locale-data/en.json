@@ -54,6 +54,11 @@
     "edit": "Edit",
     "reset": "Reset",
 
+    "supplierName": "Suppliers name",
+    "contactPhone": "Contact person's phone number",
+    "contactMail": "Contact person's email",
+    "conatctName": "contact person's name",
+
     "admin": {
         "permissions": "Permissions",
         "has": "Has",
@@ -67,7 +72,12 @@
 
       "supplier": {
           "customers": "Customers",
-          "noCustomers": "No customers yet"
+          "noCustomers": "No customers yet",
+          "newSupplier": "New supplier",
+          "editSupplier": "Edit supplier",
+          "deleteSupplier": "Delete supplier",
+
+          "note": "Note about the supplier"
       }
 
 }

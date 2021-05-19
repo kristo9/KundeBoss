@@ -11,9 +11,9 @@ import { LanguageContext } from '../../../../Context/language/LangContext';
 import '../../../basicComp/basic.css';
 
 /**
- * Displayes a list with the suppliers.
- * @param {any} custInfo information about the cutomer.
- * @returns a react component with the customer-supplier page
+ * Displayes a list with the suppliers customers.
+ * @param {any} supplierInfo information about the suppliers.
+ * @returns React component
  */
 function SupplierCustomerPage({ supplierInfo }: any) {
   const { dictionary } = useContext(LanguageContext);
@@ -26,9 +26,9 @@ function SupplierCustomerPage({ supplierInfo }: any) {
 }
 
 /**
- * Displays some information about the suppliers.
- * @param {any} suppliers information about the suppliers.
- * @returns a react component with the supplier information.
+ * Displays some information about the customer.
+ * @param {any} customers information about the customer.
+ * @returns React component
  */
 function DisplayCustomer(props: { customers: any }) {
   const { dictionary } = useContext(LanguageContext);

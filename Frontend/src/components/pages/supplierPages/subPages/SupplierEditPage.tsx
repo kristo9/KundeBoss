@@ -1,30 +1,41 @@
+import { useContext } from 'react';
 import { InputField, MultipleInputField, TextArea } from '../../../basicComp/inputField';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { deleteSupplier, newSupplier } from '../../../../azure/api';
+
+import { LanguageContext } from '../../../../Context/language/LangContext';
 
 import '../../../basicComp/sendMail.css';
 import '../../../basicComp/basic.css';
 
+/**
+ * @desc Modyfy a suppliers data.
+ * @param supplierInfo Default values about the supplier
+ * @returns React component
+ */
 function SupplierEditPage({ supplierInfo }: any) {
+  const { dictionary } = useContext(LanguageContext);
+
   type FormValues = {
     supplierName: string;
     contactName: string;
     contactPhone: number;
     contactMail: string;
     note: string;
-    // infoReference: string; // den skal nok fjernes
   };
 
+  //creates the useform variables
   const {
     register,
     handleSubmit,
     formState: { errors },
-    control,
   } = useForm<FormValues>();
 
   return (
     <div>
-      <h1 className='color-dark heading'>{supplierInfo ? 'Redigere leverandør' : 'Ny leverandør'}</h1>
+      <h1 className='color-dark heading'>
+        {supplierInfo ? dictionary.supplier.editSupplier : dictionary.supplier.newSupplier}
+      </h1>
       <form
         onSubmit={handleSubmit((data) => {
           newSupplier(
@@ -38,40 +49,40 @@ function SupplierEditPage({ supplierInfo }: any) {
         })}
       >
         <InputField
-          labelText={'Navn'}
+          labelText={dictionary.name}
           lableType={'text'}
           lableName={'name'}
-          placeholderText={'Bedriftens navn'}
+          placeholderText={dictionary.sppliersName}
           defaultValue={supplierInfo && supplierInfo.name ? supplierInfo.name : ''}
           register={register('supplierName')}
         />
 
-        <MultipleInputField text='Kontaktperson'>
+        <MultipleInputField text={dictionary.contactPerson}>
           <InputField
-            labelText={'Navn'}
+            labelText={dictionary.name}
             lableType={'text'}
             lableName={'contactName'}
-            placeholderText={'Kontaktpersonens navn'}
+            placeholderText={dictionary.conatctName}
             defaultValue={
               supplierInfo && supplierInfo.contact && supplierInfo.contact.name ? supplierInfo.contact.name : ''
             }
             register={register('contactName')}
           />
           <InputField
-            labelText={'Telfon'}
+            labelText={dictionary.phone}
             lableType={'tel'}
-            lableName={'contactPhone'}
-            placeholderText={'Kontaktpersonens tlf'}
+            lableName={'phone'}
+            placeholderText={dictionary.conatctPhone}
             defaultValue={
               supplierInfo && supplierInfo.contact && supplierInfo.contact.phone ? supplierInfo.contact.phone : ''
             }
             register={register('contactPhone')}
           />
           <InputField
-            labelText={'Epost'}
+            labelText={dictionary.mail}
             lableType={'email'}
             lableName={'contactMail'}
-            placeholderText={'Kontaktpersonens mail'}
+            placeholderText={dictionary.conatctMail}
             defaultValue={
               supplierInfo && supplierInfo.contact && supplierInfo.contact.mail ? supplierInfo.contact.mail : ''
             }
@@ -80,20 +91,21 @@ function SupplierEditPage({ supplierInfo }: any) {
         </MultipleInputField>
 
         <TextArea
-          labelText={'Notat'}
+          labelText={dictionary.note}
           lableType={'text'}
           lableName={'note'}
-          placeholderText={'Notat om kunden'}
+          placeholderText={dictionary.supplier.note}
           defaultValue={supplierInfo && supplierInfo.note ? supplierInfo.note : ''}
           register={register('note')}
         />
 
+        {/*  */}
         <div className='small-margin-over'>
           <button type='reset' className='editButton'>
-            Reset
+            {dictionary.reset}
           </button>
           <button type='submit' className='editButton'>
-            {supplierInfo ? 'Rediger bruker' : 'Lag bruker'}
+            {supplierInfo ? dictionary.supplier.editSupplier : dictionary.supplier.newSupplier}
           </button>
 
           {/* Delete button */}
@@ -116,105 +128,12 @@ function SupplierEditPage({ supplierInfo }: any) {
                 }
               }}
             >
-              Slett kunde
+              {dictionary.supplier.deleteSupplier}
             </button>
           ) : null}
         </div>
-
-        {/* {supplierInfo ? (
-          <button
-            onClick={() => {
-              //slett leverandør funksjon her (er du sikker boks?)
-            }}
-          >
-            Slett leverandør
-          </button>
-        ) : (
-          ''
-        )}
-        <button type='submit'>{supplierInfo ? 'Rediger leverandør' : 'Lag leverandør'}</button>
-        <button type='reset'>Reset</button> */}
       </form>
-
-      <div>
-        <CustomerEditForm employeeName='test' employeeAge={22} customers={[{ name: 'kunde1' }, { name: 'kunde2' }]} />
-      </div>
     </div>
-  );
-}
-
-// Verdiene som brukes på skjemaet
-interface IFormValues {
-  employeeName?: string;
-  employeeAge?: number;
-  customers?: { name: string }[];
-}
-
-// React komponent med skjema for endreing av kunde
-function CustomerEditForm(props: IFormValues) {
-  // Setter default verdi om det er sendt med
-  const { control, register, handleSubmit } = useForm<IFormValues>({
-    defaultValues: {
-      employeeName: props?.employeeName,
-      employeeAge: props?.employeeAge,
-      customers: props?.customers,
-    },
-  });
-
-  // Lager dynamisk skjema
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'customers',
-  });
-
-  // Oppdaterer kunden
-  function onSubmit(data) {
-    //updateCustomer(data.name, data.age);
-    console.log(data);
-  }
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div style={{ display: 'flex', flexDirection: 'column', width: '170px' }} className='displayInfoDiv'>
-        <div>
-          <p style={{ marginTop: 0, marginBottom: 0 }}>Ansatt info:</p>
-          <div className='input'>
-            <input {...register('employeeName')} placeholder='Navn' />
-          </div>
-          <div className='input'>
-            <input {...register('employeeAge')} placeholder='Alder' />
-          </div>
-        </div>
-        <div className='small-margin-over'>
-          {/* Redigering av kundene til en ansatt */}
-          <p style={{ marginTop: 0, marginBottom: 0 }}>Kunder:</p>
-          {fields.map(({ id }, index) => {
-            return (
-              <div style={{ display: 'flex' }} className='input'>
-                <button onClick={() => remove(index)} className='removeButton'>
-                  x
-                </button>
-                <input
-                  className='input'
-                  key={id}
-                  {...register(`customers.${index}.name` as const)}
-                  placeholder='Kunde navn'
-                />
-              </div>
-            );
-          })}
-          {/* Legger til kunde */}
-          <button type='button' onClick={() => append({})} className='addButton' style={{ backgroundColor: 'white' }}>
-            <b>+</b> Legg til kunde
-          </button>
-        </div>
-        <div className='small-margin-over'>
-          <button className='editButton' type='submit'>
-            Endre kunde
-          </button>
-        </div>
-      </div>
-    </form>
   );
 }
 

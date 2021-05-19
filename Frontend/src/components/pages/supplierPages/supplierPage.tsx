@@ -70,6 +70,7 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
     );
   }
 
+  //The buttons for sidebar
   buttons: SBElementProps = [
     {
       text: 'Infomasjon',
@@ -83,11 +84,6 @@ class SupplierPage extends React.Component<RouteComponentProps, { pageState: any
       text: 'Kunder',
       ID: 'supplier',
       onClick: () => this.setState({ pageState: <SupplierCustomerPage supplierInfo={this.state.supplierInfo} /> }),
-    },
-    {
-      text: 'Mail',
-      ID: 'mail',
-      onClick: () => this.setState({ pageState: <SupplierInfoPage supplierInfo={this.state.supplierInfo} /> }),
     },
     {
       text: 'Rediger',
