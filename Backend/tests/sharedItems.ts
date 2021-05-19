@@ -35,3 +35,7 @@ export function expectStuff(context, statusCode: number, data: string, body = nu
   }
   expect(context.done).toEqual(true);
 }
+
+export const userAdmin = null;
+
+export const userNotAdmin = null;

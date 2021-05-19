@@ -1,12 +1,12 @@
 import LoginTrigger from '../LoginTrigger/index';
 import DeleteEmployee from '../DeleteEmployee/index';
-import { prepareContext, httpRequest, timeout } from './sharedItems';
+import { prepareContext, httpRequest, timeout, userAdmin, userNotAdmin } from './sharedItems';
 
 describe('LoginTrigger function', () => {
   test('Test write admin configured', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
-    request.headers.authorization = 'didrik.bjerk@kundeboss.onmicrosoft.com';
+    request.headers.authorization = userAdmin;
 
     LoginTrigger(context as any, request as any);
     await timeout(context);
@@ -22,7 +22,7 @@ describe('LoginTrigger function', () => {
   test('Test not configured, not first login', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
-    request.headers.authorization = 'didrik.bjerk@false.emp.com';
+    request.headers.authorization = userNotAdmin;
 
     LoginTrigger(context as any, request as any);
     await timeout(context);
@@ -52,7 +52,7 @@ describe('LoginTrigger function', () => {
     expect(context.res.body.firstLogin).toBe(true);
 
     request.body['id'] = context.res.body._id;
-    request.headers.authorization = 'didrik.bjerk@kundeboss.onmicrosoft.com';
+    request.headers.authorization = userAdmin;
     context = prepareContext();
 
     DeleteEmployee(context as any, request as any);
