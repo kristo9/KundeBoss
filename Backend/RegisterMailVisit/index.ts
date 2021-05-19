@@ -25,7 +25,7 @@ export default (context: Context, req: HttpRequest): any => {
   }
 
   /**
-   * @description Validates that id provided in req.body has right format. Returns if it isn't
+   * @description Validates that token is valid. Returns context.done() if it isn't.
    * @returns contect.done()
    */
   const authorize = (db: Db) => {
@@ -42,7 +42,7 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   /**
-   * @description Looks for emplyees in database. If none are found, a new admin is created. If the caller is not found, they are inserted into the databse
+   * @description Adds user to the list of employees that have seen the mail.
    * @param db : db connection
    */
   const functionQuery = (db: Db) => {

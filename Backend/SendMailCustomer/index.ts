@@ -52,15 +52,19 @@ export default (context: Context, req: HttpRequest): any => {
   };
   let mailCount = null;
 
+  /**
+   * @description Finds the reply count in the database and updates the variable mailCount. Creates a Replycounter document if it doesn't exist.
+   * @param db Database connection
+   */
   const getReplyCount = (db) => {
-    db.collection('mail').findOne({ '_id': 'replyCounter' }, { 'counter': 1 }, (error: any, docs: any) => {
+    db.collection(collections.mail).findOne({ '_id': 'replyCounter' }, { 'counter': 1 }, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
         return context.done();
       }
       if (docs === null) {
         mailCount = mailStartCount;
-        db.collection('mail').insertOne({ '_id': 'replyCounter', 'counter': mailCount }, (error, docs) => {
+        db.collection(collections.mail).insertOne({ '_id': 'replyCounter', 'counter': mailCount }, (error, docs) => {
           if (error) {
             errorQuery(context);
             return context.done();
@@ -79,6 +83,11 @@ export default (context: Context, req: HttpRequest): any => {
   let senderName = null;
   let senderId = null;
 
+  /**
+   * @description Finds and returns a customer from the database.
+   * @param db Database connection
+   * @returns JSON
+   */
   const getCustomer = (db) => {
     return new Promise((resolve) => {
       db.collection(collections.customer).findOne({ _id: ObjectId(req.body.customerId.id) }, {}, (error, docs) => {
@@ -97,6 +106,10 @@ export default (context: Context, req: HttpRequest): any => {
     });
   };
 
+  /**
+   * @description Creates objects with mails to be sent, and data to be stored in the database
+   * @param db
+   */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       if (err) {
@@ -105,10 +118,8 @@ export default (context: Context, req: HttpRequest): any => {
       } else {
         senderName = decoded.name;
         senderId = decoded.preferred_username;
-
-        let customerPromise = getCustomer(db);
-
-        db.collection('employee')
+        /* Finds all customer the employee have access to */
+        db.collection(collections.employee)
           .aggregate([
             {
               '$match': {
@@ -117,7 +128,7 @@ export default (context: Context, req: HttpRequest): any => {
             },
             {
               '$lookup': {
-                'from': 'customer',
+                'from': collections.customer,
                 'localField': 'customers.id',
                 'foreignField': '_id',
                 'as': 'customerInformation',
@@ -132,8 +143,9 @@ export default (context: Context, req: HttpRequest): any => {
               return context.done();
             }
             let customer = null;
+            /* Verifies that the employee have access to the customer that the mail is sent to */
             if (docs.admin === 'write') {
-              customer = await customerPromise;
+              customer = await getCustomer(db);
             } else {
               customer = docs.customerInformation.find((customer) => customer._id == req.body.customerId.id);
             }
@@ -144,7 +156,7 @@ export default (context: Context, req: HttpRequest): any => {
               errorWrongInput(context);
               return context.done();
             }
-
+            /* Prepares mail and database data for the customer, if the mail is to be sent to the customer */
             if (req.body.customerId.include === 'true') {
               excpectedReceiverCount = 1;
               replyId = encryptReplyId(mailCount++ * mailIdRand + Math.floor(Math.random() * mailIdRand));
@@ -163,7 +175,7 @@ export default (context: Context, req: HttpRequest): any => {
                 'type': 'customer',
               });
             }
-
+            /* Prepares mails and database data for the suppliers the mail will be sent to. */
             if (req.body.supplierIds) {
               excpectedReceiverCount += req.body.supplierIds.length;
               customer.suppliers
@@ -189,7 +201,7 @@ export default (context: Context, req: HttpRequest): any => {
                   }
                 });
             }
-
+            /* Checks that the amount of accual receivers and expected receivers are the same */
             if (excpectedReceiverCount === receiverMail.length) {
               connectWrite(context, updateReplyCount);
             } else {
@@ -200,53 +212,28 @@ export default (context: Context, req: HttpRequest): any => {
       }
     });
   };
-
+  /**
+   * @description Increases the reply count in the database
+   * @param db
+   */
   const updateReplyCount = (db) => {
-    db.collection('mail').updateOne({ '_id': 'replyCounter' }, { '$set': { 'counter': mailCount } }, (error, docs) => {
-      if (error) {
-        console.log('error');
-        return context.done();
+    db.collection(collections.mail).updateOne(
+      { '_id': 'replyCounter' },
+      { '$set': { 'counter': mailCount } },
+      (error, docs) => {
+        if (error) {
+          return context.done();
+        }
+        sendMail(db);
       }
-      connectRead(context, sendMail);
-    });
+    );
   };
 
-  let message = null;
-
+  /**
+   * @description Sends mail by inserting it in the bindings and inserts the mail into the database
+   * @param db
+   */
   const sendMail = (db: Db) => {
-    db.collection('customer').findOne({ '_id': ObjectId(req.body.customerId.id) }, {}, (error: any, docs: any) => {
-      if (error) {
-        errorQuery(context);
-        return context.done();
-      }
-      message = {
-        'from': {
-          'email': process.env['EmailAddress'],
-        },
-        'reply_to': {
-          'email': process.env['EmailReplyAddress'],
-        },
-        'personalizations': receiverMail,
-        'content': [
-          {
-            'type': 'text/html',
-            'value': '<p>' + req.body.text + '</p><p>Følg linken for å svare</p><a href=%replyUrl%>Svar</a>',
-          },
-        ],
-      };
-
-      if (receiverMail.length > 0) {
-        context.log('Sent mail to:' + JSON.stringify(receiverMail, null, 2));
-        context.bindings.resMail = message;
-        connectWrite(context, functionQuery);
-      } else {
-        errorWrongInput(context, 'no valid clients received');
-        context.done();
-      }
-    });
-  };
-
-  const functionQuery = (db: Db) => {
     const newMail = {
       'date': new Date(),
       'receivers': receiverInformation,
@@ -257,7 +244,23 @@ export default (context: Context, req: HttpRequest): any => {
       'seenBy': [],
     };
 
-    db.collection('mail').insertOne(newMail, (error: any, docs: any) => {
+    context.bindings.resMail = {
+      'from': {
+        'email': process.env['EmailAddress'],
+      },
+      'reply_to': {
+        'email': process.env['EmailReplyAddress'],
+      },
+      'personalizations': receiverMail,
+      'content': [
+        {
+          'type': 'text/html',
+          'value': '<p>' + req.body.text + '</p><p>Følg linken for å svare</p><a href=%replyUrl%>Svar</a>',
+        },
+      ],
+    };
+
+    db.collection(collections.mail).insertOne(newMail, (error: any, docs: any) => {
       if (error) {
         context.bindings.resMail = null;
         errorQuery(context, 'Not able to insert new mail in db');

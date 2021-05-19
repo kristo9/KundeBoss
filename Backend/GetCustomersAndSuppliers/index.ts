@@ -65,7 +65,7 @@ export default (context: Context, req: HttpRequest): any => {
       aggregate = [
         {
           '$lookup': {
-            'from': 'supplier',
+            'from': collections.supplier,
             'localField': 'suppliers.id',
             'foreignField': '_id',
             'as': 'suppliers',
@@ -89,7 +89,7 @@ export default (context: Context, req: HttpRequest): any => {
         },
         {
           '$lookup': {
-            'from': 'customer',
+            'from': collections.customer,
             'localField': 'customers.id',
             'foreignField': '_id',
             'as': 'customers',
@@ -98,7 +98,7 @@ export default (context: Context, req: HttpRequest): any => {
         { '$unwind': '$customers' },
         {
           '$lookup': {
-            'from': 'supplier',
+            'from': collections.supplier,
             'localField': 'customers.suppliers.id',
             'foreignField': '_id',
             'as': 'customers.suppliers',

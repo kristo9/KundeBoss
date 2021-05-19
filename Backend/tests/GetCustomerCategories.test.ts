@@ -1,11 +1,11 @@
 import GetCustomerCategories from '../GetCustomerCategories/index';
-import { prepareContext, httpRequest, timeout } from './sharedItems';
+import { prepareContext, httpRequest, timeout, userNotAdmin, userAdmin } from './sharedItems';
 
 describe('GetCustomerCategories', () => {
   test('Should work', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
-    request.headers.authorization = 'didrik.bjerk@kundeboss.onmicrosoft.com';
+    request.headers.authorization = userAdmin;
 
     GetCustomerCategories(context as any, request as any);
     await timeout(context);
@@ -19,7 +19,7 @@ describe('GetCustomerCategories', () => {
   test('Userid without admin permissions', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
-    request.headers.authorization = 'bjerk.diden.didrik@gmail.com';
+    request.headers.authorization = userNotAdmin;
 
     GetCustomerCategories(context as any, request as any);
     await timeout(context);

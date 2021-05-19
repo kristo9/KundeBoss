@@ -33,7 +33,7 @@ export default (context: Context, req: HttpRequest): any => {
       } else {
         employeeId = decoded.preferred_username;
 
-        db.collection('employee') // query to find users permission level
+        db.collection(collections.employee) // query to find users permission level
           .find({ 'employeeId': employeeId })
           .project({ 'admin': 1 })
           .toArray((error: any, docs: JSON | JSON[]) => {

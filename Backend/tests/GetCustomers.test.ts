@@ -1,11 +1,11 @@
-import { prepareContext, httpRequest as httpRequest, timeout } from './sharedItems';
+import { prepareContext, httpRequest as httpRequest, timeout, userAdmin, userNotAdmin } from './sharedItems';
 import GetCustomers from '../GetCustomers/index';
 
 describe('GetCustomers function', () => {
   test('status should return 200, one or more customers', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
-    request.headers.authorization = 'didrik.bjerk@kundeboss.onmicrosoft.com';
+    request.headers.authorization = userAdmin;
 
     GetCustomers(context as any, request as any);
     await timeout(context);
@@ -23,7 +23,6 @@ describe('GetCustomers function', () => {
     let context = prepareContext();
     let request = httpRequest;
     request.headers.authorization = 'madeup@mail';
-//console.log(context)
     GetCustomers(context as any, request as any);
     await timeout(context);
 
@@ -36,7 +35,7 @@ describe('GetCustomers function', () => {
   test('status should return 200, 0 cust', async (done) => {
     let context = prepareContext();
     let request = httpRequest;
-    request.headers.authorization = 'didrik.bjerk@live.no';
+    request.headers.authorization = userNotAdmin;
 
     GetCustomers(context as any, request as any);
     await timeout(context);

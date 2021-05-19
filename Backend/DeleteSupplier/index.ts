@@ -48,7 +48,7 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        db.collection('employee').findOne(
+        db.collection(collections.employee).findOne(
           { 'employeeId': decoded.preferred_username },
           { 'admin': 1 },
           (error: any, docs: { admin: string }) => {
@@ -73,6 +73,10 @@ export default (context: Context, req: HttpRequest): any => {
     '_id': ObjectId(req.body.id),
   };
 
+  /**
+   * @description Deletes supplier from database, and updates customers
+   * @param db 
+   */
   const functionQuery = (db: Db) => {
     db.collection(collections.supplier)
       .find({ '_id': ObjectId(req.body.id) })

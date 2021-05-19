@@ -40,7 +40,6 @@ export default (context: Context, req: HttpRequest): any => {
               return context.done();
             } else {
               if (Object.keys(docs).length == 0) {
-                console.log('No employee found');
                 errorUnauthorized(context, 'User invalid');
                 return context.done();
               } else {

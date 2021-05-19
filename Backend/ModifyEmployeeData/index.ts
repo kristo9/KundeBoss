@@ -136,7 +136,6 @@ export default (context: Context, req: HttpRequest): any => {
     db.collection(collections.employee).updateOne(query, newVals, (error: any, docs: JSON) => {
       // Updates employee
       if (error) {
-        console.log(error);
         errorQuery(context);
         return context.done();
       }

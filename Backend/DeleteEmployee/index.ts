@@ -2,7 +2,7 @@ import { Context, HttpRequest } from '@azure/functions';
 import { prepInput, returnResult, errorWrongInput, _idVal } from '../SharedFiles/dataValidation';
 import { getKey, options, prepToken, errorQuery, errorUnauthorized } from '../SharedFiles/auth';
 import { verify } from 'jsonwebtoken';
-import { connectRead, connectWrite } from '../SharedFiles/dataBase';
+import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
@@ -43,7 +43,7 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        db.collection('employee').findOne(
+        db.collection(collections.employee).findOne(
           { 'employeeId': decoded.preferred_username },
           { 'admin': 1 },
           (error: any, docs: { admin: string }) => {
@@ -69,7 +69,7 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    db.collection('employee').deleteOne(query, (error: any, docs: any) => {
+    db.collection(collections.employee).deleteOne(query, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
         return context.done();

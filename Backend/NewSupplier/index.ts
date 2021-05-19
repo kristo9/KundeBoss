@@ -92,18 +92,14 @@ export default (context: Context, req: HttpRequest): any => {
       update.$set['mails'] = [];
     }
 
-    const updateOrInsertSupplier = () => {
-      db.collection(collections.supplier).updateOne(query, update, queryOptions, (error: any, docs: any) => {
-        if (error) {
-          errorQuery(context);
-          return context.done();
-        }
-        returnResult(context, docs);
-        context.done();
-      });
-    };
-
-    updateOrInsertSupplier();
+    db.collection(collections.supplier).updateOne(query, update, queryOptions, (error: any, docs: any) => {
+      if (error) {
+        errorQuery(context);
+        return context.done();
+      }
+      returnResult(context, docs);
+      context.done();
+    });
   };
 
   inputValidation();

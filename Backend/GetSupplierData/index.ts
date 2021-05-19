@@ -58,7 +58,6 @@ export default (context: Context, req: HttpRequest): any => {
               return context.done();
             } else {
               if (Object.keys(docs).length == 0) {
-                console.log('No employee found');
                 errorUnauthorized(context, 'User invalid');
                 return context.done();
               } else {
@@ -103,7 +102,7 @@ export default (context: Context, req: HttpRequest): any => {
                 errorQuery(context, 'Cant query customer collection');
                 return context.done();
               } else {
-                /* Remove excessive data about other suplliers from customers */
+                /* Remove excessive data about other suppliers from customers */
                 docs.forEach((customer, index, customers) => {
                   customers[index]['supplier'] = customer.suppliers.find((element) => element.id == req.body.id);
                   delete customers[index].suppliers;

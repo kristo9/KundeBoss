@@ -1,4 +1,4 @@
-import { apiConfig } from './apiConfig';
+import { apiConfig, apiConfigMail } from './apiConfig';
 import { getTokenRedirect, msalInstance } from './authRedirect';
 import { tokenRequest } from './authConfig';
 import { addToCacheAndReturn, deleteCache, getFromCache, updateGetEmployee } from './caching';
@@ -431,11 +431,7 @@ export async function getReply(replyId: string) {
       replyId, //' + '"' + replyId +  '"' + '
     }),
   };
-  return fetch(
-    'https://mailparserfunctionapp.azurewebsites.net/api/' +
-      'PrepareReply?code=PK1L40wd6giUcSCJcg3guPxem6TROrIP1fyUdasaLcnhAOQdVy38Dw==',
-    options
-  )
+  return fetch(apiConfigMail.uri + 'PrepareReply?code=' + apiConfigMail.key, options)
     .then(async (response) => {
       if (response.status === 400) {
       }
@@ -459,7 +455,7 @@ export async function sendReply(replyId: string, replyText: string, code: string
       replyId, //' + '"' + replyId +  '"' + '
     }),
   };
-  return fetch('https://mailparserfunctionapp.azurewebsites.net/api/' + 'RegisterReply?code=' + code, options)
+  return fetch(apiConfigMail.uri + 'RegisterReply?code=' + code, options)
     .then(async (response) => {
       if (response.status === 400) {
       }

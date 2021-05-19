@@ -38,7 +38,10 @@ export default (context: Context, req: HttpRequest): any => {
       return context.done();
     }
   };
-
+  /**
+   * @description Verify that caller has write permission to the customer, or is admin write
+   * @param db
+   */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // verified and decoded token
@@ -46,7 +49,7 @@ export default (context: Context, req: HttpRequest): any => {
         errorUnauthorized(context, 'Token not valid');
         return context.done();
       } else {
-        db.collection('employee').findOne(
+        db.collection(collections.employee).findOne(
           {
             'employeeId': decoded.preferred_username,
           },
@@ -61,7 +64,7 @@ export default (context: Context, req: HttpRequest): any => {
             } else {
               let customerPerm = null;
               if (docs?.customers?.length > 0) {
-                customerPerm = docs.customers.find((customer) => customer.id == req.body.id)?.permission;
+                customerPerm = docs.customers.find((customer) => customer.id == req.body?.id)?.permission;
               }
               if (docs.admin === 'write' || customerPerm === 'write') {
                 connectWrite(context, functionQuery);
@@ -77,55 +80,50 @@ export default (context: Context, req: HttpRequest): any => {
   };
 
   const functionQuery = (db: Db) => {
-    const updateOrUpsertCustomer = () => {
-      const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
+    const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
 
-      const queryOptions = { upsert: req.body?.id ? false : true };
-      console.log(req.body.suppliers);
+    const queryOptions = { upsert: req.body?.id ? false : true };
 
-      if (req.body?.suppliers) {
-        req.body.suppliers.forEach((supplier, index, arr) => {
-          arr[index]['id'] = ObjectId(supplier.id);
-        });
-      }
-
-      let update = {
-        '$set': {
-          'name': req.body.name,
-          'contact': {
-            'phone': req.body.phone || null,
-            'mail': req.body.mail,
-            'name': req.body.contactName || null,
-          },
-          'suppliers': req.body.suppliers || [],
-          'tags': req.body.tags || [],
-          'comment': req.body.comment || null,
-          'customerAgreements': req.body.customerAgreements || [],
-          'infoReference': req.body.infoReference || null,
-          'categories': req.body.categories,
-        },
-      };
-
-      if (!req.body?.id) {
-        update.$set['mails'] = [];
-      }
-
-      db.collection(collections.customer).updateOne(query, update, queryOptions, (error: any, docs: any) => {
-        if (error) {
-          errorQuery(context);
-          return context.done();
-        }
-        if (req.body?.id && docs.result.n === 0) {
-          errorWrongInput(context, 'No customer found');
-          return context.done();
-        }
-
-        returnResult(context, docs);
-        context.done();
+    if (req.body?.suppliers) {
+      req.body.suppliers.forEach((supplier, index, arr) => {
+        arr[index]['id'] = ObjectId(supplier.id);
       });
+    }
+
+    let update = {
+      '$set': {
+        'name': req.body.name,
+        'contact': {
+          'phone': req.body.phone || null,
+          'mail': req.body.mail,
+          'name': req.body.contactName || null,
+        },
+        'suppliers': req.body.suppliers || [],
+        'tags': req.body.tags || [],
+        'comment': req.body.comment || null,
+        'customerAgreements': req.body.customerAgreements || [],
+        'infoReference': req.body.infoReference || null,
+        'categories': req.body.categories,
+      },
     };
 
-    updateOrUpsertCustomer();
+    if (!req.body?.id) {
+      update.$set['mails'] = [];
+    }
+
+    db.collection(collections.customer).updateOne(query, update, queryOptions, (error: any, docs: any) => {
+      if (error) {
+        errorQuery(context);
+        return context.done();
+      }
+      if (req.body?.id && docs.result.n === 0) {
+        errorWrongInput(context, 'No customer found');
+        return context.done();
+      }
+
+      returnResult(context, docs);
+      context.done();
+    });
   };
 
   inputValidation();
