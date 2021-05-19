@@ -27,3 +27,7 @@ npm start
 
 
 NB! Ved lokal testing, pass på at postLogoutRedirectUri og redirectUri ved /Frontend/src/azure/authConfig.ts er satt til 'http://localhost:3000'.
+
+## Distribuering
+
+Repositoriet er koblet opp mot en pipeline distribuerer koden til Microsoft Azure gjennom en trigger ved main-branch. Dersom det er ikke ønskelig å publisere endringen til domenet vil det være nødvendig å opprette en development branch ved siden av main. 
