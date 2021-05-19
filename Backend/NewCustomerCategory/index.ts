@@ -39,7 +39,7 @@ export default (context: Context, req: HttpRequest): any => {
       return context.done();
     }
   };
-
+  /* Verify that user has admin write permission */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // verified and decoded token
@@ -84,7 +84,10 @@ export default (context: Context, req: HttpRequest): any => {
   const queryOptions = {
     upsert: true,
   };
-
+  /**
+   * @description Updates or creates customerCategory.
+   * @param db
+   */
   const updateCategory = (db: Db) => {
     db.collection(collections.customerCategory).updateOne(query, update, queryOptions, (error: any, docs: JSON) => {
       if (error) {
@@ -94,7 +97,10 @@ export default (context: Context, req: HttpRequest): any => {
       updateCustomers(db);
     });
   };
-
+  /**
+   * @description Updates all customers that have the updated category
+   * @param db
+   */
   const updateCustomers = (db: Db) => {
     let query = {};
     query['categories.' + req.body.name] = { '$exists': true };
@@ -110,6 +116,7 @@ export default (context: Context, req: HttpRequest): any => {
         let dbCalls = [docs.length];
 
         docs.forEach((customer) => {
+          /* Deletes all values that are no longer in the category and adds new values. */
           let category = customer.categories[req.body.name];
 
           let valuesToDelete = Object.keys(category).filter(
@@ -141,7 +148,7 @@ export default (context: Context, req: HttpRequest): any => {
             })
           );
         });
-
+        /* Wait for all database calls to complete */
         Promise.all(dbCalls).then(() => context.done());
       });
   };

@@ -92,7 +92,9 @@ export default (context: Context, req: HttpRequest): any => {
 
             employee['customerInformation'] = docs;
 
-            employee.customerInformation.forEach((customer) => {
+            /* Looks through all customers the employee has access to to determine how many unseen mail changes there
+            are for each customer, and to find all tags */
+            employee.customerInformation?.forEach((customer) => {
               let changedMails = 0;
               customer.mails.forEach((mail) => {
                 if (!mail?.seenBy?.includes(employeeId)) {
@@ -104,7 +106,7 @@ export default (context: Context, req: HttpRequest): any => {
               allTags = allTags.concat(customer.tags);
             });
 
-            employee['allTags'] = allTags.filter((tag, index) => allTags.indexOf(tag) === index);
+            employee['allTags'] = allTags?.filter((tag, index) => allTags.indexOf(tag) === index);
             delete employee.mails;
 
             returnResult(context, employee);

@@ -73,6 +73,10 @@ export default (context: Context, req: HttpRequest): any => {
     '_id': ObjectId(req.body.id),
   };
 
+  /**
+   * @description Deletes supplier from database, and updates customers
+   * @param db 
+   */
   const functionQuery = (db: Db) => {
     db.collection(collections.supplier)
       .find({ '_id': ObjectId(req.body.id) })
