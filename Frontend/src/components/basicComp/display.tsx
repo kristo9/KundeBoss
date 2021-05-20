@@ -5,15 +5,14 @@ import { useHistory } from 'react-router-dom';
 // Context
 import { LanguageContext } from '../../Context/language/LangContext';
 
-
-// Display customer or supplier overview. 
-export function CustomerOrSupplierOverview(props: { 
-  name: string;                 // Define incoming parameter types. 
+// Display customer or supplier overview.
+export function CustomerOrSupplierOverview(props: {
+  name: string; // Define incoming parameter types.
   contactName: string;
   contactEmail: string;
   contactPhone: number;
 }) {
-  const { dictionary } = useContext(LanguageContext)
+  const { dictionary } = useContext(LanguageContext);
   return (
     <div className='displayInfoDiv'>
       <h2>{props.name}</h2>
@@ -52,7 +51,7 @@ export function DisplayTextAndInfo(props: { text: string; information: any; altT
  * @returns a react component with the information.
  */
 export function ContactPersonInfo(props: { name: string; phone: number; mail: string }) {
-  const { dictionary } = useContext(LanguageContext)
+  const { dictionary } = useContext(LanguageContext);
   return (
     <div className='displayInfoDiv'>
       <h3>{dictionary.contactPerson}</h3>
@@ -79,6 +78,7 @@ export function DisplayCustSupInfo(props: {
   contactMail: string;
   gotoPage: string;
 }) {
+  const { dictionary } = useContext(LanguageContext);
   let history = useHistory();
 
   return (
@@ -95,9 +95,9 @@ export function DisplayCustSupInfo(props: {
       </h3>
 
       <div className='addMarginLeft'>
-        <DisplayTextAndInfo text={'Navn'} information={props.contactName} altText={'Mangler'} />
-        <DisplayTextAndInfo text={'Telefon'} information={props.contactPhone} altText={'Mangler'} />
-        <DisplayTextAndInfo text={'Mail'} information={props.contactMail} altText={'Mangler'} />
+        <DisplayTextAndInfo text={dictionary.name} information={props.contactName} altText={dictionary.missing} />
+        <DisplayTextAndInfo text={dictionary.phone} information={props.contactPhone} altText={dictionary.missing} />
+        <DisplayTextAndInfo text={dictionary.mail} information={props.contactMail} altText={dictionary.missing} />
       </div>
     </div>
   );

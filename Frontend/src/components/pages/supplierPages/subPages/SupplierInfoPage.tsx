@@ -1,22 +1,23 @@
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useContext } from 'react';
+import { LanguageContext } from '../../../../Context/language/LangContext';
 
 // CSS
 import '../../../basicComp/basic.css';
 import { DisplayTextAndInfo, ContactPersonInfo } from '../../../basicComp/display';
 
 /**
- * Displayes the customer information.
- * @param {any} customerInfo contains all the information about the customer being displayed.
- * @returns a react-component with the customer information.
+ * Displayes information about the supplier.
+ * @param {any} supplierInfo contains all the information about the supplier being displayed.
+ * @returns a react-component
  */
-
 export function SupplierInfoPage({ supplierInfo }: any) {
-  console.log(supplierInfo.name);
+  const { dictionary } = useContext(LanguageContext);
+
   return (
     <div>
-      <h1 className='color-dark heading'>Infomasjon</h1>
+      <h1 className='color-dark heading'>{dictionary.information}</h1>
       <div className='displayInfoDiv'>
-        <DisplayTextAndInfo text={'Navn'} information={supplierInfo.name} altText={'Mangler'} />
+        <DisplayTextAndInfo text={dictionary.name} information={supplierInfo.name} altText={dictionary.missing} />
       </div>
       <ContactPersonInfo
         name={supplierInfo.contact.name}
@@ -24,7 +25,7 @@ export function SupplierInfoPage({ supplierInfo }: any) {
         phone={supplierInfo.contact.phone}
       />
       <div className='displayInfoDiv'>
-        <DisplayTextAndInfo text={'Notat'} information={supplierInfo.comment} altText={'Kunden har ikke notat'} />
+        <DisplayTextAndInfo text={dictionary.note} information={supplierInfo.comment} altText={dictionary.missing} />
       </div>
     </div>
   );

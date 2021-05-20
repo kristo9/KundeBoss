@@ -54,6 +54,11 @@
     "edit": "Rediger",
     "reset": "Reset",
 
+    "supplierName": "Leverandørens navn",
+    "contactPhone": "Kontaktpersonens telefonnummer",
+    "contactMail": "Kontaktpersonens  epost",
+    "conatctName": "Kontaktpersonens  navn",
+
     "admin": {
       "permissions": "Rettigheter",
       "has": "Har",
@@ -67,6 +72,11 @@
 
     "supplier": {
       "customers": "Kunder",
-      "noCustomers": "Denne leverandøren har ingen kunder"
+      "noCustomers": "Denne leverandøren har ingen kunder",
+      "newSupplier": "Ny leverandør",
+      "editSupplier": "Rediger leverandør",
+      "deleteSupplier": "Slett leverandør",
+
+      "note": "Notat om leverandøren"
   }
   }
