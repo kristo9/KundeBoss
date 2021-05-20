@@ -9,6 +9,9 @@ import { ObjectId } from 'mongodb';
 const mailIdRand = 1000000;
 const mailStartCount = 100000;
 
+/**
+ * @description Send mail to a customer and suppliers
+ */
 export default (context: Context, req: HttpRequest): any => {
   /* Sanitizes input. Returns if there are no request body */
   req.body = prepInput(context, req.body);

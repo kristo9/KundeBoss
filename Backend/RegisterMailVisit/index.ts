@@ -7,8 +7,8 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
 /**
- * @description Returns information about caller from database, or creates a new entry in databse if caller is not found in the database
- * @param contect : Context
+ * @description Registers that an employee has seen a mail
+ * @param context : Context
  * @param req : HttpRequest
  */
 export default (context: Context, req: HttpRequest): any => {

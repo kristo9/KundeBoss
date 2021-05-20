@@ -5,7 +5,7 @@ import { Db } from '../SharedFiles/interfaces';
 import { errorQuery } from '../SharedFiles/auth';
 
 /**
- * @description Get alle data about a customer
+ * @description Receives mail reply, and registeres it in the database
  * @param contect : Context
  * @param req : HttpRequest
  */
@@ -32,13 +32,16 @@ export default (context: Context, req: HttpRequest): any => {
 
         return context.done();
       }
+      /* Finds text from earlier replies */
       let reply = docs?.receivers?.find((receiver) => receiver.replyId == replyId)?.reply?.text;
       let newReply;
+      /* Creates string that that will be registered as the reply */
       if (!reply && !replyText) {
         newReply = { 'text': null, 'date': new Date() };
       } else {
         newReply = { 'text': (reply ? reply : '') + replyText + '\n\n', 'date': new Date() };
       }
+      /* Inserts reply into the database */
       db.collection(collections.mail).updateOne(
         { 'receivers.replyId': replyId },
         {
@@ -74,8 +77,10 @@ export default (context: Context, req: HttpRequest): any => {
     });
   };
 
-  if (req.body.replyId) {
+  /* Makes sure that a replyId was received */
+  if (req.body?.replyId) {
     replyId = req.body.replyId;
+    /* Makes sure that a replyText was received and that it's not to long */
     if (req.body?.replyText) {
       if (req.body.replyText.length < 1000) {
         replyText = req.body.replyText == 'null' ? null : req.body.replyText;
