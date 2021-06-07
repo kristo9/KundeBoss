@@ -5,6 +5,10 @@ import { verify } from 'jsonwebtoken';
 import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 
+
+/**
+ * @description Used to creates a new customer category, or to edit a existing one
+ */
 export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 

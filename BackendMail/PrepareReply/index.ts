@@ -4,11 +4,15 @@ import { collections, connectRead } from '../SharedFiles/dataBase';
 import { Db } from '../SharedFiles/interfaces';
 import { errorQuery } from '../SharedFiles/auth';
 
+/**
+ * @description Returns earlier replies and a code needed to register a new reply
+ */
 export default (context: Context, req: HttpRequest) => {
   let replyId;
   req.body = prepInput(context, req.body);
 
   const functionQuery = (db: Db) => {
+    
     db.collection(collections.mail).findOne({ 'receivers.replyId': replyId }, {}, (error: any, docs: any) => {
       if (error) {
         errorQuery(context);
@@ -40,8 +44,8 @@ export default (context: Context, req: HttpRequest) => {
     });
   };
 
-  if (req.body.replyId) {
-
+  /* Makes sure that a replyId was received */
+  if (req.body?.replyId) {
     replyId = req.body.replyId;
     connectRead(context, functionQuery);
   } else {

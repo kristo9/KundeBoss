@@ -6,6 +6,9 @@ import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase'
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
+/**
+ * @description Updates customer if a customer id was received. Creates a new customer otherwise.
+ */
 export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
@@ -39,7 +42,7 @@ export default (context: Context, req: HttpRequest): any => {
     }
   };
   /**
-   * @description Verify that caller has write permission to the customer, or is admin write
+   * @description Verify that caller has write permission to the customer, or has admin write permission
    * @param db
    */
   const authorize = (db: Db) => {

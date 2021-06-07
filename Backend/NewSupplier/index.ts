@@ -5,7 +5,9 @@ import { verify } from 'jsonwebtoken';
 import { collections, connectRead, connectWrite } from '../SharedFiles/dataBase';
 import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
-
+/**
+ * @description Updates supplier if a supplier id was received. Creates a new supplier otherwise.
+ */
 export default (context: Context, req: HttpRequest): any => {
   req.body = prepInput(context, req.body);
 
@@ -15,6 +17,10 @@ export default (context: Context, req: HttpRequest): any => {
 
   if (token === null) return context.done();
 
+  /**
+   * @description Validates that required input have been reveived
+   * @returns 
+   */
   const inputValidation = () => {
     let errMsg = 'Error: ';
     let validInput = true;
@@ -39,6 +45,10 @@ export default (context: Context, req: HttpRequest): any => {
     }
   };
 
+  /**
+   * @description Checks have admin write permission
+   * @param db 
+   */
   const authorize = (db: Db) => {
     verify(token, getKey, options, (err: any, decoded: Decoded) => {
       // verified and decoded token
@@ -71,6 +81,10 @@ export default (context: Context, req: HttpRequest): any => {
     });
   };
 
+  /**
+   * @description Updates supplier if a supplier id was received. Creates a new supplier otherwise.
+   * @param db 
+   */
   const functionQuery = (db: Db) => {
     const query = req.body?.id ? { '_id': ObjectId(req.body.id) } : { '_id': new ObjectId() };
 

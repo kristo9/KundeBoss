@@ -7,7 +7,7 @@ import { Db, Decoded } from '../SharedFiles/interfaces';
 import { ObjectId } from 'mongodb';
 
 /**
- * @description Deletes a customer, their mailgroup and mails.
+ * @description Deletes a customer
  * @param contect : Context
  * @param req : HttpRequest
  */
