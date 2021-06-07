@@ -153,13 +153,11 @@ function SendMail(props: customerIDProp) {
             // prepare all the mails in a promis-array
             if ((reciver.customerID && reciver.customerID != 'default') || supplierIDs) {
               console.log('Send mail');
-              console.log(reciver);
-              console.log(supplierIDs);
 
               promisses.push(
                 sendMailCustomer(
                   selectedCustomerIDs.customerID[index],
-                  typeof reciver.customerID == 'string',
+                  reciver.includeCustomer,
                   data.text,
                   data.subject,
                   supplierIDs
